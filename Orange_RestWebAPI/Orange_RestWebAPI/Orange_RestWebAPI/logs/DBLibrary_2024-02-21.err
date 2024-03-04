@@ -1,0 +1,14 @@
+02/21/2024 4:15:18 PM:ExecuteDataTable : Error converting data type nvarchar to datetime.
+02/21/2024 4:20:59 PM:GetDeshBoardDetails : Error: Error converting data type nvarchar to datetime.
+02/21/2024 4:20:59 PM:DashboardDetails : Error: Error converting data type nvarchar to datetime.
+02/21/2024 4:36:13 PM:GetDeshBoardDetails : String '21/02/2024' was not recognized as a valid DateTime.
+02/21/2024 4:36:14 PM:DashboardDetails : String '21/02/2024' was not recognized as a valid DateTime.
+02/21/2024 4:40:02 PM:GetDeshBoardDetails : String '21/02/2024' was not recognized as a valid DateTime.
+02/21/2024 4:40:02 PM:DashboardDetails : String '21/02/2024' was not recognized as a valid DateTime.
+02/21/2024 4:41:35 PM:ExecuteDataTable : Procedure or function 'SP_Mobile_HRMS_WebService_Attendance' expects parameter '@Reason', which was not supplied.
+02/21/2024 4:43:56 PM:GetDeshBoardDetails : Error: Procedure or function 'SP_Mobile_HRMS_WebService_Attendance' expects parameter '@Reason', which was not supplied.
+02/21/2024 4:43:56 PM:DashboardDetails : Error: Procedure or function 'SP_Mobile_HRMS_WebService_Attendance' expects parameter '@Reason', which was not supplied.
+02/21/2024 4:57:34 PM:ExecuteDataTable : Procedure or function 'SP_Mobile_HRMS_WebService_Attendance' expects parameter '@Reason', which was not supplied.
+02/21/2024 4:58:10 PM:GetDeshBoardDetails : Error: Procedure or function 'SP_Mobile_HRMS_WebService_Attendance' expects parameter '@Reason', which was not supplied.
+02/21/2024 4:58:10 PM:DashboardDetails : Error: Procedure or function 'SP_Mobile_HRMS_WebService_Attendance' expects parameter '@Reason', which was not supplied.
+02/21/2024 4:58:40 PM:DashboardDetails : Index was outside the bounds of the array.

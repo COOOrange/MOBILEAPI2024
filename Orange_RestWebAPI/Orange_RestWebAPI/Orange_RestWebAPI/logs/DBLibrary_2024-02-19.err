@@ -1,0 +1,13 @@
+02/19/2024 11:01:45 AM:ExecuteDataTable : Could not find stored procedure 'select top 1 Location from T9999_MOBILE_INOUT_DETAIL WHERE CMP_ID = 187 AND EMP_ID=28201 order by IO_Datetime desc '.
+02/19/2024 2:37:49 PM:ExecuteDataTable : Procedure or function 'SP_Mobile_HRMS_WebService_Attendance' expects parameter '@Vertical_ID', which was not supplied.
+02/19/2024 3:11:48 PM:ExecuteDataTable : Procedure or function 'SP_Mobile_HRMS_WebService_Attendance' expects parameter '@Vertical_ID', which was not supplied.
+02/19/2024 3:13:58 PM:GetDeshBoardDetails : Error: Procedure or function 'SP_Mobile_HRMS_WebService_Attendance' expects parameter '@Vertical_ID', which was not supplied.
+02/19/2024 3:14:00 PM:DashboardDetails : Error: Procedure or function 'SP_Mobile_HRMS_WebService_Attendance' expects parameter '@Vertical_ID', which was not supplied.
+02/19/2024 5:55:56 PM:AuthenticateUser : There is no row at position 0.
+02/19/2024 5:55:57 PM:Login : There is no row at position 0.
+02/19/2024 5:56:44 PM:AuthenticateUser : There is no row at position 0.
+02/19/2024 5:56:44 PM:Login : There is no row at position 0.
+02/19/2024 5:56:50 PM:AuthenticateUser : There is no row at position 0.
+02/19/2024 5:56:50 PM:Login : There is no row at position 0.
+02/19/2024 5:59:33 PM:AuthenticateUser : There is no row at position 0.
+02/19/2024 5:59:33 PM:Login : There is no row at position 0.

@@ -1,0 +1,8 @@
+02/23/2024 12:20:03 PM:Validate: ServerConnection : Value cannot be null. (Parameter 'hostNameOrAddress')
+02/23/2024 12:20:03 PM:LogOut : Value cannot be null. (Parameter 'hostNameOrAddress')
+02/23/2024 5:11:11 PM:ExecuteDataSet : Procedure or function 'SP_Mobile_HRMS_WebAPI_Login' expects parameter '@token', which was not supplied.
+02/23/2024 5:11:11 PM:LoginCheck : Error: Procedure or function 'SP_Mobile_HRMS_WebAPI_Login' expects parameter '@token', which was not supplied.
+02/23/2024 5:12:21 PM:AuthenticateUser : Error: Procedure or function 'SP_Mobile_HRMS_WebAPI_Login' expects parameter '@token', which was not supplied.
+02/23/2024 5:12:21 PM:Login : Error: Procedure or function 'SP_Mobile_HRMS_WebAPI_Login' expects parameter '@token', which was not supplied.
+02/23/2024 5:48:57 PM:ExecuteDataTable : Invalid object name 'Token'.
+02/23/2024 5:48:58 PM:LoginCheck : Error: Invalid object name 'Token'.

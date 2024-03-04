@@ -1,0 +1,12 @@
+02/13/2024 7:17:25 PM:ExecuteDataTable : Procedure or function P0011_OTP_TRANSACTIONS has too many arguments specified.
+02/13/2024 7:25:17 PM:ExecuteDataTable : Procedure or function P0011_OTP_TRANSACTIONS has too many arguments specified.
+02/13/2024 7:26:21 PM:AddOTP : Error: Procedure or function P0011_OTP_TRANSACTIONS has too many arguments specified.
+02/13/2024 7:26:21 PM:LogOut : Error: Procedure or function P0011_OTP_TRANSACTIONS has too many arguments specified.
+02/13/2024 7:31:40 PM:ExecuteDataTable : Conversion failed when converting the varchar value '*' to data type int.
+02/13/2024 7:48:14 PM:AddOTP : Error: Conversion failed when converting the varchar value '*' to data type int.
+02/13/2024 7:48:14 PM:LogOut : Error: Conversion failed when converting the varchar value '*' to data type int.
+02/13/2024 7:57:38 PM:ExecuteDataTable : Conversion failed when converting the varchar value '*' to data type int.
+02/13/2024 7:57:44 PM:AddOTP : Error: Conversion failed when converting the varchar value '*' to data type int.
+02/13/2024 7:57:44 PM:LogOut : Error: Conversion failed when converting the varchar value '*' to data type int.
+02/13/2024 8:04:44 PM:LogOut : Column 'Emp_ID' does not belong to table Table.
+02/13/2024 8:08:44 PM:LogOut : Column 'Emp_ID' does not belong to table Table.
