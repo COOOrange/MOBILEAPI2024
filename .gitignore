@@ -1,0 +1,19 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/MOBILEAPI2024/config
+/.vs
+/MOBILEAPI2024/bin
+/MOBILEAPI2024/.config
+/MOBILEAPI2024/obj
+/MOBILEAPI2024/Properties
+/MOBILEAPI2024.BLL/bin
+/MOBILEAPI2024.BLL/obj
+/MOBILEAPI2024.BLL/Properties/PublishProfiles
+/MOBILEAPI2024.DAL/bin
+/MOBILEAPI2024.DAL/obj
+/MOBILEAPI2024.DAL/Properties/PublishProfiles
+/MOBILEAPI2024.DTO/bin
+/MOBILEAPI2024.DTO/obj
+/MOBILEAPI2024.DTO/Properties/PublishProfiles
