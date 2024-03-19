@@ -1,6 +1,6 @@
 ﻿using MOBILEAPI2024.DAL.Entities;
-using MOBILEAPI2024.DTO.RequestDTO;
-using MOBILEAPI2024.DTO.ResponseDTO;
+using MOBILEAPI2024.DTO.RequestDTO.User;
+using MOBILEAPI2024.DTO.ResponseDTO.User;
 
 namespace MOBILEAPI2024.DAL.Repositories.IRepositories
 {

@@ -1,4 +1,4 @@
-﻿namespace MOBILEAPI2024.DTO.ResponseDTO
+﻿namespace MOBILEAPI2024.DTO.ResponseDTO.Account
 {
     public class LoginResponseDTO
     {

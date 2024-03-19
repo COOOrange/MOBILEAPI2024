@@ -1,6 +1,6 @@
 ﻿using MOBILEAPI2024.DAL.Entities;
-using MOBILEAPI2024.DTO.RequestDTO;
-using MOBILEAPI2024.DTO.ResponseDTO;
+using MOBILEAPI2024.DTO.RequestDTO.Account;
+using MOBILEAPI2024.DTO.ResponseDTO.Account;
 using System;
 using System.Collections.Generic;
 using System.Data;

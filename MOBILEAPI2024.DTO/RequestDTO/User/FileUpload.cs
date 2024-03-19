@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MOBILEAPI2024.DTO.RequestDTO
+namespace MOBILEAPI2024.DTO.RequestDTO.User
 {
     public class FileUpload
     {
-        public  IFormFile file{ get; set; }
+        public IFormFile file { get; set; }
     }
 }

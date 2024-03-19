@@ -1,7 +1,7 @@
 ﻿using MOBILEAPI2024.BLL.Services.IServices;
 using MOBILEAPI2024.DAL.Repositories.IRepositories;
-using MOBILEAPI2024.DTO.RequestDTO;
-using MOBILEAPI2024.DTO.ResponseDTO;
+using MOBILEAPI2024.DTO.RequestDTO.User;
+using MOBILEAPI2024.DTO.ResponseDTO.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
