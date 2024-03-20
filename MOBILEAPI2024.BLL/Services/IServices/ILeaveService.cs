@@ -16,5 +16,12 @@ namespace MOBILEAPI2024.BLL.Services.IServices
         List<FilterLeaveResponse> GetLeaveBalance(LeaveFilter leaveFilter);
         List<LeaveStatusResponse> GetLeaveStatus(LeaveFilter leaveFilter);
         List<LeaveTypeBind> GetLeaveTypeBind(LeaveFilter leaveFilter);
+        LeaveApplicationRecordsResponse LeaveApplicationRecords(LeaveApplicationRecordsRequest leaveApplicationRecordsRequest);
+        dynamic LeaveApproval(LeaveApprovalRequest leaveApprovalRequest);
+        dynamic LeaveApprovalDelete(LeaveApprovalDeleteRequest leaveApprovalDeleteRequest);
+        LeaveApprovalDetailsResponse LeaveApprovalDetails(LeaveApprovalDetailsRequest leaveApprovalDetailsRequest);
+        LeaveBalanceSummryResponse LeaveBalanceSummary(LeaveFilter leaveFilter, DateTime forDate);
+        dynamic LeaveCancellationApplication(LeaveCancellationApplicationRequest leaveCancellationApplicationRequest);
+        LeaveCancellationApplicationDetailsResponse LeaveCancellationApplicationDetails(LeaveCancellationApplicationDetailsRequest leaveCancellationApplicationDetailsRequest);
     }
 }

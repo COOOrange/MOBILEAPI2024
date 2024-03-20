@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.SqlServer.Server;
 using MOBILEAPI2024.DAL.Entities;
 using MOBILEAPI2024.DAL.Repositories.IRepositories;
 using MOBILEAPI2024.DTO.RequestDTO.Leave;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Net.Mail;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -227,6 +229,230 @@ namespace MOBILEAPI2024.DAL.Repositories
 
             var LeaveBindType = vconn.Query<LeaveTypeBind>("SP_Mobile_HRMS_WebAPI_Leave", vParams, commandType: CommandType.StoredProcedure).ToList();
             return LeaveBindType;
+        }
+
+        public LeaveApplicationRecordsResponse LeaveApplicationRecords(LeaveApplicationRecordsRequest leaveApplicationRecordsRequest)
+        {
+            LeaveApplicationRecordsResponse leaveApplicationRecordsResponse = new LeaveApplicationRecordsResponse();
+            if (leaveApplicationRecordsRequest.StrType == "Application" || leaveApplicationRecordsRequest.StrType == "application" || leaveApplicationRecordsRequest.StrType == "APPLICATION")
+            {
+                using var vconn = GetOpenConnection();
+                var vParams = new DynamicParameters();
+                vParams.Add("@Leave_Approval_ID", 0);
+                vParams.Add("@Leave_Application_ID", 0);
+                vParams.Add("@Leave_ID", 0);
+                vParams.Add("@Emp_ID", leaveApplicationRecordsRequest.EmpId);
+                vParams.Add("@Cmp_ID", leaveApplicationRecordsRequest.CmpId);
+                vParams.Add("@Approval_Date", DateTime.Now);
+                vParams.Add("@From_Date", DateTime.Now);
+                vParams.Add("@To_Date", DateTime.Now);
+                vParams.Add("@Leave_Period", 0.0);
+                vParams.Add("@Leave_AssignAs", "");
+                vParams.Add("@Leave_Reason", "");
+                vParams.Add("@Half_Leave_Date", DateTime.Now);
+                vParams.Add("@Approval_Status", "");
+                vParams.Add("@Approval_Comments", "");
+                vParams.Add("@Final_Approve", 0);
+                vParams.Add("@Is_Fwd_Leave_Rej", 0);
+                vParams.Add("@Rpt_Level", 0);
+                vParams.Add("@SEmp_ID", 0);
+                vParams.Add("@InTime", DateTime.Now);
+                vParams.Add("@OutTime", DateTime.Now);
+                vParams.Add("@Login_ID", 0);
+                vParams.Add("@strLeaveCompOff_Dates", "");
+                vParams.Add("@Type", "S");
+                vParams.Add("@Status", leaveApplicationRecordsRequest.StrStatus);
+                vParams.Add("@Result", "");
+
+                leaveApplicationRecordsResponse.ApplicationResponses = vconn.Query<ApplicationResponse>("SP_Mobile_HRMS_WebService_Leave_Approve", vParams, commandType: CommandType.StoredProcedure).ToList();
+                return leaveApplicationRecordsResponse;
+            }
+            else if(leaveApplicationRecordsRequest.StrType == "Cancellation" || leaveApplicationRecordsRequest.StrType == "cancellation" || leaveApplicationRecordsRequest.StrType == "CANCELLATION")
+            {
+                using var vconn = GetOpenConnection();
+                var vParams = new DynamicParameters();
+                vParams.Add("@Tran_ID", 0);
+                vParams.Add("@Emp_ID", leaveApplicationRecordsRequest.EmpId);
+                vParams.Add("@Cmp_ID", leaveApplicationRecordsRequest.CmpId);
+                vParams.Add("@Leave_Application_ID", 0);
+                vParams.Add("@Leave_Approval_ID", 0);
+                vParams.Add("@Leave_ID", 0);
+                vParams.Add("@For_date", DateTime.Now);
+                vParams.Add("@Leave_period", 0.0);
+                vParams.Add("@Actual_Leave_period", 0.0);
+                vParams.Add("@Day_Type", "");
+                vParams.Add("@Comment", "");
+                vParams.Add("@Login_ID", 0);
+                vParams.Add("@Compoff_Work_Date", "");
+                vParams.Add("@IMEINo", "");
+                vParams.Add("@AEmp_ID", 0);
+                vParams.Add("@MComment", "");
+                vParams.Add("@Is_Approve", 0);
+                vParams.Add("@Type", "L");
+                vParams.Add("@Result", "");
+
+                leaveApplicationRecordsResponse.CancellationResponses = vconn.Query<CancellationResponse>("SP_Mobile_HRMS_WebService_Leave_Cancellation", vParams, commandType: CommandType.StoredProcedure).ToList();
+                return leaveApplicationRecordsResponse;
+
+            }
+            return null;
+
+        }
+
+        public dynamic LeaveApproval(LeaveApprovalRequest leaveApprovalRequest)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Leave_Approval_ID", 0);
+            vParams.Add("@Leave_Application_ID", leaveApprovalRequest.LeaveAppID);
+            vParams.Add("@Leave_ID", leaveApprovalRequest.LeaveID);
+            vParams.Add("@Emp_ID", leaveApprovalRequest.EmpID);
+            vParams.Add("@Cmp_ID", leaveApprovalRequest.CmpID);
+            vParams.Add("@Approval_Date", DateTime.Now);
+            vParams.Add("@From_Date", Convert.ToDateTime(leaveApprovalRequest.FromDate).ToString("dd/MMM/yyyy"));
+            vParams.Add("@TO_Date", Convert.ToDateTime(leaveApprovalRequest.ToDate).ToString("dd/MMM/yyyy"));
+            vParams.Add("@Leave_Period", leaveApprovalRequest.Period);
+            vParams.Add("@Leave_AssignAs", leaveApprovalRequest.AssignAs);
+            vParams.Add("@Leave_Reason", leaveApprovalRequest.Comment);
+            vParams.Add("@Half_Leave_Date", Convert.ToDateTime(leaveApprovalRequest.HLeaveDate).ToString("dd/MMM/yyyy"));
+            vParams.Add("@Approval_Status", leaveApprovalRequest.AppStatus);
+            vParams.Add("@Approval_Comments", leaveApprovalRequest.AppComment);
+            vParams.Add("@Final_Approve", leaveApprovalRequest.FinalApproval);
+            vParams.Add("@Is_Fwd_Leave_Rej", leaveApprovalRequest.IsFWDRej);
+            vParams.Add("@Rpt_Level", leaveApprovalRequest.RptLevel);
+            vParams.Add("@SEmp_ID", leaveApprovalRequest.SEmpID);
+            vParams.Add("@Intime", Convert.ToDateTime(leaveApprovalRequest.Intime).ToString("dd/MMM/yyyy"));
+            vParams.Add("@Outtime", Convert.ToDateTime(leaveApprovalRequest.OutTime).ToString("dd/MMM/yyyy"));
+            vParams.Add("@Login_ID", leaveApprovalRequest.LoginID);
+            vParams.Add("@strLeaveCompOff_Dates", leaveApprovalRequest.CompoffLeaveDates);
+            vParams.Add("@Type", "I");
+            vParams.Add("@Result", "");
+
+            var leaveApprove= vconn.QueryFirstOrDefault("SP_Mobile_HRMS_WebService_Leave_Approve", vParams, commandType: CommandType.StoredProcedure);
+            return leaveApprove;
+        }
+
+        public dynamic LeaveApprovalDelete(LeaveApprovalDeleteRequest leaveApprovalDeleteRequest)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Emp_ID", leaveApprovalDeleteRequest.EmpID);
+            vParams.Add("@Cmp_ID", leaveApprovalDeleteRequest.CmpID);
+            vParams.Add("@Leave_Application_ID", leaveApprovalDeleteRequest.LeaveAppID);
+            vParams.Add("@Approval_Date", leaveApprovalDeleteRequest.Approval_Date);
+            vParams.Add("@Approval_Status", leaveApprovalDeleteRequest.Approval_Status);
+            vParams.Add("@Is_BackDated_app", leaveApprovalDeleteRequest.Is_Backdated_App);
+            vParams.Add("@SEmp_ID", leaveApprovalDeleteRequest.SEmpID);
+            vParams.Add("@User_Id", leaveApprovalDeleteRequest.User_Id);
+            vParams.Add("@Login_ID", leaveApprovalDeleteRequest.LoginID);
+            vParams.Add("@tran_type", leaveApprovalDeleteRequest.Tran_Type);
+            vParams.Add("@Result", "");
+            var leaveApproveDelete = vconn.Query("SP_Mobile_HRMS_WebService_Leave_Approve_Delete", vParams, commandType: CommandType.StoredProcedure);
+            return leaveApproveDelete;
+
+        }
+
+        public LeaveApprovalDetailsResponse LeaveApprovalDetails(LeaveApprovalDetailsRequest leaveApprovalDetailsRequest)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Tran_ID", 0);
+            vParams.Add("@Emp_ID", leaveApprovalDetailsRequest.EmpId);
+            vParams.Add("@Cmp_ID", leaveApprovalDetailsRequest.CmpId);
+            vParams.Add("@Leave_Application_ID", leaveApprovalDetailsRequest.LeaveAppId);
+            vParams.Add("@Leave_Approval_ID", leaveApprovalDetailsRequest.LeaveApprId);
+            vParams.Add("@Leave_ID", leaveApprovalDetailsRequest.LeaveId);
+            vParams.Add("@For_date", "");
+            vParams.Add("@Leave_period",0);
+            vParams.Add("@Actual_Leave_period",0);
+            vParams.Add("@Day_Type", "");
+            vParams.Add("@Comment", "");
+            vParams.Add("@Login_ID", leaveApprovalDetailsRequest.LoginId);
+            vParams.Add("@Compoff_Work_Date", "");
+            vParams.Add("@IMEINo", "");
+            vParams.Add("@AEmp_ID", 0);
+            vParams.Add("@MComment", "");
+            vParams.Add("@Is_Approve",0);
+            vParams.Add("@Type", "E");
+            vParams.Add("@Result", "");
+
+            var leaveApprovalDetails = vconn.QueryFirst<LeaveApprovalDetailsResponse>("SP_Mobile_HRMS_WebService_Leave_Cancellation", vParams, commandType: CommandType.StoredProcedure);
+            return leaveApprovalDetails;
+        }
+
+        public LeaveBalanceSummryResponse LeaveBalanceSummary(LeaveFilter leaveFilter, DateTime forDate)
+        {
+            LeaveBalanceSummryResponse leaveBalanceSummryResponse = new();
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@CMP_ID", leaveFilter.Cmp_Id);
+            vParams.Add("@EMP_ID", leaveFilter.Emp_Id);
+            vParams.Add("@FOR_DATE", forDate);
+            vParams.Add("@Leave_Application", 0);
+            vParams.Add("@Leave_Encash_App_ID", 0);
+            vParams.Add("@Leave_ID", 0);
+            var response = vconn.Query<LeaveBalanceSummry>("SP_LEAVE_CLOSING_AS_ON_DATE_ALL", vParams, commandType: CommandType.StoredProcedure).ToList();
+            leaveBalanceSummryResponse.leaveBalanceSummries = response;
+            return leaveBalanceSummryResponse;
+
+        }
+
+        public dynamic LeaveCancellationApplication(LeaveCancellationApplicationRequest leaveCancellationApplicationRequest)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Tran_ID", 0);
+            vParams.Add("@Emp_ID", leaveCancellationApplicationRequest.EmpID);
+            vParams.Add("@Cmp_ID", leaveCancellationApplicationRequest.CmpID);
+            vParams.Add("@Leave_Application_ID", leaveCancellationApplicationRequest.LeaveAppID);
+            vParams.Add("@Leave_Approval_ID", leaveCancellationApplicationRequest.LeaveApprID);
+            vParams.Add("@Leave_ID", leaveCancellationApplicationRequest.LeaveID);
+            vParams.Add("@For_date", Convert.ToDateTime(DateTime.Now).ToString("dd/MMM/yyyy"));
+            vParams.Add("@Leave_period", 0);
+            vParams.Add("@Actual_Leave_period", 0);
+            vParams.Add("@Day_Type", "");
+            vParams.Add("@Comment", "");
+            vParams.Add("@Login_ID", leaveCancellationApplicationRequest.LoginID);
+            vParams.Add("@Compoff_Work_Date", leaveCancellationApplicationRequest.CompOffDate);
+            vParams.Add("@IMEINo", leaveCancellationApplicationRequest.IMEINo);
+            vParams.Add("@AEmp_ID", 0);
+            vParams.Add("@MComment", "");
+            vParams.Add("@Is_Approve", 0);
+            vParams.Add("@Type", "I");
+            vParams.Add("@Result", "");
+
+            var response = vconn.Query("SP_Mobile_HRMS_WebService_Leave_Cancellation", vParams, commandType: CommandType.StoredProcedure);
+            return response;
+        }
+
+        public LeaveCancellationApplicationDetailsResponse LeaveCancellationApplicationDetails(LeaveCancellationApplicationDetailsRequest leaveCancellationApplicationDetailsRequest)
+        {
+            LeaveCancellationApplicationDetailsResponse leaveCancellationApplicationDetailsResponse = new();
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Tran_ID", 0);
+            vParams.Add("@Emp_ID", leaveCancellationApplicationDetailsRequest.EmpID);
+            vParams.Add("@Cmp_ID", leaveCancellationApplicationDetailsRequest.CmpID);
+            vParams.Add("@Leave_Application_ID", 0);
+            vParams.Add("@Leave_Approval_ID", leaveCancellationApplicationDetailsRequest.LeaveApprID);
+            vParams.Add("@Leave_ID", leaveCancellationApplicationDetailsRequest.LeaveID);
+            vParams.Add("@For_date", DateTime.Now);
+            vParams.Add("@Leave_period", 0.0);
+            vParams.Add("@Actual_Leave_period", 0.0);
+            vParams.Add("@Day_Type", "");
+            vParams.Add("@Comment", "");
+            vParams.Add("@Login_ID", 0);
+            vParams.Add("@Compoff_Work_Date", "");
+            vParams.Add("@IMEINo", "");
+            vParams.Add("@AEmp_ID", 0);
+            vParams.Add("@MComment", "");
+            vParams.Add("@Is_Approve", 0);
+            vParams.Add("@Type", "D");
+            vParams.Add("@Result", "");
+            var response = vconn.Query<LeaveCancellationApplicationDetails>("SP_Mobile_HRMS_WebService_Leave_Cancellation", vParams, commandType: CommandType.StoredProcedure).ToList();
+            leaveCancellationApplicationDetailsResponse.LeaveCancellationApplicationDetails = response;
+
+            return leaveCancellationApplicationDetailsResponse;
         }
     }
 }

@@ -65,5 +65,75 @@ namespace MOBILEAPI2024.BLL.Services
             }
             return LeaveBindType;
         }
+
+        public LeaveApplicationRecordsResponse LeaveApplicationRecords(LeaveApplicationRecordsRequest leaveApplicationRecordsRequest)
+        {
+            var leaveApprovalDetails = _leaveRepository.LeaveApplicationRecords(leaveApplicationRecordsRequest);
+            if (leaveApprovalDetails == null)
+            {
+                return null;
+            }
+            return leaveApprovalDetails;
+        }
+
+        public dynamic LeaveApproval(LeaveApprovalRequest leaveApprovalRequest)
+        {
+            var leaveApprovalDetails = _leaveRepository.LeaveApproval(leaveApprovalRequest);
+            if (leaveApprovalDetails == null)
+            {
+                return null;
+            }
+            return leaveApprovalDetails;
+        }
+
+        public dynamic LeaveApprovalDelete(LeaveApprovalDeleteRequest leaveApprovalDeleteRequest)
+        {
+            var leaveApprovalDetails = _leaveRepository.LeaveApprovalDelete(leaveApprovalDeleteRequest);
+            if (leaveApprovalDetails == null)
+            {
+                return null;
+            }
+            return leaveApprovalDetails;
+        }
+
+        public LeaveApprovalDetailsResponse LeaveApprovalDetails(LeaveApprovalDetailsRequest leaveApprovalDetailsRequest)
+        {
+            var leaveApprovalDetails = _leaveRepository.LeaveApprovalDetails(leaveApprovalDetailsRequest);
+            if (leaveApprovalDetails == null)
+            {
+                return null;
+            }
+            return leaveApprovalDetails;
+        }
+
+        public LeaveBalanceSummryResponse LeaveBalanceSummary(LeaveFilter leaveFilter, DateTime forDate)
+        {
+            var LeaveBalanceSummary = _leaveRepository.LeaveBalanceSummary(leaveFilter, forDate);
+            if (LeaveBalanceSummary == null)
+            {
+                return null;
+            }
+            return LeaveBalanceSummary;
+        }
+
+        public dynamic LeaveCancellationApplication(LeaveCancellationApplicationRequest leaveCancellationApplicationRequest)
+        {
+            var LeaveCancelApplication = _leaveRepository.LeaveCancellationApplication(leaveCancellationApplicationRequest);
+            if (LeaveCancelApplication == null)
+            {
+                return null;
+            }
+            return LeaveCancelApplication;
+        }
+
+        public LeaveCancellationApplicationDetailsResponse LeaveCancellationApplicationDetails(LeaveCancellationApplicationDetailsRequest leaveCancellationApplicationDetailsRequest)
+        {
+            var LeaveCancelApplication = _leaveRepository.LeaveCancellationApplicationDetails(leaveCancellationApplicationDetailsRequest);
+            if (LeaveCancelApplication == null)
+            {
+                return null;
+            }
+            return LeaveCancelApplication;
+        }
     }
 }

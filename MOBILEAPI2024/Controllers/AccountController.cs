@@ -24,7 +24,7 @@ namespace MOBILEAPI2024.API.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        [Route(APIUrls.Login)]
+        [Route(APIUrls.LoginCheck)]
         public IActionResult SignIn(LoginDTO loginDTO)
         {
             Response response = new Response();
@@ -132,7 +132,7 @@ namespace MOBILEAPI2024.API.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        [Route(APIUrls.ResetPassword)]
+        [Route(APIUrls.ChangePassword)]
         public IActionResult ResetPassword(ResetPasswordDTO resetPasswordDTO)
         {
             Response response = new Response();

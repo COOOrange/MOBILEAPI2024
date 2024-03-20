@@ -11,11 +11,11 @@ namespace MOBILEAPI2024.DTO.Common
         /// <summary>
         ///  Authentication
         /// </summary>
-        public const string Login = "user/login"; 
-        public const string Logout = "user/logout";
+        public const string LoginCheck = "LoginCheck"; 
+        public const string Logout = "Logout";
         public const string ForgotPassword = "forgot/password"; 
         public const string OTPVarification = "otp/verification"; 
-        public const string ResetPassword = "reset/password";
+        public const string ChangePassword = "ChangePassword";
 
         /// <summary>
         ///  User
@@ -27,15 +27,22 @@ namespace MOBILEAPI2024.DTO.Common
         /// <summary>
         /// Leave
         /// </summary>
-        public const string FilterLeaveBalance = "filter/leavebalance";
-        public const string LeaveBalance = "leavebalance";
+        public const string GetLeaveRecords = "GetLeaveRecords";
+        public const string LeaveApplication = "LeaveApplication";
+        public const string LeaveApplicationDetails = "LeaveApplicationDetails";
+        public const string LeaveApproval = "LeaveApproval";
+        public const string LeaveApprovalDelete = "LeaveApprovalDelete";
+        public const string LeaveBalanceSummary = "LeaveBalanceSummary";
+        public const string LeaveApprovalDetails = "LeaveApprovalDetails";
+        public const string GetLeaveApplicationRecords = "GetLeaveApplicationRecords";
+        public const string LeaveBalance = "LeaveBalance";
+        public const string LeaveApplicationRecords = "LeaveApplicationRecords";
+        public const string LeaveCancellationApplication = "LeaveCancellationApplication";
+        public const string LeaveCancellationApplicationDetails = "LeaveCancellationApplicationDetails";
+        public const string AllLeaveBalance = "all/leavebalance";
         public const string FilterLeaveStatus = "filter/leavestatus";
-        public const string LeaveStatus = "leavestatus";
-        public const string LeaveTypeBind = "leave/typebind";
         public const string AddAttendanceData = "add/attendance";
         public const string CheckPeriod = "check/period";
-        public const string ApplyLeave = "apply/leave";
-        public const string CheckLeaveStatus = "check/leavestatus";
 
     }
 }
