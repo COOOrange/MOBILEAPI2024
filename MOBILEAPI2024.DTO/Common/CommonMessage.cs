@@ -15,6 +15,7 @@ namespace MOBILEAPI2024.DTO.Common
         public static string SomethingWrong = "Something went wrong.";
         public static string TokenExpired = "User token expired.";
         public static string NoDataFound = "No data found.";
+        public static string UserNameAndPasswordMandatory = "Username and password are mandatory fields.";
 
         /// <summary>
         ///  Success

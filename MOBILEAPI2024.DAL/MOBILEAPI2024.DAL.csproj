@@ -14,8 +14,4 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\MOBILEAPI2024.DTO\MOBILEAPI2024.DTO.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="DataContext\" />
-	</ItemGroup>
 </Project>

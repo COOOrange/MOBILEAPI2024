@@ -14,15 +14,17 @@ namespace MOBILEAPI2024.DAL.Repositories.IRepositories
         string AddLeaveAplication(LeaveFilter leaveFilter, ApplyLeaveRequest applyLeaveRequest);
         LeaveApplicationResponse CheckLeaveStatus(LeaveFilter leaveFilter, int leaveAppID);
         string CheckPeriod(LeaveFilter leaveFilter,CheckPeriod checkPeriod);
+        dynamic GetCompOffLeave(GetCompOffLeaveRequest getCompOffLeaveRequest);
         List<FilterLeaveResponse> GetLeaveBalance(LeaveFilter leaveFilter);
         List<LeaveStatusResponse> GetLeaveStatus(LeaveFilter leaveFilter);
+        dynamic GetLeavetransactionRecords(GetLeaveTransactionRequest getLeaveTransactionRequest);
         List<LeaveTypeBind> GetLeaveTypeBind(LeaveFilter leaveFilter);
         LeaveApplicationRecordsResponse LeaveApplicationRecords(LeaveApplicationRecordsRequest leaveApplicationRecordsRequest);
         dynamic LeaveApproval(LeaveApprovalRequest leaveApprovalRequest);
         dynamic LeaveApprovalDelete(LeaveApprovalDeleteRequest leaveApprovalDeleteRequest);
         LeaveApprovalDetailsResponse LeaveApprovalDetails(LeaveApprovalDetailsRequest leaveApprovalDetailsRequest);
         LeaveBalanceSummryResponse LeaveBalanceSummary(LeaveFilter leaveFilter, DateTime forDate);
-        dynamic LeaveCancellationApplication(LeaveCancellationApplicationRequest leaveCancellationApplicationRequest);
+        dynamic LeaveCancellationApplication(LeaveCancellationApplicationRequest leaveCancellationApplicationRequest, string Type);
         LeaveCancellationApplicationDetailsResponse LeaveCancellationApplicationDetails(LeaveCancellationApplicationDetailsRequest leaveCancellationApplicationDetailsRequest);
     }
 }

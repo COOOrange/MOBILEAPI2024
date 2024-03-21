@@ -36,6 +36,16 @@ namespace MOBILEAPI2024.BLL.Services
             return period;
         }
 
+        public dynamic GetCompOffLeave(GetCompOffLeaveRequest getCompOffLeaveRequest)
+        {
+            var getCompOffData = _leaveRepository.GetCompOffLeave(getCompOffLeaveRequest);
+            if (getCompOffData == null)
+            {
+                return null;
+            }
+            return getCompOffData;
+        }
+
         public List<FilterLeaveResponse> GetLeaveBalance(LeaveFilter leaveFilter)
         {
             var filterLeaveBalance = _leaveRepository.GetLeaveBalance(leaveFilter);
@@ -54,6 +64,16 @@ namespace MOBILEAPI2024.BLL.Services
                 return null;
             }
             return filterLeaveBalance;
+        }
+
+        public dynamic GetLeavetransactionRecords(GetLeaveTransactionRequest getLeaveTransactionRequest)
+        {
+            var getLeaveTransaction = _leaveRepository.GetLeavetransactionRecords(getLeaveTransactionRequest);
+            if (getLeaveTransaction == null)
+            {
+                return null;
+            }
+            return getLeaveTransaction;
         }
 
         public List<LeaveTypeBind> GetLeaveTypeBind(LeaveFilter leaveFilter)
@@ -118,7 +138,8 @@ namespace MOBILEAPI2024.BLL.Services
 
         public dynamic LeaveCancellationApplication(LeaveCancellationApplicationRequest leaveCancellationApplicationRequest)
         {
-            var LeaveCancelApplication = _leaveRepository.LeaveCancellationApplication(leaveCancellationApplicationRequest);
+            string Type = "I";
+            var LeaveCancelApplication = _leaveRepository.LeaveCancellationApplication(leaveCancellationApplicationRequest, Type);
             if (LeaveCancelApplication == null)
             {
                 return null;
@@ -135,5 +156,17 @@ namespace MOBILEAPI2024.BLL.Services
             }
             return LeaveCancelApplication;
         }
+
+        public dynamic LeaveCancellationApproval(LeaveCancellationApplicationRequest LeaveCancellationApplicationRequest)
+        {
+            string Type = "A";
+            var leaveCancelApprovalDetails = _leaveRepository.LeaveCancellationApplication(LeaveCancellationApplicationRequest, Type);
+            if (leaveCancelApprovalDetails == null)
+            {
+                return null;
+            }
+            return leaveCancelApprovalDetails;
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MOBILEAPI2024.DTO.RequestDTO.Claim;
 
 namespace HRMS.BLL.Utilities.AutoMapperConfig
 {
@@ -6,9 +7,13 @@ namespace HRMS.BLL.Utilities.AutoMapperConfig
     {
         public AutoMapperConfiguration()
         {
-            //CreateMap<User, UserDTO>().ReverseMap(); // Map from User to UserModel and vice versa
-            //CreateMap<Address, AddressDTO>().ReverseMap(); // Map from User to UserModel and vice versa
-            //CreateMap<Salary, SalaryDTO>().ReverseMap(); // Map from User to UserModel and vice versa
+            CreateMap<ClaimAppDetailsRequest, ClaimRecords>().ReverseMap(); 
+            CreateMap<ClaimApplicationRequest, ClaimRecords>().ReverseMap();
+            CreateMap<ClaimApplicationDeleteRequest, ClaimRecords>().ReverseMap();
+            CreateMap<ClaimApplicationDetailsRequest, ClaimRecords>().ReverseMap();
+            CreateMap<ClaimApplicationRecordsRequest, ClaimRecords>().ReverseMap();
+            CreateMap<ClaimApplicationStatusRequest, ClaimRecords>().ReverseMap();
+            CreateMap<int, ClaimRecords>().ReverseMap();
         }
     }
 }

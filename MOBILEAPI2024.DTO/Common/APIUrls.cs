@@ -9,6 +9,18 @@ namespace MOBILEAPI2024.DTO.Common
     public class APIUrls
     {
         /// <summary>
+        /// Claim
+        /// </summary>
+        public const string ClaimAdminSetting = "ClaimAdminSetting";
+        public const string ClaimAppDetails = "ClaimAppDetails";
+        public const string ClaimApplication = "ClaimApplication";
+        public const string ClaimApplicationDelete = "ClaimApplicationDelete";
+        public const string ClaimApplicationDetails = "ClaimApplicationDetails";
+        public const string ClaimApplicationRecords = "ClaimApplicationRecords";
+        public const string ClaimApplicationStatus = "ClaimApplicationStatus";
+        public const string ClaimApprovalDetailRecords = "ClaimApprovalDetailRecords";
+
+        /// <summary>
         ///  Authentication
         /// </summary>
         public const string LoginCheck = "LoginCheck"; 
@@ -39,10 +51,16 @@ namespace MOBILEAPI2024.DTO.Common
         public const string LeaveApplicationRecords = "LeaveApplicationRecords";
         public const string LeaveCancellationApplication = "LeaveCancellationApplication";
         public const string LeaveCancellationApplicationDetails = "LeaveCancellationApplicationDetails";
+        public const string LeaveCancellationApproval = "LeaveCancellationApproval";
+        public const string LeaveTravelTypeDdl = "LeaveTravelTypeDdl";
+        public const string GetLeavetransactionRecords = "GetLeavetransactionRecords";
+        public const string GetCompOffLeave = "GetCompOffLeave";
         public const string AllLeaveBalance = "all/leavebalance";
         public const string FilterLeaveStatus = "filter/leavestatus";
         public const string AddAttendanceData = "add/attendance";
         public const string CheckPeriod = "check/period";
+
+        
 
     }
 }

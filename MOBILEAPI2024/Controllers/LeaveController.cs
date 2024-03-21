@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using MOBILEAPI2024.BLL.Services;
@@ -10,6 +11,7 @@ using System.Net.Http.Headers;
 
 namespace MOBILEAPI2024.API.Controllers
 {
+    [Authorize]
     [Route("api/v1")]
     [ApiController]
     public class LeaveController : ControllerBase
@@ -926,6 +928,197 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.status = true;
                                 response.message = CommonMessage.Success;
                                 response.data = leaveCancellationApplicationDetails.LeaveCancellationApplicationDetails;
+                                return Ok(response);
+                            }
+
+                            response.code = StatusCodes.Status401Unauthorized;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                        }
+                    }
+                    else
+                    {
+                        // Handle the case where the token cannot be read as a JWT token
+                        response.code = StatusCodes.Status401Unauthorized;
+                        response.status = false;
+                        response.message = CommonMessage.TokenExpired;
+                        return StatusCode(StatusCodes.Status401Unauthorized, response);
+                    }
+                }
+                // Handle the case where the token cannot be read as a JWT token
+                response.code = StatusCodes.Status401Unauthorized;
+                response.status = false;
+                response.message = CommonMessage.TokenExpired;
+                return StatusCode(StatusCodes.Status401Unauthorized, response);
+            }
+            catch (Exception e)
+            {
+                response.code = StatusCodes.Status500InternalServerError;
+                response.status = false;
+                response.message = CommonMessage.SomethingWrong + " " + e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+        [HttpPost]
+        [Route(APIUrls.LeaveCancellationApproval)]
+        public IActionResult LeaveCancellationApproval(LeaveCancellationApplicationRequest leaveCancellationApplicationRequest)
+        {
+            Response response = new Response();
+            try
+            {
+                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
+                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
+                {
+                    var jToken = headerValue.Parameter;
+                    var handler = new JwtSecurityTokenHandler();
+
+                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
+                    if (jsonToken != null)
+                    {
+                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
+                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
+                        var loginId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Login_ID")?.Value;
+                        if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
+                        {
+                            leaveCancellationApplicationRequest.EmpID = Convert.ToInt32(empId);
+                            leaveCancellationApplicationRequest.CmpID = Convert.ToInt32(cmpId);
+                            leaveCancellationApplicationRequest.LoginID = Convert.ToInt32(loginId);
+
+                            var leaveCancellationApproval = _leaveService.LeaveCancellationApproval(leaveCancellationApplicationRequest);
+                            if (leaveCancellationApproval != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = leaveCancellationApproval;
+                                return Ok(response);
+                            }
+
+                            response.code = StatusCodes.Status401Unauthorized;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                        }
+                    }
+                    else
+                    {
+                        // Handle the case where the token cannot be read as a JWT token
+                        response.code = StatusCodes.Status401Unauthorized;
+                        response.status = false;
+                        response.message = CommonMessage.TokenExpired;
+                        return StatusCode(StatusCodes.Status401Unauthorized, response);
+                    }
+                }
+                // Handle the case where the token cannot be read as a JWT token
+                response.code = StatusCodes.Status401Unauthorized;
+                response.status = false;
+                response.message = CommonMessage.TokenExpired;
+                return StatusCode(StatusCodes.Status401Unauthorized, response);
+            }
+            catch (Exception e)
+            {
+                response.code = StatusCodes.Status500InternalServerError;
+                response.status = false;
+                response.message = CommonMessage.SomethingWrong + " " + e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+
+        [HttpPost]
+        [Route(APIUrls.GetLeavetransactionRecords)]
+        public IActionResult GetLeavetransactionRecords(GetLeaveTransactionRequest getLeaveTransactionRequest)
+        {
+            Response response = new Response();
+            try
+            {
+                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
+                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
+                {
+                    var jToken = headerValue.Parameter;
+                    var handler = new JwtSecurityTokenHandler();
+
+                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
+                    if (jsonToken != null)
+                    {
+                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
+                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
+                        var loginId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Login_ID")?.Value;
+                        if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
+                        {
+                            getLeaveTransactionRequest.CmpId = Convert.ToInt32(cmpId);
+                            var getLeaveTransaction = _leaveService.GetLeavetransactionRecords(getLeaveTransactionRequest);
+                            if (getLeaveTransaction != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = getLeaveTransaction;
+                                return Ok(response);
+                            }
+
+                            response.code = StatusCodes.Status401Unauthorized;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                        }
+                    }
+                    else
+                    {
+                        // Handle the case where the token cannot be read as a JWT token
+                        response.code = StatusCodes.Status401Unauthorized;
+                        response.status = false;
+                        response.message = CommonMessage.TokenExpired;
+                        return StatusCode(StatusCodes.Status401Unauthorized, response);
+                    }
+                }
+                // Handle the case where the token cannot be read as a JWT token
+                response.code = StatusCodes.Status401Unauthorized;
+                response.status = false;
+                response.message = CommonMessage.TokenExpired;
+                return StatusCode(StatusCodes.Status401Unauthorized, response);
+            }
+            catch (Exception e)
+            {
+                response.code = StatusCodes.Status500InternalServerError;
+                response.status = false;
+                response.message = CommonMessage.SomethingWrong + " " + e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+        [HttpPost]
+        [Route(APIUrls.GetCompOffLeave)]
+        public IActionResult GetCompOffLeave(GetCompOffLeaveRequest getCompOffLeaveRequest)
+        {
+            Response response = new Response();
+            try
+            {
+                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
+                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
+                {
+                    var jToken = headerValue.Parameter;
+                    var handler = new JwtSecurityTokenHandler();
+
+                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
+                    if (jsonToken != null)
+                    {
+                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
+                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
+                        var loginId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Login_ID")?.Value;
+                        if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
+                        {
+                            getCompOffLeaveRequest.CmpId = Convert.ToInt32(cmpId);
+                            getCompOffLeaveRequest.EmpId = Convert.ToInt32(empId);
+                            var getCompOffLeave = _leaveService.GetCompOffLeave(getCompOffLeaveRequest);
+                            if (getCompOffLeave != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = getCompOffLeave;
                                 return Ok(response);
                             }
 

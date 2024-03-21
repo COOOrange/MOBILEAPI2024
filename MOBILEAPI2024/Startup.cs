@@ -77,12 +77,14 @@ namespace MOBILEAPI2024.API
             services.AddTransient<IAccountRepository>(x => new AccountRepository(connectionstring));
             services.AddTransient<IUserRepository>(x => new UserRepository(connectionstring));
             services.AddTransient<ILeaveRepository>(x => new LeaveRepository(connectionstring));
+            services.AddTransient<IClaimRepository>(x => new ClaimRepository(connectionstring));
 
             // Register Services with arguments
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ILeaveService, LeaveService>();
+            services.AddScoped<IClaimService, ClaimService>();
 
             services.AddAutoMapper(typeof(Startup));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -129,13 +131,15 @@ namespace MOBILEAPI2024.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MOBILEAPI2024.API v1"));
-            }
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //    app.UseSwagger();
+            //    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MOBILEAPI2024.API v1"));
+            //}
 
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MOBILEAPI2024.API v1"));
             app.UseHttpsRedirection();
 
             app.UseSession();

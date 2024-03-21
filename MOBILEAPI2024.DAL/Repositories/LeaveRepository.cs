@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using Azure;
+using Dapper;
 using Microsoft.SqlServer.Server;
 using MOBILEAPI2024.DAL.Entities;
 using MOBILEAPI2024.DAL.Repositories.IRepositories;
@@ -7,9 +8,11 @@ using MOBILEAPI2024.DTO.ResponseDTO.Leave;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.Mail;
 using System.Net.NetworkInformation;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -153,6 +156,22 @@ namespace MOBILEAPI2024.DAL.Repositories
             return dateTime.Result;
         }
 
+        public dynamic GetCompOffLeave(GetCompOffLeaveRequest getCompOffLeaveRequest)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@For_Date", Convert.ToDateTime(getCompOffLeaveRequest.ForDate));
+            vParams.Add("@Cmp_ID", getCompOffLeaveRequest.CmpId);
+            vParams.Add("@Emp_ID", getCompOffLeaveRequest.EmpId);
+            vParams.Add("@leave_ID", getCompOffLeaveRequest.LeaveId);
+            vParams.Add("@Leave_Application_ID", 0);
+            vParams.Add("@Leave_Encash_App_ID", 0);
+            vParams.Add("@Exec_For", 0);
+            vParams.Add("@Leave_Period", 0);
+            var response = vconn.Query("GET_COMPOFF_DETAILS", vParams, commandType: CommandType.StoredProcedure).ToList();
+            return response;
+        }
+
         public List<FilterLeaveResponse> GetLeaveBalance(LeaveFilter leaveFilter)
         {
             using var vconn = GetOpenConnection();
@@ -203,6 +222,19 @@ namespace MOBILEAPI2024.DAL.Repositories
 
             var filteredData = vconn.Query<LeaveStatusResponse>("SP_Mobile_HRMS_WebAPI_Leave", vParams, commandType: CommandType.StoredProcedure).ToList();
             return filteredData;
+        }
+
+        public dynamic GetLeavetransactionRecords(GetLeaveTransactionRequest getLeaveTransactionRequest)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+
+            vParams.Add("@Month", getLeaveTransactionRequest.Month);
+            vParams.Add("@Year", getLeaveTransactionRequest.Year);
+            vParams.Add("@CMP_ID", getLeaveTransactionRequest.CmpId);
+            vParams.Add("@Emp_Code",getLeaveTransactionRequest.EmpCode);
+            var response = vconn.Query("SP_GET_LEAVE_APPLICATION_DETAILS_CommonWebservice", vParams, commandType: CommandType.StoredProcedure);
+            return response;
         }
 
         public List<LeaveTypeBind> GetLeaveTypeBind(LeaveFilter leaveFilter)
@@ -397,7 +429,7 @@ namespace MOBILEAPI2024.DAL.Repositories
 
         }
 
-        public dynamic LeaveCancellationApplication(LeaveCancellationApplicationRequest leaveCancellationApplicationRequest)
+        public dynamic LeaveCancellationApplication(LeaveCancellationApplicationRequest leaveCancellationApplicationRequest,string Type)
         {
             using var vconn = GetOpenConnection();
             var vParams = new DynamicParameters();
@@ -418,7 +450,7 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@AEmp_ID", 0);
             vParams.Add("@MComment", "");
             vParams.Add("@Is_Approve", 0);
-            vParams.Add("@Type", "I");
+            vParams.Add("@Type", Type);
             vParams.Add("@Result", "");
 
             var response = vconn.Query("SP_Mobile_HRMS_WebService_Leave_Cancellation", vParams, commandType: CommandType.StoredProcedure);

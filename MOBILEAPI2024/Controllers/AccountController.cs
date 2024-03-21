@@ -30,27 +30,37 @@ namespace MOBILEAPI2024.API.Controllers
             Response response = new Response();
             try
             {
-                if(loginDTO != null)
+                TryValidateModel(loginDTO);
+                if(ModelState.IsValid)
                 {
-                    var authenticateUser = _accountService.AuthenticateUser(loginDTO);
-                    if (authenticateUser != null)
+                    if (loginDTO != null)
                     {
-                        string token = _accountService.GenerateToken(authenticateUser.LoginData);
-                        authenticateUser.Token = token;
-                        string updatetoken = _accountService.UpdateToken(authenticateUser,loginDTO.Password);
-                        response.code = StatusCodes.Status200OK;
-                        response.status = true;
-                        response.message = CommonMessage.LoginUser;
-                        response.data = authenticateUser;
-                        return Ok(response);
+                        var authenticateUser = _accountService.AuthenticateUser(loginDTO);
+                        if (authenticateUser != null)
+                        {
+                            string token = _accountService.GenerateToken(authenticateUser.LoginData);
+                            authenticateUser.Token = token;
+                            string updatetoken = _accountService.UpdateToken(authenticateUser, loginDTO.Password);
+                            response.code = StatusCodes.Status200OK;
+                            response.status = true;
+                            response.message = CommonMessage.LoginUser;
+                            response.data = authenticateUser;
+                            return Ok(response);
+                        }
                     }
+                    response.code = StatusCodes.Status400BadRequest;
+                    response.status = false;
+                    response.message = CommonMessage.InValidUser;
+                    return BadRequest(response);
                 }
                 response.code = StatusCodes.Status400BadRequest;
                 response.status = false;
-                response.message = CommonMessage.InValidUser;
+                response.message = CommonMessage.UserNameAndPasswordMandatory;
                 return BadRequest(response);
-                
-            }catch (Exception ex)
+
+
+            }
+            catch (Exception ex)
             {
                 response.code = StatusCodes.Status500InternalServerError;
                 response.status = false;
