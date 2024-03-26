@@ -47,7 +47,7 @@ namespace MOBILEAPI2024.BLL.Services
         public LoginResponseDTO AuthenticateUser(LoginDTO loginDTO)
         {
             LoginResponseDTO loginResponseDTO = _accountRepository.LoginCheck(loginDTO);
-            if (loginResponseDTO.Details.Count() > 0 && loginResponseDTO.LoginData.Emp_Full_Name != null && loginResponseDTO.LoginData.Emp_ID != 0 && loginResponseDTO.LoginData.Cmp_ID != 0)
+            if (loginResponseDTO.LoginData != null)
             {
                 return loginResponseDTO;
             }
@@ -78,6 +78,7 @@ namespace MOBILEAPI2024.BLL.Services
                     new Claim("Login_ID", Convert.ToString(validatedUser.Login_ID.ToString())),
                     new Claim("Cmp_ID", Convert.ToString(validatedUser.Cmp_ID.ToString())),
                     new Claim("Emp_ID", Convert.ToString(validatedUser.Emp_ID.ToString())),
+                    new Claim("Alpha_Emp_Code", Convert.ToString(validatedUser.Alpha_Emp_Code.ToString())),
                     new Claim("Emp_Full_Name", validatedUser.Emp_Full_Name.ToString()),
                     new Claim("Dept_Name", validatedUser.Dept_Name.ToString()),
                     new Claim("DesigName", validatedUser.Desig_Name.ToString()),

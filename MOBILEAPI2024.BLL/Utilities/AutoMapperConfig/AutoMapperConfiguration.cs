@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using MOBILEAPI2024.DTO.RequestDTO.Claim;
+using MOBILEAPI2024.DTO.RequestDTO.Leave;
+using MOBILEAPI2024.DTO.ResponseDTO.Employee;
 
 namespace HRMS.BLL.Utilities.AutoMapperConfig
 {
@@ -7,13 +9,13 @@ namespace HRMS.BLL.Utilities.AutoMapperConfig
     {
         public AutoMapperConfiguration()
         {
-            CreateMap<ClaimAppDetailsRequest, ClaimRecords>().ReverseMap(); 
+            CreateMap<ClaimAppDetailsRequest, ClaimRecords>().ReverseMap();
             CreateMap<ClaimApplicationRequest, ClaimRecords>().ReverseMap();
             CreateMap<ClaimApplicationDeleteRequest, ClaimRecords>().ReverseMap();
             CreateMap<ClaimApplicationDetailsRequest, ClaimRecords>().ReverseMap();
             CreateMap<ClaimApplicationRecordsRequest, ClaimRecords>().ReverseMap();
             CreateMap<ClaimApplicationStatusRequest, ClaimRecords>().ReverseMap();
-            CreateMap<int, ClaimRecords>().ReverseMap();
+            CreateMap<ClaimLimitRequest, ClaimRecords>().ReverseMap();
         }
     }
 }

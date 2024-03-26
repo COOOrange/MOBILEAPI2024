@@ -1,7 +1,9 @@
 ﻿using Dapper;
+using Microsoft.EntityFrameworkCore;
 using MOBILEAPI2024.DAL.Entities;
 using MOBILEAPI2024.DAL.Repositories.IRepositories;
 using MOBILEAPI2024.DTO.RequestDTO.Claim;
+using MOBILEAPI2024.DTO.RequestDTO.Leave;
 using System.Data;
 using System.Net.Mail;
 
@@ -51,6 +53,51 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@Result", "");
 
             var response = vconn.Query("SP_Mobile_HRMS_WebService_Claim_Approval", vParams, commandType: CommandType.StoredProcedure);
+            return response;
+        }
+
+        public object ClaimApprovalRecordsFinalUpdateInsert(ClaimApprovalUpdateRequest claimApprovalUpdateRequest, List<ClaimDetails> claimDetails)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Claim_Apr_ID", 0);
+            vParams.Add("@Claim_App_ID", claimApprovalUpdateRequest.ClaimAppID);
+            vParams.Add("@Cmp_ID", claimApprovalUpdateRequest.CmpID);
+            vParams.Add("@Emp_ID", claimApprovalUpdateRequest.EmpID);
+            vParams.Add("@S_Emp_ID", claimApprovalUpdateRequest.SEmpID);
+            vParams.Add("@Approval_Date", Convert.ToDateTime(claimApprovalUpdateRequest.ClaimApprovalDate));
+            vParams.Add("@Claim_App_Date", Convert.ToDateTime(claimApprovalUpdateRequest.ClaimAppDate));
+            vParams.Add("@Claim_App_Status", claimApprovalUpdateRequest.ClaimStatus);
+            vParams.Add("@Claim_Apr_Comments", claimApprovalUpdateRequest.Comment);
+            vParams.Add("@Login_ID", claimApprovalUpdateRequest.LoginID);
+            vParams.Add("@Claim_Details", claimApprovalUpdateRequest.ClaimDetails);
+            vParams.Add("@Tran_Type", "I");
+            vParams.Add("@Result", "");
+            
+            var response = vconn.Query("SP_Mobile_HRMS_WebService_Claim_Approval_Final_Update", vParams, commandType: CommandType.StoredProcedure);
+            return response;
+        }
+
+        public dynamic ClaimApprovalRecordsUpdateInsert(ClaimApprovalUpdateRequest claimApprovalUpdateRequest, List<ClaimDetails> claimDetails)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+
+            vParams.Add("@Tran_ID", 0);
+            vParams.Add("@Claim_App_ID", claimApprovalUpdateRequest.ClaimAppID);
+            vParams.Add("@Cmp_ID", claimApprovalUpdateRequest.CmpID);
+            vParams.Add("@Emp_ID", claimApprovalUpdateRequest.EmpID);
+            vParams.Add("@S_Emp_ID", claimApprovalUpdateRequest.SEmpID);
+            vParams.Add("@Approval_Date", Convert.ToDateTime(claimApprovalUpdateRequest.ClaimApprovalDate));
+            vParams.Add("@Approval_Status", claimApprovalUpdateRequest.ClaimStatus);
+            vParams.Add("@Approval_Comments", claimApprovalUpdateRequest.Comment);
+            vParams.Add("@Login_ID", claimApprovalUpdateRequest.LoginID);
+            vParams.Add("@Rpt_Level", claimApprovalUpdateRequest.RptLevel);
+            vParams.Add("@Claim_Details", claimApprovalUpdateRequest.ClaimDetails);
+            vParams.Add("@Tran_Type", "I");
+            vParams.Add("@Result", "");
+
+            var response = vconn.Query("SP_Mobile_HRMS_WebService_Claim_Approval_Update", vParams, commandType: CommandType.StoredProcedure);
             return response;
         }
 

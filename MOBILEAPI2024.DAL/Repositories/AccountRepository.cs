@@ -48,9 +48,8 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@Emp_ID", Convert.ToInt32("0"));
             vParams.Add("@Cmp_ID", Convert.ToInt32("0"));
             vParams.Add("@Type", Convert.ToString("F"));
-            vParams.Add("@token", "");
             vParams.Add("@Result", Convert.ToString(""));
-            var user = vconn.QueryFirstOrDefault<ForgotPasswordInfo>("SP_Mobile_HRMS_WebAPI_Login", vParams, commandType: CommandType.StoredProcedure);
+            var user = vconn.QueryFirstOrDefault<ForgotPasswordInfo>("SP_Mobile_HRMS_WebService_Login", vParams, commandType: CommandType.StoredProcedure);
             return user;
         }
 
@@ -67,10 +66,9 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@Emp_ID", Convert.ToInt32("0"));
             vParams.Add("@Cmp_ID", Convert.ToInt32("0"));
             vParams.Add("@Type", Convert.ToString("L"));
-            vParams.Add("@token", "");
             vParams.Add("@Result", Convert.ToString(""));
 
-            var multiResult = vconn.QueryMultiple("SP_Mobile_HRMS_WebAPI_Login", vParams, commandType: CommandType.StoredProcedure);
+            var multiResult = vconn.QueryMultiple("SP_Mobile_HRMS_WebService_Login", vParams, commandType: CommandType.StoredProcedure);
 
             loginResponseDTO.LoginData = multiResult.Read<LoginData>().FirstOrDefault();
             loginResponseDTO.Details = multiResult.Read<Detail>().ToList();
@@ -124,10 +122,9 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@Emp_ID", Convert.ToInt32(user.Emp_ID));
             vParams.Add("@Cmp_ID", Convert.ToInt32(user.Cmp_ID));
             vParams.Add("@Type", Convert.ToString("R"));
-            vParams.Add("@token", "");
             vParams.Add("@Result", Convert.ToString(""));
 
-            vconn.QueryFirstOrDefault("SP_Mobile_HRMS_WebAPI_Login", vParams, commandType: CommandType.StoredProcedure);
+            vconn.QueryFirstOrDefault("SP_Mobile_HRMS_WebService_Login", vParams, commandType: CommandType.StoredProcedure);
             //return resetPassword;
         }
 

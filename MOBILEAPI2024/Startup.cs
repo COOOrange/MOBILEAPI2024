@@ -78,6 +78,8 @@ namespace MOBILEAPI2024.API
             services.AddTransient<IUserRepository>(x => new UserRepository(connectionstring));
             services.AddTransient<ILeaveRepository>(x => new LeaveRepository(connectionstring));
             services.AddTransient<IClaimRepository>(x => new ClaimRepository(connectionstring));
+            services.AddTransient<IEmployeeRepository>(x => new EmployeeRepository(connectionstring));
+            services.AddTransient<IAttendanceRepository>(x => new AttendanceRepository(connectionstring));
 
             // Register Services with arguments
             services.AddScoped<IAccountService, AccountService>();
@@ -85,6 +87,8 @@ namespace MOBILEAPI2024.API
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ILeaveService, LeaveService>();
             services.AddScoped<IClaimService, ClaimService>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IAttendanceService, AttendanceService>();
 
             services.AddAutoMapper(typeof(Startup));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

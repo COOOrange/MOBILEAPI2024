@@ -8,6 +8,29 @@ namespace MOBILEAPI2024.DTO.Common
 {
     public class APIUrls
     {
+
+        /// <summary>
+        /// Attendance
+        /// </summary>
+
+        public const string AllEmployeeAttendance = "AllEmployeeAttendance";
+        public const string AttendanceDetails = "AttendanceDetails";
+
+        /// <summary>
+        /// Employee
+        /// </summary>
+        public const string EmployeeDetails = "EmployeeDetails";
+        public const string EmployeeDetailsForTally = "EmployeeDetailsForTally";
+        public const string EmployeeDirectoryData = "EmployeeDirectoryData";
+        public const string EmployeeList = "EmployeeList";
+        public const string ManagerApprovalDetails = "ManagerApprovalDetails";
+        public const string MyTeamAttendance = "MyTeamAttendance";
+        public const string MyTeamAttendanceInsert = "MyTeamAttendanceInsert";
+        public const string MyTeamDetails = "MyTeamDetails";
+        public const string NewJoiningEmployeeDetails = "NewJoiningEmployeeDetails";
+        public const string UpdateEmpFavDetails = "UpdateEmpFavDetails";
+        public const string UpdateEmployeeDetails = "UpdateEmployeeDetails";
+
         /// <summary>
         /// Claim
         /// </summary>
@@ -19,14 +42,18 @@ namespace MOBILEAPI2024.DTO.Common
         public const string ClaimApplicationRecords = "ClaimApplicationRecords";
         public const string ClaimApplicationStatus = "ClaimApplicationStatus";
         public const string ClaimApprovalDetailRecords = "ClaimApprovalDetailRecords";
+        public const string ClaimApprovalRecords = "ClaimApprovalRecords";
+        public const string ClaimApprovalUpdate = "ClaimApprovalUpdate";
+        public const string ClaimType = "ClaimType";
+        public const string ClaimLimit = "ClaimLimit";
 
         /// <summary>
         ///  Authentication
         /// </summary>
-        public const string LoginCheck = "LoginCheck"; 
+        public const string LoginCheck = "LoginCheck";
         public const string Logout = "Logout";
-        public const string ForgotPassword = "forgot/password"; 
-        public const string OTPVarification = "otp/verification"; 
+        public const string ForgotPassword = "ForgotPassword";
+        public const string OTPVarification = "otp/verification";
         public const string ChangePassword = "ChangePassword";
 
         /// <summary>
@@ -60,7 +87,7 @@ namespace MOBILEAPI2024.DTO.Common
         public const string AddAttendanceData = "add/attendance";
         public const string CheckPeriod = "check/period";
 
-        
+
 
     }
 }
