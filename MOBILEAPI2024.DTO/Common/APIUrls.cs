@@ -15,6 +15,17 @@ namespace MOBILEAPI2024.DTO.Common
 
         public const string AllEmployeeAttendance = "AllEmployeeAttendance";
         public const string AttendanceDetails = "AttendanceDetails";
+        public const string AttendanceHistory = "AttendanceHistory";
+        public const string AttendanceInsert = "AttendanceInsert";
+        public const string AttendanceInsertOffline = "AttendanceInsertOffline";
+        public const string AttendanceMissedPunch = "AttendanceMissedPunch";
+        public const string AttendanceRegularizeApplicationRecord = "AttendanceRegularizeApplicationRecord";
+        public const string AttendanceRegularizeApproval = "AttendanceRegularizeApproval";
+        public const string AttendanceRegularizeDetails = "AttendanceRegularizeDetails";
+        public const string AttendanceRegularizeInsert = "AttendanceRegularizeInsert";
+        public const string AttendanceRoute = "AttendanceRoute";
+        public const string CheckINOUT = "CheckINOUT";
+        public const string GetAttendanceRegularizeApplicationDetails = "GetAttendanceRegularizeApplicationDetails";
 
         /// <summary>
         /// Employee

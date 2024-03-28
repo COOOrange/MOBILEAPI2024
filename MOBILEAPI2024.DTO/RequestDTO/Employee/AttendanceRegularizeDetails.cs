@@ -9,7 +9,7 @@ namespace MOBILEAPI2024.DTO.RequestDTO.Employee
     public class AttendanceRegularizeDetails
     {
         public int IOTranId { get; set; }
-        public int EmpID { get; set; }
+        public int? EmpID { get; set; }
         public int? CmpID { get; set; }
         public int Month { get; set; }
         public int Year { get; set; }

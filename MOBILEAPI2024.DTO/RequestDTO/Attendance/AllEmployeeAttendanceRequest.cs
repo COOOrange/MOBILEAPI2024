@@ -9,7 +9,8 @@ namespace MOBILEAPI2024.DTO.RequestDTO.Attendance
     public class AllEmployeeAttendanceRequest
     {
         public int? CmpId { get; set; }
-        public DateTime FromDate { get; set; }
-        public DateTime ToDate { get; set; }
+        public int? EmpId { get; set; }
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
     }
 }

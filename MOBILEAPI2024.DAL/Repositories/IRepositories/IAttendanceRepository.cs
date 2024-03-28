@@ -12,6 +12,8 @@ namespace MOBILEAPI2024.DAL.Repositories.IRepositories
     public interface IAttendanceRepository : IGenericRepository<ActiveInActiveUser>
     {
         dynamic AttendanceDetails(AttendanceDetails attendanceDetails1);
+        dynamic AttendanceInsert(AttendanceInsert attendanceInsert);
         dynamic AttendanceRegularizeDetails(AttendanceRegularizeDetails attendanceRegularizeDetails);
+        dynamic AttendanceRegularizeInsert(AttendanceRegularizeInsert attendanceRegularizeInsert);
     }
 }
