@@ -2,11 +2,7 @@
 using MOBILEAPI2024.DAL.Repositories.IRepositories;
 using MOBILEAPI2024.DTO.RequestDTO.Leave;
 using MOBILEAPI2024.DTO.ResponseDTO.Leave;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections;
 
 namespace MOBILEAPI2024.BLL.Services
 {
@@ -20,152 +16,164 @@ namespace MOBILEAPI2024.BLL.Services
 
         public string AddLeaveAplication(LeaveFilter leaveFilter, ApplyLeaveRequest applyLeaveRequest)
         {
-            string applyLeave = _leaveRepository.AddLeaveAplication(leaveFilter, applyLeaveRequest);
-            return applyLeave;
+            string leaveResponse = _leaveRepository.AddLeaveAplication(leaveFilter, applyLeaveRequest);
+            if(leaveResponse == null)
+            {
+                return null;
+            }
+            return leaveResponse;
         }
 
         public LeaveApplicationResponse CheckLeaveStatus(LeaveFilter leaveFilter, int leaveAppID)
         {
-            var checkLeaveStatus = _leaveRepository.CheckLeaveStatus(leaveFilter, leaveAppID);
-            return checkLeaveStatus;
+            var leaveResponse = _leaveRepository.CheckLeaveStatus(leaveFilter, leaveAppID);
+            if(leaveResponse == null || (leaveResponse as ICollection)?.Count == 0)
+            {
+                return null;
+            }
+            return leaveResponse;
         }
 
         public string CheckPeriod(LeaveFilter leaveFilter, CheckPeriod checkPeriod)
         {
-            string period = _leaveRepository.CheckPeriod(leaveFilter,checkPeriod);
-            return period;
+            string leaveResponse = _leaveRepository.CheckPeriod(leaveFilter,checkPeriod);
+            if(leaveResponse == null)
+            {
+                return null;
+            }
+            return leaveResponse;
         }
 
         public dynamic GetCompOffLeave(GetCompOffLeaveRequest getCompOffLeaveRequest)
         {
-            var getCompOffData = _leaveRepository.GetCompOffLeave(getCompOffLeaveRequest);
-            if (getCompOffData == null)
+            var leaveResponse = _leaveRepository.GetCompOffLeave(getCompOffLeaveRequest);
+            if(leaveResponse == null || (leaveResponse as ICollection)?.Count == 0)
             {
                 return null;
             }
-            return getCompOffData;
+            return leaveResponse;
         }
 
         public List<FilterLeaveResponse> GetLeaveBalance(LeaveFilter leaveFilter)
         {
-            var filterLeaveBalance = _leaveRepository.GetLeaveBalance(leaveFilter);
-            if(filterLeaveBalance == null)
+            var leaveResponse = _leaveRepository.GetLeaveBalance(leaveFilter);
+            if(leaveResponse == null)
             {
                 return null;
             }
-            return filterLeaveBalance;
+            return leaveResponse;
         }
 
         public List<LeaveStatusResponse> GetLeaveStatus(LeaveFilter leaveFilter)
         {
-            var filterLeaveBalance = _leaveRepository.GetLeaveStatus(leaveFilter);
-            if (filterLeaveBalance == null)
+            var leaveResponse = _leaveRepository.GetLeaveStatus(leaveFilter);
+            if(leaveResponse == null || (leaveResponse as ICollection)?.Count == 0)
             {
                 return null;
             }
-            return filterLeaveBalance;
+            return leaveResponse;
         }
 
         public dynamic GetLeavetransactionRecords(GetLeaveTransactionRequest getLeaveTransactionRequest)
         {
-            var getLeaveTransaction = _leaveRepository.GetLeavetransactionRecords(getLeaveTransactionRequest);
-            if (getLeaveTransaction == null)
+            var leaveResponse = _leaveRepository.GetLeavetransactionRecords(getLeaveTransactionRequest);
+            if(leaveResponse == null || (leaveResponse as ICollection)?.Count == 0)
             {
                 return null;
             }
-            return getLeaveTransaction;
+            return leaveResponse;
         }
 
         public List<LeaveTypeBind> GetLeaveTypeBind(LeaveFilter leaveFilter)
         {
-            var LeaveBindType = _leaveRepository.GetLeaveTypeBind(leaveFilter);
-            if (LeaveBindType == null)
+            var leaveResponse = _leaveRepository.GetLeaveTypeBind(leaveFilter);
+            if(leaveResponse == null || (leaveResponse as ICollection)?.Count == 0)
             {
                 return null;
             }
-            return LeaveBindType;
+            return leaveResponse;
         }
 
         public LeaveApplicationRecordsResponse LeaveApplicationRecords(LeaveApplicationRecordsRequest leaveApplicationRecordsRequest)
         {
-            var leaveApprovalDetails = _leaveRepository.LeaveApplicationRecords(leaveApplicationRecordsRequest);
-            if (leaveApprovalDetails == null)
+            var leaveResponse = _leaveRepository.LeaveApplicationRecords(leaveApplicationRecordsRequest);
+            if(leaveResponse == null || (leaveResponse as ICollection)?.Count == 0)
             {
                 return null;
             }
-            return leaveApprovalDetails;
+            return leaveResponse;
         }
 
         public dynamic LeaveApproval(LeaveApprovalRequest leaveApprovalRequest)
         {
-            var leaveApprovalDetails = _leaveRepository.LeaveApproval(leaveApprovalRequest);
-            if (leaveApprovalDetails == null)
+            var leaveResponse = _leaveRepository.LeaveApproval(leaveApprovalRequest);
+            if(leaveResponse == null || (leaveResponse as ICollection)?.Count == 0)
             {
                 return null;
             }
-            return leaveApprovalDetails;
+            return leaveResponse;
         }
 
         public dynamic LeaveApprovalDelete(LeaveApprovalDeleteRequest leaveApprovalDeleteRequest)
         {
-            var leaveApprovalDetails = _leaveRepository.LeaveApprovalDelete(leaveApprovalDeleteRequest);
-            if (leaveApprovalDetails == null)
+            var leaveResponse = _leaveRepository.LeaveApprovalDelete(leaveApprovalDeleteRequest);
+            if(leaveResponse == null || (leaveResponse as ICollection)?.Count == 0)
             {
                 return null;
             }
-            return leaveApprovalDetails;
+            return leaveResponse;
         }
 
         public LeaveApprovalDetailsResponse LeaveApprovalDetails(LeaveApprovalDetailsRequest leaveApprovalDetailsRequest)
         {
-            var leaveApprovalDetails = _leaveRepository.LeaveApprovalDetails(leaveApprovalDetailsRequest);
-            if (leaveApprovalDetails == null)
+            var leaveResponse = _leaveRepository.LeaveApprovalDetails(leaveApprovalDetailsRequest);
+            if(leaveResponse == null || (leaveResponse as ICollection)?.Count == 0)
             {
                 return null;
             }
-            return leaveApprovalDetails;
+            return leaveResponse;
         }
 
         public LeaveBalanceSummryResponse LeaveBalanceSummary(LeaveFilter leaveFilter, DateTime forDate)
         {
-            var LeaveBalanceSummary = _leaveRepository.LeaveBalanceSummary(leaveFilter, forDate);
-            if (LeaveBalanceSummary == null)
+            var leaveResponse = _leaveRepository.LeaveBalanceSummary(leaveFilter, forDate);
+            if(leaveResponse == null || (leaveResponse as ICollection)?.Count == 0)
             {
                 return null;
             }
-            return LeaveBalanceSummary;
+            return leaveResponse;
         }
 
         public dynamic LeaveCancellationApplication(LeaveCancellationApplicationRequest leaveCancellationApplicationRequest)
         {
             string Type = "I";
-            var LeaveCancelApplication = _leaveRepository.LeaveCancellationApplication(leaveCancellationApplicationRequest, Type);
-            if (LeaveCancelApplication == null)
+            var leaveResponse = _leaveRepository.LeaveCancellationApplication(leaveCancellationApplicationRequest, Type);
+            if(leaveResponse == null || (leaveResponse as ICollection)?.Count == 0)
             {
                 return null;
             }
-            return LeaveCancelApplication;
+            return leaveResponse;
         }
 
         public LeaveCancellationApplicationDetailsResponse LeaveCancellationApplicationDetails(LeaveCancellationApplicationDetailsRequest leaveCancellationApplicationDetailsRequest)
         {
-            var LeaveCancelApplication = _leaveRepository.LeaveCancellationApplicationDetails(leaveCancellationApplicationDetailsRequest);
-            if (LeaveCancelApplication == null)
+            var leaveResponse = _leaveRepository.LeaveCancellationApplicationDetails(leaveCancellationApplicationDetailsRequest);
+            if(leaveResponse == null || (leaveResponse as ICollection)?.Count == 0)
             {
                 return null;
             }
-            return LeaveCancelApplication;
+            return leaveResponse;
         }
 
         public dynamic LeaveCancellationApproval(LeaveCancellationApplicationRequest LeaveCancellationApplicationRequest)
         {
             string Type = "A";
-            var leaveCancelApprovalDetails = _leaveRepository.LeaveCancellationApplication(LeaveCancellationApplicationRequest, Type);
-            if (leaveCancelApprovalDetails == null)
+            var leaveResponse = _leaveRepository.LeaveCancellationApplication(LeaveCancellationApplicationRequest, Type);
+            if(leaveResponse == null || (leaveResponse as ICollection)?.Count == 0)
             {
                 return null;
             }
-            return leaveCancelApprovalDetails;
+            return leaveResponse;
         }
 
     }

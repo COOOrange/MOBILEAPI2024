@@ -54,6 +54,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = dashbpardData;
                                 return Ok(response);
                             }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else

@@ -11,6 +11,7 @@ using MOBILEAPI2024.DTO.ResponseDTO.Employee;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Org.BouncyCastle.Ocsp;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
@@ -40,21 +41,21 @@ namespace MOBILEAPI2024.BLL.Services
             empDetails.Emp_Code=empCode;
             empDetails.Type = "E";
             var employeeResponse = _employeeRepository.EmployeeDetails(empDetails);
-            if(employeeResponse != null)
+            if(employeeResponse == null || (employeeResponse as ICollection)?.Count == 0)
             {
-                return employeeResponse;
+                return null;
             }
-            return null;
+            return employeeResponse;
         }
-
+        
         public dynamic EmployeeDetailsForTally(int cmpId, string branchName)
         {
             var employeeResponse = _employeeRepository.EmployeeDetailsForTally(cmpId,branchName);
-            if (employeeResponse != null)
+            if (employeeResponse == null || (employeeResponse as ICollection)?.Count == 0)
             {
-                return employeeResponse;
+                return null;
             }
-            return null;
+            return employeeResponse;
         }
 
         public dynamic EmployeeDirectoryData(int cmpId)
@@ -79,21 +80,21 @@ namespace MOBILEAPI2024.BLL.Services
             empDetails.Cmp_ID = employeeListRequest.CmpId;
             empDetails.Type = "A";
             var employeeResponse = _employeeRepository.EmployeeDetails(empDetails);
-            if (employeeResponse != null)
+            if (employeeResponse == null || (employeeResponse as ICollection)?.Count == 0)
             {
-                return employeeResponse;
+                return null;
             }
-            return null;
+            return employeeResponse;
         }
 
         public dynamic ManagerApprovalDetails(ManagerApprovalDetailsRequest managerApprovalDetailsRequest)
         {
             var employeeResponse = _employeeRepository.ManagerApprovalDetails(managerApprovalDetailsRequest);
-            if (employeeResponse != null)
+            if (employeeResponse == null || (employeeResponse as ICollection)?.Count == 0)
             {
-                return employeeResponse;
+                return null;
             }
-            return null;
+            return employeeResponse;
         }
 
         public dynamic MyTeamAttendance(int empId, int cmpId)
@@ -132,32 +133,32 @@ namespace MOBILEAPI2024.BLL.Services
         public dynamic MyTeamDetails(int empId, int cmpId, string status)
         {
             var employeeResponse = _employeeRepository.MyTeamDetails(empId,cmpId,status);
-            if (employeeResponse != null)
+            if (employeeResponse == null || (employeeResponse as ICollection)?.Count == 0)
             {
-                return employeeResponse;
+                return null;
             }
-            return null;
+            return employeeResponse;
         }
 
         public dynamic NewJoiningEmployeeDetails(int cmpId)
         {
             var employeeResponse = _employeeRepository.NewJoiningEmployeeDetails(cmpId);
-            if (employeeResponse != null)
+            if (employeeResponse == null || (employeeResponse as ICollection)?.Count == 0)
             {
-                return employeeResponse;
+                return null;
             }
-            return null;
+            return employeeResponse;
         }
 
         public dynamic UpdateEmpFavDetails(UpdateEmpFavDetailsRequest updateEmpFavDetailsRequest)
         {
             updateEmpFavDetailsRequest.Type = "U";
             var employeeResponse = _employeeRepository.UpdateEmpFavDetails(updateEmpFavDetailsRequest);
-            if (employeeResponse != null)
+            if (employeeResponse == null || (employeeResponse as ICollection)?.Count == 0)
             {
-                return employeeResponse;
+                return null;
             }
-            return null;
+            return employeeResponse;
         }
 
         public dynamic UpdateEmployeeDetails(UpdateEmployeeDetailsRequest updateEmployeeDetailsRequest)
@@ -166,21 +167,21 @@ namespace MOBILEAPI2024.BLL.Services
             {
                 updateEmployeeDetailsRequest.Type = "U";
                 var employeeResponse = _employeeRepository.UpdateEmployeeDetailsMain(updateEmployeeDetailsRequest);
-                if (employeeResponse != null)
+                if (employeeResponse == null || (employeeResponse as ICollection)?.Count == 0)
                 {
-                    return employeeResponse;
+                    return null;
                 }
-                return null;
+                return employeeResponse;
             }
             else if(updateEmployeeDetailsRequest.Action == "Delete" || updateEmployeeDetailsRequest.Action == "delete")
             {
                 updateEmployeeDetailsRequest.Type = "P";
                 var employeeResponse = _employeeRepository.UpdateEmployeeDetailsMain(updateEmployeeDetailsRequest);
-                if (employeeResponse != null)
+                if (employeeResponse == null || (employeeResponse as ICollection)?.Count == 0)
                 {
-                    return employeeResponse;
+                    return null;
                 }
-                return null;
+                return employeeResponse;
             }
             return null;
 

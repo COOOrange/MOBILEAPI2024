@@ -1,36 +1,32 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
+using MOBILEAPI2024.BLL.Services;
 using MOBILEAPI2024.BLL.Services.IServices;
 using MOBILEAPI2024.DTO.Common;
 using MOBILEAPI2024.DTO.RequestDTO.Attendance;
-using MOBILEAPI2024.DTO.RequestDTO.Employee;
-using MOBILEAPI2024.DTO.RequestDTO.Leave;
-using MOBILEAPI2024.DTO.ResponseDTO.Leave;
-using Org.BouncyCastle.Ocsp;
+using MOBILEAPI2024.DTO.RequestDTO.Travel;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
-using System.Net.NetworkInformation;
+using System.Net.Mail;
 
 namespace MOBILEAPI2024.API.Controllers
 {
     [Authorize]
     [Route("api/v1")]
     [ApiController]
-    public class AttendanceController : ControllerBase
+    public class TravelController : ControllerBase
     {
-
-        private readonly IAttendanceService _attendanceService;
-        public AttendanceController(IAttendanceService attendanceService)
+        private readonly ITravelService _travelService;
+        public TravelController(ITravelService travelService)
         {
-            _attendanceService = attendanceService;
+            _travelService = travelService;
         }
 
         [HttpPost]
-        [Route(APIUrls.AllEmployeeAttendance)]
-        public IActionResult AllEmployeeAttendance(AllEmployeeAttendanceRequest  allEmployeeAttendanceRequest)
+        [Route(APIUrls.DisplayTavelType)]
+        public IActionResult DisplayTavelType(string TransType)
         {
             Response response = new Response();
             try
@@ -48,460 +44,14 @@ namespace MOBILEAPI2024.API.Controllers
                         var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
                         if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
                         {
-                            allEmployeeAttendanceRequest.CmpId = Convert.ToInt32(cmpId);
-
-                            var attendanceResponse = _attendanceService.AllEmployeeAttendance(allEmployeeAttendanceRequest);
-                            if (attendanceResponse != null)
-                            {
-                                response.code = StatusCodes.Status200OK;
-                                response.status = true;
-                                response.message = CommonMessage.Success;
-                                response.data = attendanceResponse;
-                                return Ok(response);
-                            }
-                            response.code = StatusCodes.Status404NotFound;
-                            response.status = false;
-                            response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status404NotFound, response);
-                        }
-                    }
-                    else
-                    {
-                        // Handle the case where the token cannot be read as a JWT token
-                        response.code = StatusCodes.Status401Unauthorized;
-                        response.status = false;
-                        response.message = CommonMessage.TokenExpired;
-                        return StatusCode(StatusCodes.Status401Unauthorized, response);
-                    }
-                }
-                // Handle the case where the token cannot be read as a JWT token
-                response.code = StatusCodes.Status401Unauthorized;
-                response.status = false;
-                response.message = CommonMessage.TokenExpired;
-                return StatusCode(StatusCodes.Status401Unauthorized, response);
-            }
-            catch (Exception e)
-            {
-                response.code = StatusCodes.Status500InternalServerError;
-                response.status = false;
-                response.message = CommonMessage.SomethingWrong + " " + e.Message;
-                return StatusCode(StatusCodes.Status500InternalServerError, response);
-            }
-        }
-
-        [HttpPost]
-        [Route(APIUrls.AttendanceDetails)]
-        public IActionResult AttendanceDetails(LeaveBalanceRequest attendanceDetails)
-        {
-            Response response = new Response();
-            try
-            {
-                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
-                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
-                {
-                    var jToken = headerValue.Parameter;
-                    var handler = new JwtSecurityTokenHandler();
-
-                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
-                    if (jsonToken != null)
-                    {
-                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
-                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
-                        if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
-                        {
-                            attendanceDetails.CmpId = Convert.ToInt32(cmpId);
-                            attendanceDetails.EmpId = Convert.ToInt32(empId);
-
-                            var attendanceResponse = _attendanceService.AttendanceDetails(attendanceDetails);
-                            if (attendanceResponse != null)
-                            {
-                                response.code = StatusCodes.Status200OK;
-                                response.status = true;
-                                response.message = CommonMessage.Success;
-                                response.data = attendanceResponse;
-                                return Ok(response);
-                            }
-                            response.code = StatusCodes.Status404NotFound;
-                            response.status = false;
-                            response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status404NotFound, response);
-                        }
-                    }
-                    else
-                    {
-                        // Handle the case where the token cannot be read as a JWT token
-                        response.code = StatusCodes.Status401Unauthorized;
-                        response.status = false;
-                        response.message = CommonMessage.TokenExpired;
-                        return StatusCode(StatusCodes.Status401Unauthorized, response);
-                    }
-                }
-                // Handle the case where the token cannot be read as a JWT token
-                response.code = StatusCodes.Status401Unauthorized;
-                response.status = false;
-                response.message = CommonMessage.TokenExpired;
-                return StatusCode(StatusCodes.Status401Unauthorized, response);
-            }
-            catch (Exception e)
-            {
-                response.code = StatusCodes.Status500InternalServerError;
-                response.status = false;
-                response.message = CommonMessage.SomethingWrong + " " + e.Message;
-                return StatusCode(StatusCodes.Status500InternalServerError, response);
-            }
-        }
-
-        [HttpPost]
-        [Route(APIUrls.AttendanceHistory)]
-        public IActionResult AttendanceHistory(AllEmployeeAttendanceRequest allEmployeeAttendanceRequest)
-        {
-            Response response = new Response();
-            try
-            {
-                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
-                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
-                {
-                    var jToken = headerValue.Parameter;
-                    var handler = new JwtSecurityTokenHandler();
-
-                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
-                    if (jsonToken != null)
-                    {
-                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
-                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
-                        if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
-                        {
-                            allEmployeeAttendanceRequest.CmpId = Convert.ToInt32(cmpId);
-                            allEmployeeAttendanceRequest.EmpId = Convert.ToInt32(empId);
-
-                            var attendanceResponse = _attendanceService.AttendanceHistory(allEmployeeAttendanceRequest);
-                            if (attendanceResponse != null)
-                            {
-                                response.code = StatusCodes.Status200OK;
-                                response.status = true;
-                                response.message = CommonMessage.Success;
-                                response.data = attendanceResponse;
-                                return Ok(response);
-                            }
-                            response.code = StatusCodes.Status404NotFound;
-                            response.status = false;
-                            response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status404NotFound, response);
-                        }
-                    }
-                    else
-                    {
-                        // Handle the case where the token cannot be read as a JWT token
-                        response.code = StatusCodes.Status401Unauthorized;
-                        response.status = false;
-                        response.message = CommonMessage.TokenExpired;
-                        return StatusCode(StatusCodes.Status401Unauthorized, response);
-                    }
-                }
-                // Handle the case where the token cannot be read as a JWT token
-                response.code = StatusCodes.Status401Unauthorized;
-                response.status = false;
-                response.message = CommonMessage.TokenExpired;
-                return StatusCode(StatusCodes.Status401Unauthorized, response);
-            }
-            catch (Exception e)
-            {
-                response.code = StatusCodes.Status500InternalServerError;
-                response.status = false;
-                response.message = CommonMessage.SomethingWrong + " " + e.Message;
-                return StatusCode(StatusCodes.Status500InternalServerError, response);
-            }
-        }
-
-        [HttpPost]
-        [Route(APIUrls.AttendanceInsert)]
-        public IActionResult AttendanceInsert(AttendanceInsertRequest attendanceInsertRequest)
-        {
-            Response response = new Response();
-            try
-            {
-                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
-                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
-                {
-                    var jToken = headerValue.Parameter;
-                    var handler = new JwtSecurityTokenHandler();
-
-                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
-                    if (jsonToken != null)
-                    {
-                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
-                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
-                        if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
-                        {
-                            attendanceInsertRequest.CmpID = Convert.ToInt32(cmpId);
-                            attendanceInsertRequest.EmpID = Convert.ToInt32(empId);
-                            //if (!string.IsNullOrEmpty(attendanceInsertRequest.ImageName))
-                            //{
-                            //    string strImage = DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + attendanceInsertRequest.EmpID + ".png";
-                            //    string folderName = "/EmpImage/" + DateTime.Now.Year + "/" + DateTime.Now.Month + "/" + DateTime.Now.ToString("ddMMyyyy") + "/";
-                            //    string fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", folderName);
-                                  
-                            //    if (!Directory.Exists(fullPath))
-                            //    {
-                            //        Directory.CreateDirectory(fullPath);
-                            //    }
-
-                            //    string imgPath = Path.Combine(fullPath, strImage);
-                            //    byte[] imgbyte = Convert.FromBase64String(imgPath);
-                            //    System.IO.File.WriteAllBytes(imgPath, imgbyte);
-                            //}
-
-                            var attendanceResponse = _attendanceService.AttendanceInsert(attendanceInsertRequest);
-                            if (attendanceResponse != null)
-                            {
-                                response.code = StatusCodes.Status200OK;
-                                response.status = true;
-                                response.message = CommonMessage.Success;
-                                response.data = attendanceResponse;
-                                return Ok(response);
-                            }
-                            response.code = StatusCodes.Status404NotFound;
-                            response.status = false;
-                            response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status404NotFound, response);
-                        }
-                    }
-                    else
-                    {
-                        // Handle the case where the token cannot be read as a JWT token
-                        response.code = StatusCodes.Status401Unauthorized;
-                        response.status = false;
-                        response.message = CommonMessage.TokenExpired;
-                        return StatusCode(StatusCodes.Status401Unauthorized, response);
-                    }
-                }
-                // Handle the case where the token cannot be read as a JWT token
-                response.code = StatusCodes.Status401Unauthorized;
-                response.status = false;
-                response.message = CommonMessage.TokenExpired;
-                return StatusCode(StatusCodes.Status401Unauthorized, response);
-            }
-            catch (Exception e)
-            {
-                response.code = StatusCodes.Status500InternalServerError;
-                response.status = false;
-                response.message = CommonMessage.SomethingWrong + " " + e.Message;
-                return StatusCode(StatusCodes.Status500InternalServerError, response);
-            }
-        }
-
-        [HttpPost]
-        [Route(APIUrls.AttendanceInsertOffline)]
-        public IActionResult AttendanceInsertOffline(string StrAttendance)
-        {
-            Response response = new Response();
-            try
-            {
-                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
-                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
-                {
-                    var jToken = headerValue.Parameter;
-                    var handler = new JwtSecurityTokenHandler();
-
-                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
-                    if (jsonToken != null)
-                    {
-                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
-                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
-                        if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
-                        {
-                            var attendanceResponse = _attendanceService.AttendanceInsertOffline(Convert.ToInt32(cmpId),Convert.ToInt32(empId), StrAttendance);
-                            if (attendanceResponse != null)
-                            {
-                                response.code = StatusCodes.Status200OK;
-                                response.status = true;
-                                response.message = CommonMessage.Success;
-                                response.data = attendanceResponse;
-                                return Ok(response);
-                            }
-                            response.code = StatusCodes.Status404NotFound;
-                            response.status = false;
-                            response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status404NotFound, response);
-                        }
-                    }
-                    else
-                    {
-                        // Handle the case where the token cannot be read as a JWT token
-                        response.code = StatusCodes.Status401Unauthorized;
-                        response.status = false;
-                        response.message = CommonMessage.TokenExpired;
-                        return StatusCode(StatusCodes.Status401Unauthorized, response);
-                    }
-                }
-                // Handle the case where the token cannot be read as a JWT token
-                response.code = StatusCodes.Status401Unauthorized;
-                response.status = false;
-                response.message = CommonMessage.TokenExpired;
-                return StatusCode(StatusCodes.Status401Unauthorized, response);
-            }
-            catch (Exception e)
-            {
-                response.code = StatusCodes.Status500InternalServerError;
-                response.status = false;
-                response.message = CommonMessage.SomethingWrong + " " + e.Message;
-                return StatusCode(StatusCodes.Status500InternalServerError, response);
-            }
-        }
-
-        [HttpPost]
-        [Route(APIUrls.AttendanceMissedPunch)]
-        public IActionResult AttendanceMissedPunch(LeaveBalanceRequest attendanceMissedPunch)
-        {
-            Response response = new Response();
-            try
-            {
-                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
-                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
-                {
-                    var jToken = headerValue.Parameter;
-                    var handler = new JwtSecurityTokenHandler();
-
-                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
-                    if (jsonToken != null)
-                    {
-                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
-                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
-                        if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
-                        {
-                            attendanceMissedPunch.CmpId = Convert.ToInt32(cmpId);
-                            attendanceMissedPunch.EmpId = Convert.ToInt32(empId);
-
-                            var attendanceResponse = _attendanceService.AttendanceMissedPunch(attendanceMissedPunch);
-                            if (attendanceResponse != null)
-                            {
-                                response.code = StatusCodes.Status200OK;
-                                response.status = true;
-                                response.message = CommonMessage.Success;
-                                response.data = attendanceResponse;
-                                return Ok(response);
-                            }
-                            response.code = StatusCodes.Status404NotFound;
-                            response.status = false;
-                            response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status404NotFound, response);
-                        }
-                    }
-                    else
-                    {
-                        // Handle the case where the token cannot be read as a JWT token
-                        response.code = StatusCodes.Status401Unauthorized;
-                        response.status = false;
-                        response.message = CommonMessage.TokenExpired;
-                        return StatusCode(StatusCodes.Status401Unauthorized, response);
-                    }
-                }
-                // Handle the case where the token cannot be read as a JWT token
-                response.code = StatusCodes.Status401Unauthorized;
-                response.status = false;
-                response.message = CommonMessage.TokenExpired;
-                return StatusCode(StatusCodes.Status401Unauthorized, response);
-            }
-            catch (Exception e)
-            {
-                response.code = StatusCodes.Status500InternalServerError;
-                response.status = false;
-                response.message = CommonMessage.SomethingWrong + " " + e.Message;
-                return StatusCode(StatusCodes.Status500InternalServerError, response);
-            }
-        }
-
-        [HttpGet]
-        [Route(APIUrls.AttendanceRegularizeApplicationRecord)]
-        public IActionResult AttendanceRegularizeApplicationRecord()
-        {
-            Response response = new Response();
-            try
-            {
-                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
-                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
-                {
-                    var jToken = headerValue.Parameter;
-                    var handler = new JwtSecurityTokenHandler();
-
-                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
-                    if (jsonToken != null)
-                    {
-                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
-                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
-                        if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
-                        {
-
-                            var attendanceResponse = _attendanceService.AttendanceRegularizeApplicationRecord(Convert.ToInt32(cmpId),Convert.ToInt32(empId));
-                            if (attendanceResponse != null)
-                            {
-                                response.code = StatusCodes.Status200OK;
-                                response.status = true;
-                                response.message = CommonMessage.Success;
-                                response.data = attendanceResponse;
-                                return Ok(response);
-                            }
-                            response.code = StatusCodes.Status404NotFound;
-                            response.status = false;
-                            response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status404NotFound, response);
-                        }
-                    }
-                    else
-                    {
-                        // Handle the case where the token cannot be read as a JWT token
-                        response.code = StatusCodes.Status401Unauthorized;
-                        response.status = false;
-                        response.message = CommonMessage.TokenExpired;
-                        return StatusCode(StatusCodes.Status401Unauthorized, response);
-                    }
-                }
-                // Handle the case where the token cannot be read as a JWT token
-                response.code = StatusCodes.Status401Unauthorized;
-                response.status = false;
-                response.message = CommonMessage.TokenExpired;
-                return StatusCode(StatusCodes.Status401Unauthorized, response);
-            }
-            catch (Exception e)
-            {
-                response.code = StatusCodes.Status500InternalServerError;
-                response.status = false;
-                response.message = CommonMessage.SomethingWrong + " " + e.Message;
-                return StatusCode(StatusCodes.Status500InternalServerError, response);
-            }
-        }
-
-        [HttpPost]
-        [Route(APIUrls.AttendanceRegularizeApproval)]
-        public IActionResult AttendanceRegularizeApproval(AttendanceRegularizeApprovalRequest attendanceRegularizeApprovalRequest)
-        {
-            Response response = new Response();
-            try
-            {
-                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
-                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
-                {
-                    var jToken = headerValue.Parameter;
-                    var handler = new JwtSecurityTokenHandler();
-
-                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
-                    if (jsonToken != null)
-                    {
-                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
-                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
-                        if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
-                        {
-                            attendanceRegularizeApprovalRequest.CmpID = Convert.ToInt32(cmpId);
-                            attendanceRegularizeApprovalRequest.EmpID = Convert.ToInt32(empId);
                             
-
-                            var attendanceResponse = _attendanceService.AttendanceRegularizeApproval(attendanceRegularizeApprovalRequest);
-                            if (attendanceResponse != null)
+                            var travelResponse = _travelService.DisplayTavelType(Convert.ToInt32(cmpId), TransType);
+                            if (travelResponse != null)
                             {
                                 response.code = StatusCodes.Status200OK;
                                 response.status = true;
                                 response.message = CommonMessage.Success;
-                                response.data = attendanceResponse;
+                                response.data = travelResponse;
                                 return Ok(response);
                             }
                             response.code = StatusCodes.Status404NotFound;
@@ -535,8 +85,8 @@ namespace MOBILEAPI2024.API.Controllers
         }
 
         [HttpPost]
-        [Route(APIUrls.AttendanceRegularizeDetails)]
-        public IActionResult AttendanceRegularizeDetails(LeaveBalanceRequest attendanceRegularizeDetails)
+        [Route(APIUrls.GetTravelAPIData)]
+        public IActionResult GetTravelAPIData(GetTravelAPIDataRequest getTravelAPIDataRequest)
         {
             Response response = new Response();
             try
@@ -554,17 +104,14 @@ namespace MOBILEAPI2024.API.Controllers
                         var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
                         if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
                         {
-                            attendanceRegularizeDetails.CmpId = Convert.ToInt32(cmpId);
-                            attendanceRegularizeDetails.EmpId = Convert.ToInt32(empId);
-
-
-                            var attendanceResponse = _attendanceService.AttendanceRegularizeDetails(attendanceRegularizeDetails);
-                            if (attendanceResponse != null)
+                            getTravelAPIDataRequest.EmpID = Convert.ToInt32(empId);
+                            var travelResponse = _travelService.GetTravelAPIData(getTravelAPIDataRequest);
+                            if (travelResponse != null)
                             {
                                 response.code = StatusCodes.Status200OK;
                                 response.status = true;
                                 response.message = CommonMessage.Success;
-                                response.data = attendanceResponse;
+                                response.data = travelResponse;
                                 return Ok(response);
                             }
                             response.code = StatusCodes.Status404NotFound;
@@ -598,8 +145,8 @@ namespace MOBILEAPI2024.API.Controllers
         }
 
         [HttpPost]
-        [Route(APIUrls.AttendanceRegularizeInsert)]
-        public IActionResult AttendanceRegularizeInsert(AttendanceRegularizeInsertRequest attendanceRegularizeInsertRequest)
+        [Route(APIUrls.TravelAllDetails)]
+        public IActionResult TravelAllDetails(TravelAllDetailsRequest travelAllDetailsRequest)
         {
             Response response = new Response();
             try
@@ -615,19 +162,20 @@ namespace MOBILEAPI2024.API.Controllers
                     {
                         var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
                         var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
+                        var loginId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Login_ID")?.Value;
                         if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
                         {
-                            attendanceRegularizeInsertRequest.CmpID = Convert.ToInt32(cmpId);
-                            attendanceRegularizeInsertRequest.EmpID = Convert.ToInt32(empId);
+                            travelAllDetailsRequest.EmpID = Convert.ToInt32(empId);
+                            travelAllDetailsRequest.CmpID = Convert.ToInt32(empId);
+                            travelAllDetailsRequest.LoginID = Convert.ToInt32(loginId);
 
-
-                            var attendanceResponse = _attendanceService.AttendanceRegularizeInsert(attendanceRegularizeInsertRequest);
-                            if (attendanceResponse != null)
+                            var travelResponse = _travelService.TravelAllDetails(travelAllDetailsRequest);
+                            if (travelResponse != null)
                             {
                                 response.code = StatusCodes.Status200OK;
                                 response.status = true;
                                 response.message = CommonMessage.Success;
-                                response.data = attendanceResponse;
+                                response.data = travelResponse;
                                 return Ok(response);
                             }
                             response.code = StatusCodes.Status404NotFound;
@@ -661,8 +209,8 @@ namespace MOBILEAPI2024.API.Controllers
         }
 
         [HttpPost]
-        [Route(APIUrls.AttendanceRoute)]
-        public IActionResult AttendanceRoute(string StrAttendance)
+        [Route(APIUrls.TravelApp)]
+        public IActionResult TravelApp(TravelAppRequest travelAppRequest)
         {
             Response response = new Response();
             try
@@ -678,15 +226,457 @@ namespace MOBILEAPI2024.API.Controllers
                     {
                         var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
                         var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
+                        var loginId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Login_ID")?.Value;
                         if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
                         {
-                            var attendanceResponse = _attendanceService.AttendanceRoute(Convert.ToInt32(cmpId), Convert.ToInt32(empId), StrAttendance);
-                            if (attendanceResponse != null)
+                            travelAppRequest.EmpID = Convert.ToInt32(empId);
+                            travelAppRequest.CmpID = Convert.ToInt32(empId);
+
+                            var travelResponse = _travelService.TravelApp(travelAppRequest);
+                            if (travelResponse != null)
                             {
                                 response.code = StatusCodes.Status200OK;
                                 response.status = true;
                                 response.message = CommonMessage.Success;
-                                response.data = attendanceResponse;
+                                response.data = travelResponse;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status404NotFound, response);
+                        }
+                    }
+                    else
+                    {
+                        // Handle the case where the token cannot be read as a JWT token
+                        response.code = StatusCodes.Status401Unauthorized;
+                        response.status = false;
+                        response.message = CommonMessage.TokenExpired;
+                        return StatusCode(StatusCodes.Status401Unauthorized, response);
+                    }
+                }
+                // Handle the case where the token cannot be read as a JWT token
+                response.code = StatusCodes.Status401Unauthorized;
+                response.status = false;
+                response.message = CommonMessage.TokenExpired;
+                return StatusCode(StatusCodes.Status401Unauthorized, response);
+            }
+            catch (Exception e)
+            {
+                response.code = StatusCodes.Status500InternalServerError;
+                response.status = false;
+                response.message = CommonMessage.SomethingWrong + " " + e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+        [HttpPost]
+        [Route(APIUrls.TravelApplicationDelete)]
+        public IActionResult TravelApplicationDelete(TravelApplicationDeleteRequest travelApplicationDeleteRequest)
+        {
+            Response response = new Response();
+            try
+            {
+                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
+                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
+                {
+                    var jToken = headerValue.Parameter;
+                    var handler = new JwtSecurityTokenHandler();
+
+                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
+                    if (jsonToken != null)
+                    {
+                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
+                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
+                        var loginId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Login_ID")?.Value;
+                        if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
+                        {
+                            travelApplicationDeleteRequest.Emp_Id = Convert.ToInt32(empId);
+                            travelApplicationDeleteRequest.Cmp_Id= Convert.ToInt32(empId);
+                            travelApplicationDeleteRequest.Login_ID = Convert.ToInt32(empId);
+
+                            var travelResponse = _travelService.TravelApplicationDelete(travelApplicationDeleteRequest);
+                            if (travelResponse != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = travelResponse;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status404NotFound, response);
+                        }
+                    }
+                    else
+                    {
+                        // Handle the case where the token cannot be read as a JWT token
+                        response.code = StatusCodes.Status401Unauthorized;
+                        response.status = false;
+                        response.message = CommonMessage.TokenExpired;
+                        return StatusCode(StatusCodes.Status401Unauthorized, response);
+                    }
+                }
+                // Handle the case where the token cannot be read as a JWT token
+                response.code = StatusCodes.Status401Unauthorized;
+                response.status = false;
+                response.message = CommonMessage.TokenExpired;
+                return StatusCode(StatusCodes.Status401Unauthorized, response);
+            }
+            catch (Exception e)
+            {
+                response.code = StatusCodes.Status500InternalServerError;
+                response.status = false;
+                response.message = CommonMessage.SomethingWrong + " " + e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+        [HttpPost]
+        [Route(APIUrls.TravelApprovalDelete)]
+        public IActionResult TravelApprovalDelete(TravelApprovalDeleteRequest travelApprovalDeleteRequest)
+        {
+            Response response = new Response();
+            try
+            {
+                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
+                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
+                {
+                    var jToken = headerValue.Parameter;
+                    var handler = new JwtSecurityTokenHandler();
+
+                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
+                    if (jsonToken != null)
+                    {
+                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
+                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
+                        var loginId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Login_ID")?.Value;
+                        if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
+                        {
+                            travelApprovalDeleteRequest.EmpId = Convert.ToInt32(empId);
+                            travelApprovalDeleteRequest.CmpId = Convert.ToInt32(empId);
+                            travelApprovalDeleteRequest.LoginId = Convert.ToInt32(loginId); ;
+
+                            var travelResponse = _travelService.TravelApprovalDelete(travelApprovalDeleteRequest);
+                            if (travelResponse != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = travelResponse;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status404NotFound, response);
+                        }
+                    }
+                    else
+                    {
+                        // Handle the case where the token cannot be read as a JWT token
+                        response.code = StatusCodes.Status401Unauthorized;
+                        response.status = false;
+                        response.message = CommonMessage.TokenExpired;
+                        return StatusCode(StatusCodes.Status401Unauthorized, response);
+                    }
+                }
+                // Handle the case where the token cannot be read as a JWT token
+                response.code = StatusCodes.Status401Unauthorized;
+                response.status = false;
+                response.message = CommonMessage.TokenExpired;
+                return StatusCode(StatusCodes.Status401Unauthorized, response);
+            }
+            catch (Exception e)
+            {
+                response.code = StatusCodes.Status500InternalServerError;
+                response.status = false;
+                response.message = CommonMessage.SomethingWrong + " " + e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+        [HttpPost]
+        [Route(APIUrls.TravelAprDetails)]
+        public IActionResult TravelAprDetails(TravelAprDetailsRequest travelAprDetailsRequest)
+        {
+            Response response = new Response();
+            try
+            {
+                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
+                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
+                {
+                    var jToken = headerValue.Parameter;
+                    var handler = new JwtSecurityTokenHandler();
+
+                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
+                    if (jsonToken != null)
+                    {
+                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
+                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
+                        var loginId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Login_ID")?.Value;
+                        if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
+                        {
+                            travelAprDetailsRequest.EmpId = Convert.ToInt32(empId);
+                            travelAprDetailsRequest.CmpId = Convert.ToInt32(empId);
+                            travelAprDetailsRequest.LoginId = Convert.ToInt32(loginId); ;
+
+                            var travelResponse = _travelService.TravelAprDetails(travelAprDetailsRequest);
+                            if (travelResponse != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = travelResponse;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status404NotFound, response);
+                        }
+                    }
+                    else
+                    {
+                        // Handle the case where the token cannot be read as a JWT token
+                        response.code = StatusCodes.Status401Unauthorized;
+                        response.status = false;
+                        response.message = CommonMessage.TokenExpired;
+                        return StatusCode(StatusCodes.Status401Unauthorized, response);
+                    }
+                }
+                // Handle the case where the token cannot be read as a JWT token
+                response.code = StatusCodes.Status401Unauthorized;
+                response.status = false;
+                response.message = CommonMessage.TokenExpired;
+                return StatusCode(StatusCodes.Status401Unauthorized, response);
+            }
+            catch (Exception e)
+            {
+                response.code = StatusCodes.Status500InternalServerError;
+                response.status = false;
+                response.message = CommonMessage.SomethingWrong + " " + e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+        [HttpPost]
+        [Route(APIUrls.TravelProof)]
+        public IActionResult TravelProof(TravelProofRequest travelProofRequest)
+        {
+            Response response = new Response();
+            try
+            {
+                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
+                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
+                {
+                    var jToken = headerValue.Parameter;
+                    var handler = new JwtSecurityTokenHandler();
+
+                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
+                    if (jsonToken != null)
+                    {
+                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
+                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
+                        var loginId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Login_ID")?.Value;
+                        if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
+                        {
+                            travelProofRequest.EmpId = Convert.ToInt32(empId);
+                            travelProofRequest.CmpId = Convert.ToInt32(empId);
+
+                            var travelResponse = _travelService.TravelProof(travelProofRequest);
+                            if (travelResponse != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = travelResponse;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status404NotFound, response);
+                        }
+                    }
+                    else
+                    {
+                        // Handle the case where the token cannot be read as a JWT token
+                        response.code = StatusCodes.Status401Unauthorized;
+                        response.status = false;
+                        response.message = CommonMessage.TokenExpired;
+                        return StatusCode(StatusCodes.Status401Unauthorized, response);
+                    }
+                }
+                // Handle the case where the token cannot be read as a JWT token
+                response.code = StatusCodes.Status401Unauthorized;
+                response.status = false;
+                response.message = CommonMessage.TokenExpired;
+                return StatusCode(StatusCodes.Status401Unauthorized, response);
+            }
+            catch (Exception e)
+            {
+                response.code = StatusCodes.Status500InternalServerError;
+                response.status = false;
+                response.message = CommonMessage.SomethingWrong + " " + e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+        [HttpPost]
+        [Route(APIUrls.TravelProofInsert)]
+        public IActionResult TravelProofInsert(TravelProofInsertRequest travelProofInsertRequest)
+        {
+            Response response = new Response();
+            try
+            {
+                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
+                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
+                {
+                    var jToken = headerValue.Parameter;
+                    var handler = new JwtSecurityTokenHandler();
+
+                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
+                    if (jsonToken != null)
+                    {
+                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
+                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
+                        var loginId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Login_ID")?.Value;
+                        if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
+                        {
+                            travelProofInsertRequest.EmpId = Convert.ToInt32(empId);
+                            travelProofInsertRequest.CmpId = Convert.ToInt32(empId);
+                            
+                            var travelResponse = _travelService.TravelProofInsert(travelProofInsertRequest);
+                            if (travelResponse != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = travelResponse;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status404NotFound, response);
+                        }
+                    }
+                    else
+                    {
+                        // Handle the case where the token cannot be read as a JWT token
+                        response.code = StatusCodes.Status401Unauthorized;
+                        response.status = false;
+                        response.message = CommonMessage.TokenExpired;
+                        return StatusCode(StatusCodes.Status401Unauthorized, response);
+                    }
+                }
+                // Handle the case where the token cannot be read as a JWT token
+                response.code = StatusCodes.Status401Unauthorized;
+                response.status = false;
+                response.message = CommonMessage.TokenExpired;
+                return StatusCode(StatusCodes.Status401Unauthorized, response);
+            }
+            catch (Exception e)
+            {
+                response.code = StatusCodes.Status500InternalServerError;
+                response.status = false;
+                response.message = CommonMessage.SomethingWrong + " " + e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+        [HttpPost]
+        [Route(APIUrls.TravelProofValidation)]
+        public IActionResult TravelProofValidation(int TravelAppCode)
+        {
+            Response response = new Response();
+            try
+            {
+                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
+                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
+                {
+                    var jToken = headerValue.Parameter;
+                    var handler = new JwtSecurityTokenHandler();
+
+                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
+                    if (jsonToken != null)
+                    {
+                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
+                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
+                        var loginId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Login_ID")?.Value;
+                        if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
+                        {
+                            var travelResponse = _travelService.TravelProofValidation(Convert.ToInt32(cmpId),Convert.ToInt32(empId),TravelAppCode);
+                            if (travelResponse != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = travelResponse;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status404NotFound, response);
+                        }
+                    }
+                    else
+                    {
+                        // Handle the case where the token cannot be read as a JWT token
+                        response.code = StatusCodes.Status401Unauthorized;
+                        response.status = false;
+                        response.message = CommonMessage.TokenExpired;
+                        return StatusCode(StatusCodes.Status401Unauthorized, response);
+                    }
+                }
+                // Handle the case where the token cannot be read as a JWT token
+                response.code = StatusCodes.Status401Unauthorized;
+                response.status = false;
+                response.message = CommonMessage.TokenExpired;
+                return StatusCode(StatusCodes.Status401Unauthorized, response);
+            }
+            catch (Exception e)
+            {
+                response.code = StatusCodes.Status500InternalServerError;
+                response.status = false;
+                response.message = CommonMessage.SomethingWrong + " " + e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+        [HttpPost]
+        [Route(APIUrls.Travel_Approval)]
+        public IActionResult Travel_Approval(string strType)
+        {
+            Response response = new Response();
+            try
+            {
+                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
+                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
+                {
+                    var jToken = headerValue.Parameter;
+                    var handler = new JwtSecurityTokenHandler();
+
+                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
+                    if (jsonToken != null)
+                    {
+                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
+                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
+                        var loginId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Login_ID")?.Value;
+                        if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
+                        {
+                            var travelResponse = _travelService.Travel_Approval(Convert.ToInt32(cmpId), Convert.ToInt32(empId), strType);
+                            if (travelResponse != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = travelResponse;
                                 return Ok(response);
                             }
                             response.code = StatusCodes.Status404NotFound;
@@ -720,8 +710,8 @@ namespace MOBILEAPI2024.API.Controllers
         }
 
         [HttpGet]
-        [Route(APIUrls.CheckINOUT)]
-        public IActionResult CheckINOUT()
+        [Route(APIUrls.Travel_Approval_AdminSetting)]
+        public IActionResult Travel_Approval_AdminSetting()
         {
             Response response = new Response();
             try
@@ -737,15 +727,16 @@ namespace MOBILEAPI2024.API.Controllers
                     {
                         var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
                         var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
+                        var loginId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Login_ID")?.Value;
                         if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
                         {
-                            var attendanceResponse = _attendanceService.CheckINOUT(Convert.ToInt32(cmpId), Convert.ToInt32(empId));
-                            if (attendanceResponse != null)
+                            var travelResponse = _travelService.Travel_Approval_AdminSetting(Convert.ToInt32(cmpId));
+                            if (travelResponse != null)
                             {
                                 response.code = StatusCodes.Status200OK;
                                 response.status = true;
                                 response.message = CommonMessage.Success;
-                                response.data = attendanceResponse;
+                                response.data = travelResponse;
                                 return Ok(response);
                             }
                             response.code = StatusCodes.Status404NotFound;
@@ -779,8 +770,8 @@ namespace MOBILEAPI2024.API.Controllers
         }
 
         [HttpPost]
-        [Route(APIUrls.GetAttendanceRegularizeApplicationDetails)]
-        public IActionResult GetAttendanceRegularizeApplicationDetails(int ApplicationId)
+        [Route(APIUrls.Travel_Mode_Ddl)]
+        public IActionResult Travel_Mode_Ddl(char TranType)
         {
             Response response = new Response();
             try
@@ -796,15 +787,76 @@ namespace MOBILEAPI2024.API.Controllers
                     {
                         var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
                         var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
+                        var loginId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Login_ID")?.Value;
                         if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
                         {
-                            var attendanceResponse = _attendanceService.GetAttendanceRegularizeApplicationDetails(ApplicationId);
-                            if (attendanceResponse != null)
+                            var travelResponse = _travelService.Travel_Mode_Ddl(Convert.ToInt32(cmpId),Convert.ToInt32(empId), TranType);
+                            if (travelResponse != null)
                             {
                                 response.code = StatusCodes.Status200OK;
                                 response.status = true;
                                 response.message = CommonMessage.Success;
-                                response.data = attendanceResponse;
+                                response.data = travelResponse;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status404NotFound, response);
+                        }
+                    }
+                    else
+                    {
+                        // Handle the case where the token cannot be read as a JWT token
+                        response.code = StatusCodes.Status401Unauthorized;
+                        response.status = false;
+                        response.message = CommonMessage.TokenExpired;
+                        return StatusCode(StatusCodes.Status401Unauthorized, response);
+                    }
+                }
+                // Handle the case where the token cannot be read as a JWT token
+                response.code = StatusCodes.Status401Unauthorized;
+                response.status = false;
+                response.message = CommonMessage.TokenExpired;
+                return StatusCode(StatusCodes.Status401Unauthorized, response);
+            }
+            catch (Exception e)
+            {
+                response.code = StatusCodes.Status500InternalServerError;
+                response.status = false;
+                response.message = CommonMessage.SomethingWrong + " " + e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+        [HttpGet]
+        [Route(APIUrls.Travel_Settlement)]
+        public IActionResult Travel_Settlement()
+        {
+            Response response = new Response();
+            try
+            {
+                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
+                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
+                {
+                    var jToken = headerValue.Parameter;
+                    var handler = new JwtSecurityTokenHandler();
+
+                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
+                    if (jsonToken != null)
+                    {
+                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
+                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
+                        var loginId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Login_ID")?.Value;
+                        if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
+                        {
+                            var travelResponse = _travelService.Travel_Settlement(Convert.ToInt32(cmpId));
+                            if (travelResponse != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = travelResponse;
                                 return Ok(response);
                             }
                             response.code = StatusCodes.Status404NotFound;

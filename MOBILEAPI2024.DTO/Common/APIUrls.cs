@@ -10,9 +10,29 @@ namespace MOBILEAPI2024.DTO.Common
     {
 
         /// <summary>
+        /// Travel
+        /// </summary>
+        public const string DisplayTavelType = "DisplayTavelType";
+        public const string GetTravelAPIData = "GetTravelAPIData";
+        public const string TravelAllDetails = "TravelAllDetails";
+        public const string TravelApp = "TravelApp";
+
+        public const string TravelApplicationDelete = "TravelApplicationDelete";
+        public const string TravelApprovalDelete = "TravelApprovalDelete";
+        public const string TravelAprDetails = "TravelAprDetails";
+        public const string TravelProof = "TravelProof";
+        public const string TravelProofInsert = "TravelProofInsert";
+        public const string TravelProofValidation = "TravelProofValidation";
+        public const string Travel_Approval = "Travel_Approval";
+        public const string Travel_Approval_AdminSetting = "Travel_Approval_AdminSetting";
+        public const string Travel_Mode_Ddl = "Travel_Mode_Ddl";
+        public const string Travel_Settlement = "Travel_Settlement";
+
+
+
+        /// <summary>
         /// Attendance
         /// </summary>
-
         public const string AllEmployeeAttendance = "AllEmployeeAttendance";
         public const string AttendanceDetails = "AttendanceDetails";
         public const string AttendanceHistory = "AttendanceHistory";

@@ -44,8 +44,8 @@ namespace MOBILEAPI2024.API.Controllers
                         if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
                         {
 
-                            var employeeResponse = _employeeService.EmployeeDetails(Convert.ToInt32(empId),Convert.ToInt32(cmpId), empCode);
-                            if(employeeResponse != null)
+                            var employeeResponse = _employeeService.EmployeeDetails(Convert.ToInt32(empId), Convert.ToInt32(cmpId), empCode);
+                            if (employeeResponse != null)
                             {
                                 response.code = StatusCodes.Status200OK;
                                 response.status = true;
@@ -53,10 +53,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = employeeResponse;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -112,10 +112,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = employeeResponse;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -171,10 +171,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = employeeResponse;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -234,10 +234,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = employeeResponse;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -296,10 +296,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = employeeResponse;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -355,10 +355,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = employeeResponse;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -416,10 +416,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = employeeResponse;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -476,10 +476,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = employeeResponse;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -535,10 +535,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = employeeResponse;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -596,10 +596,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = employeeResponse;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -658,10 +658,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = employeeResponse;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else

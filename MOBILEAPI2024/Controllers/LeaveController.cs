@@ -50,12 +50,18 @@ namespace MOBILEAPI2024.API.Controllers
                             leaveFilter.Cmp_Id = Convert.ToInt32(cmpId);
 
                             var leavebalance = _leaveService.GetLeaveBalance(leaveFilter);
-
-                            response.code = StatusCodes.Status200OK;
-                            response.status = true;
-                            response.message = CommonMessage.Success;
-                            response.data = leavebalance;
-                            return Ok(response);
+                            if (leavebalance.Count() != 0)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = leavebalance;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -110,11 +116,18 @@ namespace MOBILEAPI2024.API.Controllers
 
                             var leavebalance = _leaveService.GetLeaveStatus(leaveFilter);
 
-                            response.code = StatusCodes.Status200OK;
-                            response.status = true;
-                            response.message = CommonMessage.Success;
-                            response.data = leavebalance;
-                            return Ok(response);
+                            if (leavebalance.Count() != 0 || leavebalance != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = leavebalance;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -173,11 +186,18 @@ namespace MOBILEAPI2024.API.Controllers
 
                             var leavebalance = _leaveService.GetLeaveBalance(leaveFilter);
 
-                            response.code = StatusCodes.Status200OK;
-                            response.status = true;
-                            response.message = CommonMessage.Success;
-                            response.data = leavebalance;
-                            return Ok(response);
+                            if (leavebalance.Count() != 0 || leavebalance != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = leavebalance;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -236,11 +256,18 @@ namespace MOBILEAPI2024.API.Controllers
 
                             var leavebalance = _leaveService.GetLeaveStatus(leaveFilter);
 
-                            response.code = StatusCodes.Status200OK;
-                            response.status = true;
-                            response.message = CommonMessage.Success;
-                            response.data = leavebalance;
-                            return Ok(response);
+                            if (leavebalance.Count() != 0 || leavebalance != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = leavebalance;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -293,11 +320,18 @@ namespace MOBILEAPI2024.API.Controllers
 
                             var leavetypebind = _leaveService.GetLeaveTypeBind(leaveFilter);
 
-                            response.code = StatusCodes.Status200OK;
-                            response.status = true;
-                            response.message = CommonMessage.Success;
-                            response.data = leavetypebind;
-                            return Ok(response);
+                            if (leavetypebind.Count() != 0 || leavetypebind != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = leavetypebind;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -352,11 +386,18 @@ namespace MOBILEAPI2024.API.Controllers
 
                             var checkPerioddata = _leaveService.CheckPeriod(leaveFilter, checkPeriod);
 
-                            response.code = StatusCodes.Status200OK;
-                            response.status = true;
-                            response.message = CommonMessage.Success;
-                            response.data = checkPerioddata;
-                            return Ok(response);
+                            if (checkPerioddata.Count() != 0 || checkPerioddata != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = checkPerioddata;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -411,11 +452,18 @@ namespace MOBILEAPI2024.API.Controllers
 
                             string addleaveAplication = _leaveService.AddLeaveAplication(leaveFilter, applyLeaveRequest);
 
-                            response.code = StatusCodes.Status200OK;
-                            response.status = true;
-                            response.message = CommonMessage.Success;
-                            response.data = addleaveAplication;
-                            return Ok(response);
+                            if (addleaveAplication != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = addleaveAplication;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -468,11 +516,18 @@ namespace MOBILEAPI2024.API.Controllers
 
                             var checkLeaveStatus = _leaveService.CheckLeaveStatus(leaveFilter, leaveAppID);
 
-                            response.code = StatusCodes.Status200OK;
-                            response.status = true;
-                            response.message = CommonMessage.Success;
-                            response.data = checkLeaveStatus;
-                            return Ok(response);
+                            if (checkLeaveStatus != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = checkLeaveStatus;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -526,7 +581,7 @@ namespace MOBILEAPI2024.API.Controllers
                             leaveApprovalDetailsRequest.LoginId = Convert.ToInt32(loginId);
 
                             var leaveApprovalDetails = _leaveService.LeaveApprovalDetails(leaveApprovalDetailsRequest);
-                            if(leaveApprovalDetails != null)
+                            if (leaveApprovalDetails != null)
                             {
                                 response.code = StatusCodes.Status200OK;
                                 response.status = true;
@@ -535,10 +590,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 return Ok(response);
                             }
 
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -607,10 +662,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 return Ok(response);
                             }
 
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -673,10 +728,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 return Ok(response);
                             }
 
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -739,10 +794,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 return Ok(response);
                             }
 
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -793,7 +848,7 @@ namespace MOBILEAPI2024.API.Controllers
                             leaveFilter.Emp_Id = Convert.ToInt32(empId);
                             leaveFilter.Cmp_Id = Convert.ToInt32(cmpId);
 
-                            var leaveBalanceSummry = _leaveService.LeaveBalanceSummary(leaveFilter,ForDate);
+                            var leaveBalanceSummry = _leaveService.LeaveBalanceSummary(leaveFilter, ForDate);
                             if (leaveBalanceSummry.leaveBalanceSummries != null)
                             {
                                 response.code = StatusCodes.Status200OK;
@@ -803,10 +858,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 return Ok(response);
                             }
 
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -868,10 +923,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 return Ok(response);
                             }
 
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -931,10 +986,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 return Ok(response);
                             }
 
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -996,10 +1051,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 return Ok(response);
                             }
 
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -1059,10 +1114,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 return Ok(response);
                             }
 
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -1122,10 +1177,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 return Ok(response);
                             }
 
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else

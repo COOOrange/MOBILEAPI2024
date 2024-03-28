@@ -40,14 +40,19 @@ namespace MOBILEAPI2024.API.Controllers
                         var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
                         if (!string.IsNullOrEmpty(cmpId))
                         {
-                            
                             var leavebalance = _claimService.ClaimAdminSetting(Convert.ToInt32(cmpId));
-
-                            response.code = StatusCodes.Status200OK;
-                            response.status = true;
-                            response.message = CommonMessage.Success;
-                            response.data = leavebalance;
-                            return Ok(response);
+                            if(leavebalance != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = leavebalance;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -103,10 +108,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = claimAppDetails;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -166,10 +171,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = claimAppDetails;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -227,10 +232,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = claimResponse;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -289,10 +294,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = claimResponse;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -351,10 +356,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = claimResponse;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -413,10 +418,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = claimResponse;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -473,10 +478,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = claimResponse;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -535,10 +540,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = claimResponse;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -598,10 +603,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = claimResponse;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -660,10 +665,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = claimResponse;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
@@ -721,10 +726,10 @@ namespace MOBILEAPI2024.API.Controllers
                                 response.data = claimResponse;
                                 return Ok(response);
                             }
-                            response.code = StatusCodes.Status401Unauthorized;
+                            response.code = StatusCodes.Status404NotFound;
                             response.status = false;
                             response.message = CommonMessage.NoDataFound;
-                            return StatusCode(StatusCodes.Status401Unauthorized, response);
+                            return StatusCode(StatusCodes.Status404NotFound, response);
                         }
                     }
                     else
