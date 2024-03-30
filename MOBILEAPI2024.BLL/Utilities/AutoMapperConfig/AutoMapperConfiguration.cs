@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MOBILEAPI2024.DTO.RequestDTO.Attendance;
 using MOBILEAPI2024.DTO.RequestDTO.Claim;
+using MOBILEAPI2024.DTO.RequestDTO.CompOff;
 using MOBILEAPI2024.DTO.RequestDTO.Employee;
 using MOBILEAPI2024.DTO.RequestDTO.Leave;
 using MOBILEAPI2024.DTO.ResponseDTO.Employee;
@@ -18,10 +19,17 @@ namespace HRMS.BLL.Utilities.AutoMapperConfig
             CreateMap<ClaimApplicationRecordsRequest, ClaimRecords>().ReverseMap();
             CreateMap<ClaimApplicationStatusRequest, ClaimRecords>().ReverseMap();
             CreateMap<ClaimLimitRequest, ClaimRecords>().ReverseMap();
+
             CreateMap<AttendanceInsertRequest, AttendanceInsert>().ReverseMap();
             CreateMap<LeaveBalanceRequest, AttendanceRegularizeDetails>().ReverseMap();
             CreateMap<AttendanceRegularizeApprovalRequest, AttendanceRegularizeInsert>().ReverseMap();
             CreateMap<AttendanceRegularizeInsertRequest, AttendanceRegularizeInsert>().ReverseMap();
+
+            CreateMap<CompOffApplicationRequest, CompOffApplication>().ReverseMap();
+            CreateMap<CompOffApprovalRequest, CompOffApplication>().ReverseMap();
+
+
+
         }
     }
 }

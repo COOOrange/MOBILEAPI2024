@@ -8,6 +8,34 @@ namespace MOBILEAPI2024.DTO.Common
 {
     public class APIUrls
     {
+        /// <summary>
+        /// Exit 
+        /// </summary>
+
+        public const string AddExitAppilcation = "AddExitAppilcation";
+        public const string AddExitApprovaldata = "AddExitApprovaldata";
+        public const string ExitAppInsert = "ExitAppInsert";
+        public const string ExitApplicationDelete = "ExitApplicationDelete";
+        public const string ExitApplicationNoticePeriod = "ExitApplicationNoticePeriod";
+        public const string ExitApplicationPreQuestion = "ExitApplicationPreQuestion";
+        public const string ExitApplicationValidate = "ExitApplicationValidate";
+        public const string GetExitApplicationRecords = "GetExitApplicationRecords";
+        public const string GetExitApporvalRecords = "GetExitApporvalRecords";
+        public const string GetExitApprovalEMPData = "GetExitApprovalEMPData";
+        public const string GetExitInterviewQAInterview = "GetExitInterviewQAInterview";
+        public const string GetExitTermsandConditions = "GetExitTermsandConditions";
+
+        /// <summary>
+        /// Comp Off
+        /// </summary>
+
+        public const string CompOffApplication = "CompOffApplication";
+        public const string CompOffApplicationDelete = "CompOffApplicationDelete";
+        public const string CompOffApproval = "CompOffApproval";
+        public const string CompOffApprovalDelete = "CompOffApprovalDelete";
+        public const string GetCompOffApplicationDetails = "GetCompOffApplicationDetails";
+        public const string GetCompOffApplicationStatus = "GetCompOffApplicationStatus";
+        public const string GetCompoffApplicationRecord = "GetCompoffApplicationRecord";
 
         /// <summary>
         /// Travel
@@ -16,7 +44,6 @@ namespace MOBILEAPI2024.DTO.Common
         public const string GetTravelAPIData = "GetTravelAPIData";
         public const string TravelAllDetails = "TravelAllDetails";
         public const string TravelApp = "TravelApp";
-
         public const string TravelApplicationDelete = "TravelApplicationDelete";
         public const string TravelApprovalDelete = "TravelApprovalDelete";
         public const string TravelAprDetails = "TravelAprDetails";

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MimeKit.Cryptography;
 using MOBILEAPI2024.BLL.Services;
 using MOBILEAPI2024.BLL.Services.IServices;
 using MOBILEAPI2024.DAL.Repositories;
@@ -81,6 +82,8 @@ namespace MOBILEAPI2024.API
             services.AddTransient<IEmployeeRepository>(x => new EmployeeRepository(connectionstring));
             services.AddTransient<IAttendanceRepository>(x => new AttendanceRepository(connectionstring));
             services.AddTransient<ITravelRepository>(x => new TravelRepository(connectionstring));
+            services.AddTransient<ICompOffRepository>(x => new CompOffRepository(connectionstring));
+            services.AddTransient<IExitRepository>(x => new ExitRepository(connectionstring));
 
             // Register Services with arguments
             services.AddScoped<IAccountService, AccountService>();
@@ -91,6 +94,8 @@ namespace MOBILEAPI2024.API
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IAttendanceService, AttendanceService>();
             services.AddScoped<ITravelService, TravelService>();
+            services.AddScoped<ICompOffService, CompOffServices>();
+            services.AddScoped<IExitService, ExitService>();
 
             services.AddAutoMapper(typeof(Startup));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
