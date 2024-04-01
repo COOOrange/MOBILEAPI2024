@@ -196,6 +196,38 @@ namespace MOBILEAPI2024.DAL.Repositories
             return dashboardDTO;
         }
 
+        public dynamic GeoLocationTracking(GeoLocationRequest geoLocationRequest)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Emp_ID", geoLocationRequest.EmpID);
+            vParams.Add("@Cmp_ID", geoLocationRequest.CmpID);
+            vParams.Add("@Date", "");
+            vParams.Add("@Latitude", geoLocationRequest.Latitude);
+            vParams.Add("@Longitude", geoLocationRequest.Longitude);
+            vParams.Add("@Address_location", geoLocationRequest.AddressLocation);
+            vParams.Add("@Type", "I");
+            vParams.Add("@Result", "");
+            var geoLocationResponse = vconn.Query("SP_GeoLocationTracing_API", vParams, commandType: CommandType.StoredProcedure);
+            return geoLocationResponse;
+        }
+
+        public dynamic GeoLocationTrackingList(int cmpId, int empId, DateTime date)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Emp_ID", empId);
+            vParams.Add("@Cmp_ID", cmpId);
+            vParams.Add("@Date", date);
+            vParams.Add("@Latitude", "");
+            vParams.Add("@Longitude", "");
+            vParams.Add("@Address_location", "");
+            vParams.Add("@Type", "L");
+            vParams.Add("@Result", "");
+            var geoLocationResponse = vconn.Query("SP_GeoLocationTracing_API", vParams, commandType: CommandType.StoredProcedure);
+            return geoLocationResponse;
+        }
+
         public void UpdateTransactionData(Transaction transaction)
         {
             using var vconn = GetOpenConnection();

@@ -8,6 +8,22 @@ namespace MOBILEAPI2024.DTO.Common
 {
     public class APIUrls
     {
+
+        /// <summary>
+        /// Ticket
+        /// </summary>
+        public const string AddTicketFeedback = "AddTicketFeedback";
+        public const string BindTicketRecords = "BindTicketRecords";
+        public const string TicketApplication = "TicketApplication";
+        public const string TicketApplicationDelete = "TicketApplicationDelete";
+        public const string TicketApplicationRecords = "TicketApplicationRecords";
+        public const string TicketApplicationStatus = "TicketApplicationStatus";
+        public const string TicketApproval = "TicketApproval";
+        public const string TicketAprovalDelete = "TicketAprovalDelete";
+        public const string TicketDashboard = "TicketDashboard";
+        public const string TicketSendTo = "TicketSendTo";
+
+
         /// <summary>
         /// Exit 
         /// </summary>
@@ -120,6 +136,8 @@ namespace MOBILEAPI2024.DTO.Common
         public const string Dashboard = "dashboard";
         public const string ClockIn = "clockin";
         public const string ClockOut = "clockout";
+        public const string GeoLocationTracking = "GeoLocationTracking";
+        public const string GeoLocationTrackingList = "GeoLocationTrackingList";
 
         /// <summary>
         /// Leave

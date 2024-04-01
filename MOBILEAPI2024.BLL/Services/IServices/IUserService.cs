@@ -16,5 +16,7 @@ namespace MOBILEAPI2024.BLL.Services.IServices
         bool CheckEnrollNoExixts(Transaction transaction);
         bool CheckTransactionExistence(Transaction transaction);
         DashboardDTO DashboardData(string empId, string cmpId);
+        dynamic GeoLocationTracking(GeoLocationRequest geoLocationRequest);
+        dynamic GeoLocationTrackingList(int v1, int v2, DateTime date);
     }
 }

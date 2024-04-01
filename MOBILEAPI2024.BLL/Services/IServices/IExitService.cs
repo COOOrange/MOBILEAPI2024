@@ -13,5 +13,11 @@ namespace MOBILEAPI2024.BLL.Services.IServices
         dynamic AddExitApprovalData(AddExitApprovaldataRequest addExitApprovaldataRequest);
         dynamic ExitAppInsert(ExitAppInsertRequest exitAppInsertRequest);
         dynamic ExitApplicationDelete(ExitApplicationDeleteRequest exitApplicationDeleteRequest);
+        dynamic ExitApplicationNoticePeriod(ExitApplicationNoticePeriodRequest exitApplicationNoticePeriodRequest);
+        dynamic ExitApplicationPreQuestion(int v, int branchID);
+        dynamic GetExitApporvalRecords(int v1, int v2, string status);
+        dynamic GetExitApprovalEMPData(GetExitApprovalEMPDataRequest getExitApprovalEMPDataRequest);
+        dynamic GetExitInterviewQAInterview(int v1, int v2, int exitId);
+        dynamic GetExitTermsandConditions(int v);
     }
 }

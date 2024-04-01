@@ -64,5 +64,60 @@ namespace MOBILEAPI2024.BLL.Services
             }
             return exitResponse;
         }
+
+        public dynamic ExitApplicationNoticePeriod(ExitApplicationNoticePeriodRequest exitApplicationNoticePeriodRequest)
+        {
+            var exitResponse = _exitRepository.ExitApplicationNoticePeriod(exitApplicationNoticePeriodRequest);
+            if ((exitResponse as ICollection)?.Count == 0)
+            {
+                return null;
+            }
+            return exitResponse;
+        }
+
+        public dynamic ExitApplicationPreQuestion(int cmpId, int branchID)
+        {
+            var exitResponse = _exitRepository.ExitApplicationPreQuestion(cmpId,branchID);
+            if ((exitResponse as ICollection)?.Count == 0)
+            {
+                return null;
+            }
+            return exitResponse;
+        }
+
+        public dynamic GetExitApporvalRecords(int cmpID, int empID, string status)
+        {
+            var exitResponse = _exitRepository.GetExitApporvalRecords(cmpID,empID, status);
+            if ((exitResponse as ICollection)?.Count == 0)
+            {
+                return null;
+            }
+            return exitResponse;
+        }
+
+        public dynamic GetExitApprovalEMPData(GetExitApprovalEMPDataRequest getExitApprovalEMPDataRequest)
+        {
+            var exitResponse = _exitRepository.GetExitApprovalEMPData(getExitApprovalEMPDataRequest);
+            if ((exitResponse as ICollection)?.Count == 0)
+            {
+                return null;
+            }
+            return exitResponse;
+        }
+
+        public dynamic GetExitInterviewQAInterview(int cmpId, int empId, int exitId)
+        {
+            var exitResponse = _exitRepository.GetExitInterviewQAInterview(cmpId,empId,exitId);
+            if ((exitResponse as ICollection)?.Count == 0)
+            {
+                return null;
+            }
+            return exitResponse;
+        }
+
+        public dynamic GetExitTermsandConditions(int v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

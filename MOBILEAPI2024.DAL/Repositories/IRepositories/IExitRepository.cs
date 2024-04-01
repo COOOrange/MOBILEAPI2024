@@ -12,7 +12,12 @@ namespace MOBILEAPI2024.DAL.Repositories.IRepositories
     public interface IExitRepository : IGenericRepository<ActiveInActiveUser>
     {
         dynamic AddExitAppilcation(AddExitAppilcationRequest addExitAppilcationRequest);
-        dynamic ExitAppInsert(ExitAppInsertRequest exitAppInsertRequest, int qUEST_ID, string answer_rate, string comments);
+        dynamic ExitAppInsert(ExitAppInsertRequest exitAppInsertRequest, int qUEST_ID, int answer_rate, string comments);
         dynamic ExitApplicationDelete(ExitApplicationDeleteRequest exitApplicationDeleteRequest);
+        dynamic ExitApplicationNoticePeriod(ExitApplicationNoticePeriodRequest exitApplicationNoticePeriodRequest);
+        dynamic ExitApplicationPreQuestion(int cmpId, int branchID);
+        dynamic GetExitApporvalRecords(int cmpID, int empID, string status);
+        dynamic GetExitApprovalEMPData(GetExitApprovalEMPDataRequest getExitApprovalEMPDataRequest);
+        dynamic GetExitInterviewQAInterview(int cmpId, int empId, int exitId);
     }
 }

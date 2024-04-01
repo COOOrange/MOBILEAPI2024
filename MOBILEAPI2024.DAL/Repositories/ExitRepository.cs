@@ -3,6 +3,7 @@ using MOBILEAPI2024.DAL.Entities;
 using MOBILEAPI2024.DAL.Repositories.IRepositories;
 using MOBILEAPI2024.DTO.RequestDTO.Exit;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -60,7 +61,7 @@ namespace MOBILEAPI2024.DAL.Repositories
             return response;
         }
 
-        public dynamic ExitAppInsert(ExitAppInsertRequest exitAppInsertRequest, int qUEST_ID, string answer_rate, string comments)
+        public dynamic ExitAppInsert(ExitAppInsertRequest exitAppInsertRequest, int qUEST_ID, int answer_rate, string comments)
         {
             using var vconn = GetOpenConnection();
             var vParams = new DynamicParameters();
@@ -85,6 +86,64 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@Result", "");
 
             var response = vconn.Query("SP_Mobile_HRMS_WebService_ExitDelete", vParams, commandType: CommandType.StoredProcedure);
+            return response;
+        }
+
+        public dynamic ExitApplicationNoticePeriod(ExitApplicationNoticePeriodRequest exitApplicationNoticePeriodRequest)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@cmp_Id", exitApplicationNoticePeriodRequest.CmpID);
+            vParams.Add("@emp_id", exitApplicationNoticePeriodRequest.EmpID);
+            vParams.Add("@branch_Id", exitApplicationNoticePeriodRequest.BranchID);
+            vParams.Add("@Resign_Date", exitApplicationNoticePeriodRequest.ResignDate);
+            vParams.Add("@Left_Date", exitApplicationNoticePeriodRequest.LeftDate);
+            var response = vconn.Query("P0200_GetShortFall", vParams, commandType: CommandType.StoredProcedure);
+            return response;
+        }
+
+        public dynamic ExitApplicationPreQuestion(int cmpId, int branchID)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            var response = vconn.Query("P0200_GetShortFall", vParams, commandType: CommandType.StoredProcedure);
+            return response;
+        }
+
+        public dynamic GetExitApporvalRecords(int cmpID, int empID, string status)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@cmp_Id", cmpID);
+            vParams.Add("@emp_id", empID);
+            vParams.Add("@status", status);
+            var response = vconn.Query("SP_Mobile_HRMS_Exit_Approval", vParams, commandType: CommandType.StoredProcedure);
+            return response;
+        }
+
+        public dynamic GetExitApprovalEMPData(GetExitApprovalEMPDataRequest getExitApprovalEMPDataRequest)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@cmp_id", getExitApprovalEMPDataRequest.Cmp_Id);
+            vParams.Add("@emp_id", getExitApprovalEMPDataRequest.Emp_Id);
+            vParams.Add("@branch_Id", getExitApprovalEMPDataRequest.Branch_Id);
+            vParams.Add("@Exit_Id", getExitApprovalEMPDataRequest.Exit_Id);
+            vParams.Add("@Rpt_level", 0);
+            vParams.Add("@Resign_Date", getExitApprovalEMPDataRequest.Resign_Date);
+            vParams.Add("@Left_Date", getExitApprovalEMPDataRequest.Left_Date);
+            var response = vconn.Query("Mobile_HRMS_GetShortFall", vParams, commandType: CommandType.StoredProcedure);
+            return response;
+        }
+
+        public dynamic GetExitInterviewQAInterview(int cmpId, int empId, int exitId)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Cmp_ID", cmpId);
+            vParams.Add("@Emp_ID", empId);
+            vParams.Add("@EXIT_ID", exitId);
+            var response = vconn.Query("GET_INTERVIEW_QUESTION_ASSIGNED", vParams, commandType: CommandType.StoredProcedure);
             return response;
         }
     }

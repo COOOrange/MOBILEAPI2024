@@ -1,9 +1,12 @@
 ﻿using Microsoft.VisualBasic;
 using MOBILEAPI2024.BLL.Services.IServices;
+using MOBILEAPI2024.DAL.Repositories;
 using MOBILEAPI2024.DAL.Repositories.IRepositories;
+using MOBILEAPI2024.DTO.RequestDTO.Ticket;
 using MOBILEAPI2024.DTO.RequestDTO.User;
 using MOBILEAPI2024.DTO.ResponseDTO.User;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -62,6 +65,26 @@ namespace MOBILEAPI2024.BLL.Services
                 return dashboardData;
             }
             return null;
+        }
+
+        public dynamic GeoLocationTracking(GeoLocationRequest geoLocationRequest)
+        {
+            var geoLocationResponse = _userRepository.GeoLocationTracking(geoLocationRequest);
+            if ((geoLocationResponse as ICollection)?.Count == 0 || geoLocationResponse == null)
+            {
+                return null;
+            }
+            return geoLocationResponse;
+        }
+
+        public dynamic GeoLocationTrackingList(int cmpId, int empId, DateTime date)
+        {
+            var geoLocationResponse = _userRepository.GeoLocationTrackingList(cmpId,empId,date);
+            if ((geoLocationResponse as ICollection)?.Count == 0 || geoLocationResponse == null)
+            {
+                return null;
+            }
+            return geoLocationResponse;
         }
     }
 }

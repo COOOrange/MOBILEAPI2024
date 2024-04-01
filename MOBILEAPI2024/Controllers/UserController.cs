@@ -1,14 +1,21 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
+using MOBILEAPI2024.BLL.Services;
 using MOBILEAPI2024.BLL.Services.IServices;
 using MOBILEAPI2024.DTO.Common;
+using MOBILEAPI2024.DTO.RequestDTO.Claim;
 using MOBILEAPI2024.DTO.RequestDTO.User;
 using MOBILEAPI2024.DTO.ResponseDTO.User;
+using Newtonsoft.Json;
 using Org.BouncyCastle.Asn1.Ocsp;
 using System.Collections;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json.Nodes;
 
 namespace MOBILEAPI2024.API.Controllers
 {
@@ -19,10 +26,12 @@ namespace MOBILEAPI2024.API.Controllers
     {
         private readonly IUserService _userService;
         public static IWebHostEnvironment _webhostenv;
-        public UserController(IUserService userService, IWebHostEnvironment webHostEnvironment)
+        private readonly HttpClient _httpClient;
+        public UserController(IUserService userService, IWebHostEnvironment webHostEnvironment, HttpClient httpClient)
         {
             _userService = userService;
             _webhostenv = webHostEnvironment;
+            _httpClient = httpClient;
         }
 
         [HttpGet]
@@ -294,6 +303,127 @@ namespace MOBILEAPI2024.API.Controllers
                 response.code = StatusCodes.Status500InternalServerError;
                 response.status = false;
                 response.message = CommonMessage.SomethingWrong + " " + ex.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+
+        [HttpPost]
+        [Route(APIUrls.GeoLocationTracking)]
+        public async Task<IActionResult> GeoLocationTrackingAsync(GeoLocationRequest geoLocationRequest)
+        {
+            Response response = new Response();
+            try
+            {
+                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
+                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
+                {
+                    var jToken = headerValue.Parameter;
+                    var handler = new JwtSecurityTokenHandler();
+
+                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
+                    if (jsonToken != null)
+                    {
+                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
+                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
+                        if (!string.IsNullOrEmpty(cmpId))
+                        {
+                            geoLocationRequest.CmpID = Convert.ToInt32(cmpId);
+                            geoLocationRequest.EmpID = Convert.ToInt32(empId);
+                            var geoLocationResponse = _userService.GeoLocationTracking(geoLocationRequest);
+                            if (geoLocationResponse != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = geoLocationResponse;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status404NotFound, response);
+                        }
+                    }
+                    else
+                    {
+                        // Handle the case where the token cannot be read as a JWT token
+                        response.code = StatusCodes.Status401Unauthorized;
+                        response.status = false;
+                        response.message = CommonMessage.TokenExpired;
+                        return StatusCode(StatusCodes.Status401Unauthorized, response);
+                    }
+                }
+                // Handle the case where the token cannot be read as a JWT token
+                response.code = StatusCodes.Status401Unauthorized;
+                response.status = false;
+                response.message = CommonMessage.TokenExpired;
+                return StatusCode(StatusCodes.Status401Unauthorized, response);
+            }
+            catch (Exception e)
+            {
+                response.code = StatusCodes.Status500InternalServerError;
+                response.status = false;
+                response.message = CommonMessage.SomethingWrong + " " + e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+        [HttpGet]
+        [Route(APIUrls.GeoLocationTrackingList)]
+        public IActionResult GeoLocationTrackingList(DateTime Date)
+        {
+            Response response = new Response();
+            try
+            {
+                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
+                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
+                {
+                    var jToken = headerValue.Parameter;
+                    var handler = new JwtSecurityTokenHandler();
+
+                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
+                    if (jsonToken != null)
+                    {
+                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
+                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
+                        if (!string.IsNullOrEmpty(cmpId))
+                        {
+                            var geoLocationResponse = _userService.GeoLocationTrackingList(Convert.ToInt32(cmpId),Convert.ToInt32(empId),Date);
+                            if (geoLocationResponse != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = geoLocationResponse;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return StatusCode(StatusCodes.Status404NotFound, response);
+                        }
+                    }
+                    else
+                    {
+                        // Handle the case where the token cannot be read as a JWT token
+                        response.code = StatusCodes.Status401Unauthorized;
+                        response.status = false;
+                        response.message = CommonMessage.TokenExpired;
+                        return StatusCode(StatusCodes.Status401Unauthorized, response);
+                    }
+                }
+                // Handle the case where the token cannot be read as a JWT token
+                response.code = StatusCodes.Status401Unauthorized;
+                response.status = false;
+                response.message = CommonMessage.TokenExpired;
+                return StatusCode(StatusCodes.Status401Unauthorized, response);
+            }
+            catch (Exception e)
+            {
+                response.code = StatusCodes.Status500InternalServerError;
+                response.status = false;
+                response.message = CommonMessage.SomethingWrong + " " + e.Message;
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }

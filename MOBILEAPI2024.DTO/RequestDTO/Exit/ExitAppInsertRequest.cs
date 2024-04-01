@@ -16,7 +16,7 @@ namespace MOBILEAPI2024.DTO.RequestDTO.Exit
     public class ExitDetail
     {
         public int QUEST_ID { get; set;}
-        public string Answer_rate { get; set;}
+        public int Answer_rate { get; set;}
         public string Comments { get; set; }
     }
 }

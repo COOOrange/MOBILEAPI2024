@@ -1,6 +1,7 @@
 ﻿using MOBILEAPI2024.DAL.Entities;
 using MOBILEAPI2024.DTO.RequestDTO.User;
 using MOBILEAPI2024.DTO.ResponseDTO.User;
+using System.Collections;
 
 namespace MOBILEAPI2024.DAL.Repositories.IRepositories
 {
@@ -12,5 +13,7 @@ namespace MOBILEAPI2024.DAL.Repositories.IRepositories
         bool CheckEnrollNoExixts(Transaction transaction);
         bool CheckTransactionExistence(Transaction transaction);
         DashboardDTO DashboardData(string empId, string cmpId);
+        dynamic GeoLocationTracking(GeoLocationRequest geoLocationRequest);
+        dynamic GeoLocationTrackingList(int cmpId, int empId, DateTime date);
     }
 }
