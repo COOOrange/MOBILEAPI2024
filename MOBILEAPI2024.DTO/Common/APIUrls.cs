@@ -8,6 +8,26 @@ namespace MOBILEAPI2024.DTO.Common
 {
     public class APIUrls
     {
+        /// <summary>
+        /// Medical
+        /// </summary>
+        public const string BindMedicalDepDetails = "BindMedicalDepDetails";
+        public const string BindMedicalIncident = "BindMedicalIncident";
+        public const string GetMedicalAppDetails = "GetMedicalAppDetails";
+        public const string GetMedicalAppIdDet = "GetMedicalAppIdDet";
+        public const string MedicalDelete = "MedicalDelete";
+        public const string MedicalInsert = "MedicalInsert";
+        public const string MedicalUpdate = "MedicalUpdate";
+
+        /// <summary>
+        /// Grievance
+        /// </summary>
+        public const string GrievHearing = "GrievHearing";
+        public const string GrievMaster = "GrievMaster";
+        public const string GrievanceApplication = "GrievanceApplication";
+        public const string GrievanceApplicationDelete = "GrievanceApplicationDelete";
+        public const string GetGrievanceRecords = "GetGrievanceRecords";
+
 
         /// <summary>
         /// Ticket
@@ -44,7 +64,6 @@ namespace MOBILEAPI2024.DTO.Common
         /// <summary>
         /// Comp Off
         /// </summary>
-
         public const string CompOffApplication = "CompOffApplication";
         public const string CompOffApplicationDelete = "CompOffApplicationDelete";
         public const string CompOffApproval = "CompOffApproval";
@@ -133,11 +152,71 @@ namespace MOBILEAPI2024.DTO.Common
         /// <summary>
         ///  User
         /// </summary>
-        public const string Dashboard = "dashboard";
+        public const string Dashboard = "Dashboard";
         public const string ClockIn = "clockin";
         public const string ClockOut = "clockout";
         public const string GeoLocationTracking = "GeoLocationTracking";
         public const string GeoLocationTrackingList = "GeoLocationTrackingList";
+
+        public const string AddComment = "AddComment";
+        public const string AddLike = "AddLike";
+        public const string AddWorkPlanOnClockIn = "AddWorkPlanOnClockIn";
+        public const string AddWorkPlanOnClockOut = "AddWorkPlanOnClockOut";
+        public const string ChangeRequestDepDelete = "ChangeRequestDepDelete";
+        public const string ChangeRequestDepInsert = "ChangeRequestDepInsert";
+        public const string ChangeRequestDepUpdate = "ChangeRequestDepUpdate";
+        public const string ChangeRequestFavDelete = "ChangeRequestFavDelete";
+        public const string ChangeRequestFavInsert = "ChangeRequestFavInsert";
+        public const string ChangeRequestFavUpdate = "ChangeRequestFavUpdate";
+        public const string ChangeRequestReqType = "ChangeRequestReqType";
+        public const string Dashboard_backup = "Dashboard_backup";
+        public const string ErrorHandling = "ErrorHandling";
+        public const string EventDetails = "EventDetails";
+        public const string GeoLocationRecords = "GeoLocationRecords";
+        public const string GetBankList = "GetBankList";
+        public const string GetBranch = "GetBranch";
+        public const string GetCity = "GetCity";
+        public const string GetCountry = "GetCountry";
+        public const string GetDashboardApplicationsCount = "GetDashboardApplicationsCount";
+        public const string GetEmployeeOTDetails = "GetEmployeeOTDetails";
+        public const string GetHolidayList = "GetHolidayList";
+        public const string GetLikeCommentList = "GetLikeCommentList";
+        public const string GetNewJoiningUpdatedRecords = "GetNewJoiningUpdatedRecords";
+        public const string GetNewsFeedDetail = "GetNewsFeedDetail";
+        public const string GetNotification = "GetNotification";
+        public const string GetNotification_Test = "GetNotification_Test";
+        public const string GetPostRequestEmployee = "GetPostRequestEmployee";
+        public const string GetReason = "GetReason";
+        public const string GetReasonforResignation = "GetReasonforResignation";
+        public const string GetShiftDeatails = "GetShiftDeatails";
+        public const string GetState = "GetState";
+        public const string GetSurveyList = "GetSurveyList";
+        public const string GetSurveyQuestionAnswerList = "GetSurveyQuestionAnswerList";
+        public const string GetVertical = "GetVertical";
+        public const string KilometerRateMaster = "KilometerRateMaster";
+        public const string LiveTrackingApplication = "LiveTrackingApplication";
+        public const string LiveTrackingTotalDistance = "LiveTrackingTotalDistance";
+        public const string MatchFingerPrint = "MatchFingerPrint";
+        public const string MobileSalseStockResponse = "MobileSalseStockResponse";
+        public const string MoodTracker = "MoodTracker";
+        public const string MoodTrackerActivityList = "MoodTrackerActivityList";
+        public const string MoodTrackerInsert = "MoodTrackerInsert";
+        public const string PostFingerPrintDetails = "PostFingerPrintDetails";
+        public const string PostRequest = "PostRequest";
+        public const string SalaryDetails = "SalaryDetails";
+        public const string SalaryDetailsForTally = "SalaryDetailsForTally";
+        public const string SendNotification = "SendNotification";
+        public const string ServerConnection = "ServerConnection";
+        public const string SurveyApplication = "SurveyApplication";
+        public const string TemplateApplication = "TemplateApplication";
+        public const string TemplateApplicationDetails = "TemplateApplicationDetails";
+        public const string TemplateFieldData = "TemplateFieldData";
+        public const string TemplateFieldDataView = "TemplateFieldDataView";
+        public const string Trigger_FCM = "Trigger_FCM";
+        public const string UnisonMaster = "UnisonMaster";
+        public const string UpdateBankDetails = "UpdateBankDetails";
+        public const string UploadDocument = "UploadDocument";
+        public const string get_currency = "get_currency";
 
         /// <summary>
         /// Leave

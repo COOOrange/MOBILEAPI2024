@@ -7,6 +7,7 @@ using MOBILEAPI2024.DTO.Common;
 using MOBILEAPI2024.DTO.RequestDTO.User;
 using MOBILEAPI2024.DTO.ResponseDTO.User;
 using System;
+using System.Collections;
 using System.Data;
 using System.Net;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -98,6 +99,138 @@ namespace MOBILEAPI2024.DAL.Repositories
 
             vconn.Execute("P9999_DEVICE_INOUT_DETAIL_DATAINSERT", vParams, commandType: CommandType.StoredProcedure);
 
+        }
+
+        public dynamic AddWorkPlanOnClockIn(AddWorkPlanOnClockInRequest addWorkPlanOnClockInRequest)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Cmp_ID", addWorkPlanOnClockInRequest.CmpID);
+            vParams.Add("@Emp_ID", addWorkPlanOnClockInRequest.EmpID);
+            vParams.Add("@Work_Plan", addWorkPlanOnClockInRequest.WorkPlan);
+            vParams.Add("@Visit_Plan", addWorkPlanOnClockInRequest.VisitPlan);
+            vParams.Add("@Work_Summary", "");
+            vParams.Add("@Visit_Summary", "");
+            vParams.Add("@INOUTFlag", "I");
+            vParams.Add("@Result","");
+            var Response = vconn.Query("SP_Mobile_HRMS_WebService_WorkPlan", vParams, commandType: CommandType.StoredProcedure);
+            return Response;
+        }
+
+        public dynamic AddWorkPlanOnClockOut(AddWorkPlanOnClockInRequest addWorkPlanOnClockInRequest)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Cmp_ID", addWorkPlanOnClockInRequest.CmpID);
+            vParams.Add("@Emp_ID", addWorkPlanOnClockInRequest.EmpID);
+            vParams.Add("@Work_Plan", addWorkPlanOnClockInRequest.WorkPlan);
+            vParams.Add("@Visit_Plan", addWorkPlanOnClockInRequest.VisitPlan);
+            vParams.Add("@Work_Summary", "");
+            vParams.Add("@Visit_Summary", "");
+            vParams.Add("@INOUTFlag", "O");
+            vParams.Add("@Result", "");
+            var Response = vconn.Query("SP_Mobile_HRMS_WebService_WorkPlan", vParams, commandType: CommandType.StoredProcedure);
+            return Response;
+        }
+
+        public dynamic ChangeRequest(ChangeRequest changeRequest)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Row_ID", changeRequest.Row_ID);
+            vParams.Add("@Cmp_ID", changeRequest.CmpID);
+            vParams.Add("@Emp_Id", changeRequest.Emp_Id);
+            vParams.Add("@Request_Type_id", changeRequest.RequestTypeId);
+            vParams.Add("@Change_Reason", changeRequest.Change_Reason);
+            vParams.Add("@Request_Date", changeRequest.Request_Date);
+            vParams.Add("@Shift_From_Date", changeRequest.Shift_From_Date);
+            vParams.Add("@Shift_To_Date", changeRequest.Shift_To_Date);
+            vParams.Add("@Dependant_Name", changeRequest.Dependant_Name);
+            vParams.Add("@Dependant_Relationship", changeRequest.Dependant_Relationship);
+            vParams.Add("@Dependant_Gender", changeRequest.Dependant_Gender);
+            vParams.Add("@Dependant_DOB", changeRequest.Dependant_DOB);
+            vParams.Add("@Dependant_Age", changeRequest.Dependant_Age);
+            vParams.Add("@Dependant_Is_Resident", changeRequest.Dependant_Is_Resident);
+            vParams.Add("@Dependant_Is_Depended", changeRequest.Dependant_Is_Depended);
+            vParams.Add("@Tran_Type", changeRequest.TranType);
+            vParams.Add("@Child_Birth_Date", changeRequest.Child_Birth_Date);
+            vParams.Add("@DepOccupationID", changeRequest.DepOccupationID);
+            vParams.Add("@DepHobbyID", changeRequest.DepHobbyID);
+            vParams.Add("@DepHobbyName", changeRequest.DepHobbyName);
+            vParams.Add("@DepCompany", changeRequest.DepCompany);
+            vParams.Add("@DepCmpCity", changeRequest.DepCmpCity);
+            vParams.Add("@DepStandardId", changeRequest.DepStandardId);
+            vParams.Add("@DepSchCol", changeRequest.DepSchCol);
+            vParams.Add("@DepSchColCity", changeRequest.DepSchColCity);
+            vParams.Add("@DepExtAct", changeRequest.DepExtAct);
+            vParams.Add("@Image_path", changeRequest.ImageName);
+            vParams.Add("@PanCard", changeRequest.PanCard);
+            vParams.Add("@AdharCard", changeRequest.AdharCard);
+            vParams.Add("@Height", changeRequest.Height);
+            vParams.Add("@Weight", changeRequest.Weight);
+            vParams.Add("@OtherHobby", changeRequest.OtherHobby);
+            vParams.Add("@DepSpecialization", changeRequest.Specialization);
+            vParams.Add("@Request_id",dbType: DbType.Decimal, direction: ParameterDirection.Output);
+            vParams.Add("@Result", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+            var Response = vconn.Query("SP_Mobile_WebService_ChangeRequestApp", vParams, commandType: CommandType.StoredProcedure);
+            int requestId = Convert.ToInt32(vParams.Get<string>("@Request_id"));
+            string result = vParams.Get<string>("@Result");
+            return result;
+        }
+
+        public dynamic ChangeRequestBind(int cmpId, int empID, string tranType)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Cmp_ID", cmpId);
+            vParams.Add("@Emp_Id", empID);
+            vParams.Add("@Tran_Type", tranType);
+            vParams.Add("@Result", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+            var Response = vconn.Query("SP_Mobile_WebService_ChangeRequest", vParams, commandType: CommandType.StoredProcedure);
+            return Response;
+
+        }
+
+        public dynamic ChangeRequestFav(ChangeRequestFav changeRequest)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Row_ID", changeRequest.Row_ID);
+            vParams.Add("@Cmp_ID", changeRequest.CmpID);
+            vParams.Add("@Emp_Id", changeRequest.Emp_Id);
+            vParams.Add("@Request_Type_id", changeRequest.RequestTypeId);
+            vParams.Add("@Change_Reason", changeRequest.Change_Reason);
+            vParams.Add("@Request_Date", changeRequest.Request_Date);
+            vParams.Add("@EmpFavSportID", changeRequest.EmpFavSportID);
+            vParams.Add("@EmpFavSportName", changeRequest.EmpFavSportName);
+            vParams.Add("@EmpHobbyID", changeRequest.EmpHobbyID);
+            vParams.Add("@EmpHobbyName", changeRequest.EmpHobbyName);
+            vParams.Add("@EmpFavFood", changeRequest.EmpFavFood);
+            vParams.Add("@EmpFavRestro", changeRequest.EmpFavRestro);
+            vParams.Add("@EmpFavTrvDestination", changeRequest.EmpFavTrvDestination);
+            vParams.Add("@EmpFavFestival", changeRequest.EmpFavFestival);
+            vParams.Add("@EmpFavSportPerson", changeRequest.EmpFavSportPerson);
+            vParams.Add("@EmpFavSinger", changeRequest.EmpFavSinger);
+            vParams.Add("@CurrEmpFavSportID", changeRequest.CurrEmpFavSportID);
+            vParams.Add("@CurrEmpFavSportName", changeRequest.CurrEmpFavSportID);
+            vParams.Add("@CurrEmpHobbyID", changeRequest.CurrEmpHobbyID);
+            vParams.Add("@CurrEmpHobbyName", changeRequest.CurrEmpHobbyName);
+            vParams.Add("@CurrEmpFavFood", changeRequest.CurrEmpFavFood);
+            vParams.Add("@CurrEmpFavRestro", changeRequest.CurrEmpFavRestro);
+            vParams.Add("@CurrEmpFavTrvDestination", changeRequest.CurrEmpFavTrvDestination);
+            vParams.Add("@CurrEmpFavFestival", changeRequest.CurrEmpFavFestival);
+            vParams.Add("@CurrEmpFavSportPerson", changeRequest.CurrEmpFavSportPerson);
+            vParams.Add("@CurrEmpFavSinger", changeRequest.CurrEmpFavSinger);
+            vParams.Add("@Image_path", changeRequest.ImagePath);
+            vParams.Add("@tran_type", changeRequest.TranType);
+            vParams.Add("@OtherSport", changeRequest.OtherSport);
+            vParams.Add("@OtherHobby", changeRequest.OtherHobby);
+            vParams.Add("@Request_id", dbType: DbType.Decimal, direction: ParameterDirection.Output); 
+            vParams.Add("@Result", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+            var Response = vconn.Query("SP_Mobile_WebService_ChgReqFavApp", vParams, commandType: CommandType.StoredProcedure);
+            //int requestId = Convert.ToInt32(vParams.Get<string>("@Request_id"));
+            string result = vParams.Get<string>("@Result");
+            return result;
         }
 
         public bool CheckEnrollNoExixts(Transaction transaction)
@@ -196,6 +329,16 @@ namespace MOBILEAPI2024.DAL.Repositories
             return dashboardDTO;
         }
 
+        public dynamic Dashboard_backup(int cmpId, int empID)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Emp_ID", empID);
+            vParams.Add("@Cmp_ID", cmpId);
+            var Response = vconn.Query("SP_Mobile_HRMS_WebService_DASHBOARD", vParams, commandType: CommandType.StoredProcedure);
+            return Response;
+        }
+
         public dynamic GeoLocationTracking(GeoLocationRequest geoLocationRequest)
         {
             using var vconn = GetOpenConnection();
@@ -226,6 +369,30 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@Result", "");
             var geoLocationResponse = vconn.Query("SP_GeoLocationTracing_API", vParams, commandType: CommandType.StoredProcedure);
             return geoLocationResponse;
+        }
+
+        public dynamic GetNotification(GetNotification getNotificatioon)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Emp_ID", getNotificatioon.EmpID);
+            vParams.Add("@Cmp_ID", getNotificatioon.CmpID);
+            vParams.Add("@Dept_ID", getNotificatioon.DeptID);
+            vParams.Add("@GalleryType", getNotificatioon.GalleryType);
+            vParams.Add("@Type", getNotificatioon.strType);
+            vParams.Add("@Year", getNotificatioon.Year);
+            vParams.Add("@Notification_ID", getNotificatioon.NotificationID);
+            vParams.Add("@NEmp_ID", getNotificatioon.NEmpID);
+            vParams.Add("@For_date", Convert.ToDateTime(getNotificatioon.Fordate));
+            vParams.Add("@U_Comment_Id", getNotificatioon.UCommentID);
+            vParams.Add("@Notification_date", Convert.ToDateTime(getNotificatioon.NotificationDate));
+            vParams.Add("@Flag", getNotificatioon.Flag);
+            vParams.Add("@Comment", getNotificatioon.Comment);
+            vParams.Add("@Comment_Status", getNotificatioon.CommentStatus);
+            vParams.Add("@Reply_Comment_Id", getNotificatioon.RCommentID);
+            vParams.Add("@Reminder_Type", getNotificatioon.ReminderType);
+            var geoLocationResponse1 = vconn.Query("SP_Mobile_HRMS_WebService_Notification", vParams, commandType: CommandType.StoredProcedure);
+            return geoLocationResponse1;
         }
 
         public void UpdateTransactionData(Transaction transaction)
