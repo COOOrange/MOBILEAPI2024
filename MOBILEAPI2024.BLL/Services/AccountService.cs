@@ -78,6 +78,7 @@ namespace MOBILEAPI2024.BLL.Services
                     new Claim("Login_ID", Convert.ToString(validatedUser.Login_ID.ToString())),
                     new Claim("Cmp_ID", Convert.ToString(validatedUser.Cmp_ID.ToString())),
                     new Claim("Emp_ID", Convert.ToString(validatedUser.Emp_ID.ToString())),
+                    new Claim("Dept_ID", Convert.ToString(validatedUser.DEPT_Id.ToString())),
                     new Claim("Alpha_Emp_Code", Convert.ToString(validatedUser.Alpha_Emp_Code.ToString())),
                     new Claim("Emp_Full_Name", validatedUser.Emp_Full_Name.ToString()),
                     new Claim("Dept_Name", validatedUser.Dept_Name.ToString()),

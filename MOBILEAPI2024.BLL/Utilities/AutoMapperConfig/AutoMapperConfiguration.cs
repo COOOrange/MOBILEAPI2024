@@ -30,7 +30,10 @@ namespace HRMS.BLL.Utilities.AutoMapperConfig
             CreateMap<AttendanceRegularizeApprovalRequest, AttendanceRegularizeInsert>().ReverseMap();
             CreateMap<AttendanceRegularizeInsertRequest, AttendanceRegularizeInsert>().ReverseMap();
             CreateMap<AddCommentRequest, GetNotification>().ReverseMap();
+
             CreateMap<strDetails, GetNotification>().ReverseMap();
+            CreateMap<GetLikeCommentListRequest, GetNotification>().ReverseMap();
+            CreateMap<GetNotificationRequest, GetNotification>().ReverseMap();
             CreateMap<ChangeRequestDepInsertRequest, ChangeRequest>().ReverseMap();
             CreateMap<ChangeRequestFavInsertRequest, ChangeRequestFav>().ReverseMap();
 

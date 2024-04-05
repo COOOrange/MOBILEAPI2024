@@ -2,6 +2,7 @@
 using MOBILEAPI2024.DTO.RequestDTO.Employee;
 using MOBILEAPI2024.DTO.ResponseDTO.Employee;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,5 +22,6 @@ namespace MOBILEAPI2024.DAL.Repositories.IRepositories
         dynamic NewJoiningEmployeeDetails(int cmpId);
         dynamic UpdateEmpFavDetails(UpdateEmpFavDetailsRequest updateEmpFavDetailsRequest);
         dynamic UpdateEmployeeDetailsMain(UpdateEmployeeDetailsRequest updateEmployeeDetailsRequest);
+       
     }
 }
