@@ -17,6 +17,7 @@ namespace MOBILEAPI2024.DAL.Repositories.IRepositories
         dynamic TravelApp(TravelAppRequest travelAppRequest);
         dynamic TravelApplicationDelete(TravelApplicationDeleteRequest travelApplicationDeleteRequest);
         dynamic TravelApprovalDelete(TravelApprovalDeleteRequest travelApprovalDeleteRequest);
+        dynamic TravelAprDetails(TravelAprDetailsRequest travelAprDetailsRequest);
         dynamic TravelProof(TravelProofRequest travelProofRequest);
         dynamic TravelProofInsert(TravelProofInsertRequest travelProofInsertRequest,string? imagePath,string? strDocName);
         dynamic TravelProofValidation(int cmpId, int empId, int travelAppCode);

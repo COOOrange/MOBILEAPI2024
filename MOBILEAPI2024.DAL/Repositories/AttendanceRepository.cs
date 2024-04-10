@@ -150,5 +150,6 @@ namespace MOBILEAPI2024.DAL.Repositories
             var response = vconn.Query("SP_Mobile_HRMS_WebService_AttendanceRegularization", vParams, commandType: CommandType.StoredProcedure).ToList();
             return response;
         }
+
     }
 }

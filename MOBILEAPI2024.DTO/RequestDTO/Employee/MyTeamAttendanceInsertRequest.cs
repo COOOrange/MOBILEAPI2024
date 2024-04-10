@@ -13,5 +13,6 @@ namespace MOBILEAPI2024.DTO.RequestDTO.Employee
         public string Details { get; set; }
         public string Address { get; set; }
         public string ImageName { get; set; }
+        public string strType { get; set; }
     }
 }

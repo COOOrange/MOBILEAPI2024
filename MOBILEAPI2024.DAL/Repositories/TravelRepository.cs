@@ -61,7 +61,7 @@ namespace MOBILEAPI2024.DAL.Repositories
             //vParams.Add("@Application_Status", Application_Status, SqlDbType.Char);
             //vParams.Add("@Result", "");
 
-            var response = vconn.Query("SP_Mobile_HRMS_WebService_TravelAPI_Data", vParams, commandType: CommandType.StoredProcedure);
+            var response = vconn.Query("Mobile_HRMS_P0100_TRAVEL_APPLICATION", vParams, commandType: CommandType.StoredProcedure);
             return response;
         }
 
@@ -107,6 +107,32 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@Type", travelApprovalDeleteRequest.Type);
             vParams.Add("@Result", "");
             var response = vconn.Query("Mobile_HRMS_P0100_TRAVEL_APPROVAL_Delete_Level", vParams, commandType: CommandType.StoredProcedure);
+            return response;
+        }
+
+        public dynamic TravelAprDetails(TravelAprDetailsRequest travelAprDetailsRequest)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            //vParams.Add("@Travel_Application_ID", travelAllDetailsRequest.TravelApplicationID);
+            //vParams.Add("@Tran_Type", travelAllDetailsRequest.StringType);
+            //vParams.Add("@Cmp_ID", travelAllDetailsRequest.CmpID);
+            //vParams.Add("@Emp_id", travelAllDetailsRequest.EmpID);
+            //vParams.Add("@S_Emp_ID", travelAllDetailsRequest.SEmpID);
+            //vParams.Add("@Chk_International", travelAllDetailsRequest.CheckInternational);
+            //vParams.Add("@Travel_Details", ConvertJsonToXml(travelAllDetailsRequest.strTravelDetails));
+            //vParams.Add("@Travel_Other_Details", StrTourOtherDetails);
+            //vParams.Add("@Travel_Adv_Details", strTravelAdvDetails);
+            //vParams.Add("@TourAgendaPlanned", strTourAgenda);
+            //vParams.Add("@Login_ID", Login_ID);
+            //vParams.Add("@TravelTypeId", TravelTypeId);
+            //vParams.Add("@User_Id", Login_ID);
+            //vParams.Add("@AttachedDocuments", StrAttachment);
+            //vParams.Add("@Application_Date", Application_Date, SqlDbType.DateTime);
+            //vParams.Add("@Application_Status", Application_Status, SqlDbType.Char);
+            //vParams.Add("@Result", "");
+
+            var response = vconn.Query("Mobile_HRMS_P0100_TRAVEL_APPROVAL", vParams, commandType: CommandType.StoredProcedure);
             return response;
         }
 

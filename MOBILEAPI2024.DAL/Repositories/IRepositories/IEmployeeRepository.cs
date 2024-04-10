@@ -22,6 +22,6 @@ namespace MOBILEAPI2024.DAL.Repositories.IRepositories
         dynamic NewJoiningEmployeeDetails(int cmpId);
         dynamic UpdateEmpFavDetails(UpdateEmpFavDetailsRequest updateEmpFavDetailsRequest);
         dynamic UpdateEmployeeDetailsMain(UpdateEmployeeDetailsRequest updateEmployeeDetailsRequest);
-       
+        dynamic MyTeamAttendanceInsert(MyTeamAttendanceInsertRequest myTeamAttendanceInsertRequest);
     }
 }

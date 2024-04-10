@@ -18,6 +18,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MOBILEAPI2024.BLL.Services
 {
@@ -124,10 +125,44 @@ namespace MOBILEAPI2024.BLL.Services
             }
             return null;
         }
-
+        public static bool IsXmlFormat(string input)
+        {
+            try
+            {
+                // Attempt to parse the input string as an XML document
+                XDocument.Parse(input);
+                return true; // Parsing succeeded, so it's in XML format
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    // Attempt to parse the input string as an XML element
+                    XElement.Parse(input);
+                    return true; // Parsing succeeded, so it's in XML format
+                }
+                catch (Exception)
+                {
+                    return false; // Parsing failed, so it's not in XML format
+                }
+            }
+        }
         public dynamic MyTeamAttendanceInsert(MyTeamAttendanceInsertRequest myTeamAttendanceInsertRequest)
         {
-            throw new NotImplementedException();
+            if (IsXmlFormat(myTeamAttendanceInsertRequest.Details))
+            {
+                var atendanceResponse = _employeeRepository.MyTeamAttendanceInsert(myTeamAttendanceInsertRequest);
+
+                if (atendanceResponse != null)
+                {
+                    return atendanceResponse;
+                }
+                return null;
+            }
+            else
+            {
+                return "Invalid data passed. ";
+            }
         }
 
         public dynamic MyTeamDetails(int empId, int cmpId, string status)

@@ -204,5 +204,17 @@ namespace MOBILEAPI2024.DAL.Repositories
             string response = vconn.QueryFirst<string>("SP_Mobile_HRMS_WebService_EmpDetails", vParams, commandType: CommandType.StoredProcedure);
             return response;
         }
+
+        public dynamic MyTeamAttendanceInsert(MyTeamAttendanceInsertRequest myTeamAttendanceInsertRequest)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Emp_ID", myTeamAttendanceInsertRequest.EmpId);
+            vParams.Add("@Details", myTeamAttendanceInsertRequest.Details);
+            vParams.Add("@Type", myTeamAttendanceInsertRequest.strType);
+            vParams.Add("@Result", "");
+            var response = vconn.Query("SP_Tally_WebService", vParams, commandType: CommandType.StoredProcedure);
+            return response;
+        }
     }
 }

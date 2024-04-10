@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Protocols;
 using MOBILEAPI2024.BLL.Services.IServices;
 using MOBILEAPI2024.DAL.Repositories.IRepositories;
 using MOBILEAPI2024.DTO.Common;
@@ -6,6 +7,7 @@ using MOBILEAPI2024.DTO.RequestDTO.Travel;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Org.BouncyCastle.Ocsp;
 using System.Collections;
+using System.Net.Mail;
 
 namespace MOBILEAPI2024.BLL.Services
 {
@@ -40,7 +42,30 @@ namespace MOBILEAPI2024.BLL.Services
 
         public dynamic TravelAllDetails(TravelAllDetailsRequest travelAllDetailsRequest)
         {
-            
+            if(travelAllDetailsRequest.AttachedDocuments != null)
+            {
+                int i;
+                //for (i = 0; i <= (travelAllDetailsRequest.AttachedDocuments.Rows.Count - 1); i++)
+                //{
+                //    if (!string.IsNullOrEmpty(dtAttachment.Rows[0]["imageName"].ToString()))
+                //    {
+                //        string strDocName = dtAttachment.Rows[i]["imageName"].ToString();
+                //        string strDocPath = Path.Combine(ConfigurationManager.AppSettings["DocPath"].ToString(), "Travel_Doc", strDocName);
+                //        string AttachedDocuments = dtAttachment.Rows[i]["url"].ToString();
+                //        byte[] docBytes = Convert.FromBase64String(AttachedDocuments);
+                //        using (MemoryStream ms = new MemoryStream(docBytes))
+                //        {
+                //            using (FileStream fs = new FileStream(strDocPath, FileMode.Create))
+                //            {
+                //                ms.WriteTo(fs);
+                //            }
+                //        }
+                //        docName = docName + strDocName + "#";
+                //    }
+                //}
+
+            }
+
             var travelResponse = _travelRepository.TravelAllDetails(travelAllDetailsRequest);
             if ((travelResponse as ICollection)?.Count == 0)
             {
@@ -81,7 +106,36 @@ namespace MOBILEAPI2024.BLL.Services
 
         public dynamic TravelAprDetails(TravelAprDetailsRequest travelAprDetailsRequest)
         {
-            throw new NotImplementedException();
+            if (travelAprDetailsRequest.AttachedDocuments != null)
+            {
+                int i;
+                //for (i = 0; i <= (travelAllDetailsRequest.AttachedDocuments.Rows.Count - 1); i++)
+                //{
+                //    if (!string.IsNullOrEmpty(dtAttachment.Rows[0]["imageName"].ToString()))
+                //    {
+                //        string strDocName = dtAttachment.Rows[i]["imageName"].ToString();
+                //        string strDocPath = Path.Combine(ConfigurationManager.AppSettings["DocPath"].ToString(), "Travel_Doc", strDocName);
+                //        string AttachedDocuments = dtAttachment.Rows[i]["url"].ToString();
+                //        byte[] docBytes = Convert.FromBase64String(AttachedDocuments);
+                //        using (MemoryStream ms = new MemoryStream(docBytes))
+                //        {
+                //            using (FileStream fs = new FileStream(strDocPath, FileMode.Create))
+                //            {
+                //                ms.WriteTo(fs);
+                //            }
+                //        }
+                //        docName = docName + strDocName + "#";
+                //    }
+                //}
+
+            }
+
+            var travelResponse = _travelRepository.TravelAprDetails(travelAprDetailsRequest);
+            if ((travelResponse as ICollection)?.Count == 0)
+            {
+                return null;
+            }
+            return travelResponse;
         }
 
         public dynamic TravelProof(TravelProofRequest travelProofRequest)
