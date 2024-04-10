@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MOBILEAPI2024.DAL.Repositories.IRepositories
 {
@@ -13,8 +14,8 @@ namespace MOBILEAPI2024.DAL.Repositories.IRepositories
     {
         dynamic ClaimAdminSetting(int cmpId);
         dynamic ClaimApprovalRecords(ClaimRecords claimRecords);
-        object ClaimApprovalRecordsFinalUpdateInsert(ClaimApprovalUpdateRequest claimApprovalUpdateRequest, List<ClaimDetails> claimDetails);
-        dynamic ClaimApprovalRecordsUpdateInsert(ClaimApprovalUpdateRequest claimApprovalUpdateRequest, List<ClaimDetails> claimDetails);
+        object ClaimApprovalRecordsFinalUpdateInsert(ClaimApprovalUpdateRequest claimApprovalUpdateRequest, XDocument claimDetails);
+        dynamic ClaimApprovalRecordsUpdateInsert(ClaimApprovalUpdateRequest claimApprovalUpdateRequest, XDocument claimDetails);
         dynamic ClaimRecords(ClaimRecords claimRecords);
     }
 }

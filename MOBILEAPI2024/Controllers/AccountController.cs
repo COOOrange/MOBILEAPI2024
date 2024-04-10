@@ -212,5 +212,41 @@ namespace MOBILEAPI2024.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route(APIUrls.ServerConnection)]
+        public IActionResult ServerConnection(string strCode)
+        {
+            Response response = new Response();
+            try
+            {
+                if (strCode != null)
+                {
+                    string logout = _accountService.ServerConnection(strCode);
+                    if (logout != "Logout Failed")
+                    {
+                        response.code = StatusCodes.Status200OK;
+                        response.status = true;
+                        response.message = CommonMessage.Logout;
+                        return Ok(response);
+                    }
+                }
+                response.code = StatusCodes.Status400BadRequest;
+                response.status = false;
+                response.message = CommonMessage.InValidUser;
+                return BadRequest(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.code = StatusCodes.Status500InternalServerError;
+                response.status = false;
+                response.message = CommonMessage.SomethingWrong + ex.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+
     }
 }

@@ -2,6 +2,7 @@
 using MOBILEAPI2024.DTO.RequestDTO.Leave;
 using MOBILEAPI2024.DTO.ResponseDTO.Leave;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,5 +27,6 @@ namespace MOBILEAPI2024.DAL.Repositories.IRepositories
         LeaveBalanceSummryResponse LeaveBalanceSummary(LeaveFilter leaveFilter, DateTime forDate);
         dynamic LeaveCancellationApplication(LeaveCancellationApplicationRequest leaveCancellationApplicationRequest, string Type);
         LeaveCancellationApplicationDetailsResponse LeaveCancellationApplicationDetails(LeaveCancellationApplicationDetailsRequest leaveCancellationApplicationDetailsRequest);
+        dynamic LeaveTravelTypeDdl(int grd_ID);
     }
 }

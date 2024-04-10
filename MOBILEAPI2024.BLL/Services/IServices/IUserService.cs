@@ -33,7 +33,10 @@ namespace MOBILEAPI2024.BLL.Services.IServices
         dynamic GeoLocationRecords(int v1, int v2);
         dynamic GeoLocationTracking(GeoLocationRequest geoLocationRequest);
         dynamic GeoLocationTrackingList(int v1, int v2, DateTime date);
+        dynamic GetBankList(int v);
         dynamic GetBranch(int v);
+        dynamic GetCity(int v, int stateID);
+        dynamic GetCountry();
         dynamic GetDashboardApplicationsCount(int v1, int v2);
         dynamic GetEmployeeOTDetails(int v1, int v2);
         dynamic GetHolidayList(int v1, int v2, int year);
@@ -42,10 +45,13 @@ namespace MOBILEAPI2024.BLL.Services.IServices
         dynamic GetNewsFeedDetail(int v1, int v2);
         dynamic GetNotification(GetNotificationRequest getNotificationRequest);
         dynamic GetPostRequestEmployee(int v1, int v2, string request_Type);
+        dynamic GetReasonforResignation();
         dynamic GetShiftDeatails(int v1, int v2, string forDate);
+        dynamic GetState(int v, int countryId);
         dynamic GetSurveyList(int v1, int v2);
         dynamic GetSurveyQuestionAnswerList(int v1, int v2, int surveyID);
         dynamic GetVertical(int v1, int v2, int verticalID);
+        dynamic get_currency(int v);
         dynamic KilometerRateMaster(KilometerRateMasterRequest kilometerRateMasterRequest);
         dynamic LiveTrackingTotalDistance(int v1, int v2, DateTime createdDate);
         dynamic MatchFingerPrint(int v1, int v2);
@@ -56,9 +62,15 @@ namespace MOBILEAPI2024.BLL.Services.IServices
         dynamic PostFingerPrintDetails(int v1, int v2, string base64);
         dynamic PostRequest(PostRequest postRequest);
         dynamic SalaryDetails(LeaveBalanceRequest salaryDetails);
+        dynamic SendNotification(SendNotificationRequest sendNotificationRequest);
+        dynamic SurveyApplication(SurveyApplicationRequest surveyApplicationRequest);
+        dynamic TemplateApplication(TemplateApplicationRequest templateApplicationDetailsRequest);
         dynamic TemplateApplicationDetails(TemplateApplicationDetailsRequest templateApplicationDetailsRequest);
         dynamic TemplateFieldData(TemplateFieldDataRequest templateFieldDataRequest);
         dynamic TemplateFieldDataView(TemplateFieldDataViewRequest templateFieldDataRequest);
+        dynamic Trigger_FCM(Trigger_FCMRequest trigger_FCMRequest);
         dynamic UnisonMaster(int v1, int v2, string master);
+        dynamic UpdateBankDetails(UpdateBankDetailsRequest updateBankDetailsRequest);
+        dynamic UploadDocument(UploadDocumentRequest updateBankDetailsRequest);
     }
 }

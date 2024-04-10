@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Tokens;
 using MOBILEAPI2024.BLL.Services.IServices;
 using MOBILEAPI2024.DAL.Repositories.IRepositories;
@@ -9,6 +11,7 @@ using MOBILEAPI2024.DTO.ResponseDTO.Account;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.NetworkInformation;
 using System.Security.Claims;
 using System.Text;
 
@@ -116,7 +119,7 @@ namespace MOBILEAPI2024.BLL.Services
         public string RemoveLoginToken(string loginToken)
         {
             string removeToken = _accountRepository.RemoveLoginToken(loginToken);
-            if(removeToken == "Logout Successfully")
+            if (removeToken == "Logout Successfully")
             {
                 return removeToken;
             }
@@ -128,6 +131,24 @@ namespace MOBILEAPI2024.BLL.Services
             _accountRepository.ResetPassword(user, resetPasswordDTO);
 
             return "Success.";
+        }
+
+        public string ServerConnection(string strCode)
+        {
+            var pingSender = new Ping();
+            var reply = pingSender.Send(_appSettings.Source);
+            if (reply.Status == IPStatus.Success)
+            {
+                //using (var con = new SqlConnection("Initial Catalog=License;Data Source=" + _appSettings.Source + ";uid=" + _appSettings.UserName + ";pwd=" + _appSettings.Password))
+                //{
+                //    string updateToken = _accountRepository.ServerConnection(strCode);
+                //    if (updateToken != null)
+                //    {
+                //        return updateToken;
+                //    }
+                //}
+            }
+            return null;
         }
 
         public string UpdateToken(LoginResponseDTO authenticateUser, string Password)

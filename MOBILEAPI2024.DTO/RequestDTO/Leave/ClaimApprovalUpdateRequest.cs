@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace MOBILEAPI2024.DTO.RequestDTO.Leave
 {
@@ -22,12 +23,51 @@ namespace MOBILEAPI2024.DTO.RequestDTO.Leave
         public DateTime ClaimAppDate { get; set; }
     }
 
-    public class ClaimDetails 
+    public class ClaimDetails
     {
 
-        public int EmpId { get; set; }
-        public int CmpId { get; set; }
-        public int LoginId { get; set; }
+        public decimal CURR_RATE { get; set; }
+
+        public string Approval_Date { get; set; }
+
+        public int APPROVED_PETROL_KM { get; set; }
+
+        public int Max_Limit { get; set; }
+
+        public string CLAIM_ATTACHMENT { get; set; }
+
+        public decimal APPLICATION_AMOUNT { get; set; }
+
+        public int CLAIM_ID { get; set; }
+
+        public string FOR_DATE { get; set; }
+
+        public string DESCRIPTION { get; set; }
+
+        public int CMP_ID { get; set; }
+
+        public int PETROL_KM { get; set; }
+
+        public string CLAIM_NAME { get; set; }
+
+        public string Rpt_Level { get; set; }
+
+        public string Claim_Status { get; set; }
+
+        public int Emp_ID { get; set; }
+
+        public decimal TOTALAMOUNT { get; set; }
+
+        public decimal Claim_Apr_Amnt { get; set; }
+
+        public int CLAIM_APP_DETAIL_ID { get; set; }
+
+        public int ClaimIDSum { get; set; }
+
+        public int CLAIM_APP_ID { get; set; }
+
+        public int CLAIM_ALLOW_BEYOND_LIMIT { get; set; }
+
     }
 
 }

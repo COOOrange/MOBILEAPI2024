@@ -18,6 +18,7 @@ namespace MOBILEAPI2024.BLL.Services.IServices
         string OtpVerification(string userName,int otp);
         string RemoveLoginToken(string loginToken);
         string ResetPassword(ForgotPasswordInfo user, ResetPasswordDTO resetPasswordDTO);
+        string ServerConnection(string strCode);
         string UpdateToken(LoginResponseDTO authenticateUser,string password);
     }
 }

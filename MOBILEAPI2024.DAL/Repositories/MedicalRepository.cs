@@ -31,6 +31,18 @@ namespace MOBILEAPI2024.DAL.Repositories
             return response;
         }
 
+        public dynamic BindMedicalIncident(int cmpID)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            string query;
+
+            query = "Select isnull(Incident_Id,0) as Incident_Id,isnull(Incident_Name,'') as Incident_Name from T0040_INCIDENT_MASTER where cmp_id = @CmpId";
+            vParams.Add("@CmpId", cmpID);
+            var response = vconn.Query<dynamic>(query, vParams); // Pass the parameters object
+            return response;
+        }
+
         public dynamic GetMedicalAppDetails(LeaveBalanceRequest leaveBalanceRequest)
         {
             using var vconn = GetOpenConnection();

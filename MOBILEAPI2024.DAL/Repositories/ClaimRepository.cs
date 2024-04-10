@@ -1,11 +1,10 @@
 ﻿using Dapper;
-using Microsoft.EntityFrameworkCore;
 using MOBILEAPI2024.DAL.Entities;
 using MOBILEAPI2024.DAL.Repositories.IRepositories;
 using MOBILEAPI2024.DTO.RequestDTO.Claim;
 using MOBILEAPI2024.DTO.RequestDTO.Leave;
 using System.Data;
-using System.Net.Mail;
+using System.Xml.Linq;
 
 namespace MOBILEAPI2024.DAL.Repositories
 {
@@ -56,7 +55,7 @@ namespace MOBILEAPI2024.DAL.Repositories
             return response;
         }
 
-        public object ClaimApprovalRecordsFinalUpdateInsert(ClaimApprovalUpdateRequest claimApprovalUpdateRequest, List<ClaimDetails> claimDetails)
+        public object ClaimApprovalRecordsFinalUpdateInsert(ClaimApprovalUpdateRequest claimApprovalUpdateRequest, XDocument claimDetails)
         {
             using var vconn = GetOpenConnection();
             var vParams = new DynamicParameters();
@@ -70,7 +69,7 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@Claim_App_Status", claimApprovalUpdateRequest.ClaimStatus);
             vParams.Add("@Claim_Apr_Comments", claimApprovalUpdateRequest.Comment);
             vParams.Add("@Login_ID", claimApprovalUpdateRequest.LoginID);
-            vParams.Add("@Claim_Details", claimApprovalUpdateRequest.ClaimDetails);
+            vParams.Add("@Claim_Details", claimDetails);
             vParams.Add("@Tran_Type", "I");
             vParams.Add("@Result", "");
             
@@ -78,7 +77,7 @@ namespace MOBILEAPI2024.DAL.Repositories
             return response;
         }
 
-        public dynamic ClaimApprovalRecordsUpdateInsert(ClaimApprovalUpdateRequest claimApprovalUpdateRequest, List<ClaimDetails> claimDetails)
+        public dynamic ClaimApprovalRecordsUpdateInsert(ClaimApprovalUpdateRequest claimApprovalUpdateRequest, XDocument claimDetails)
         {
             using var vconn = GetOpenConnection();
             var vParams = new DynamicParameters();
@@ -93,7 +92,7 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@Approval_Comments", claimApprovalUpdateRequest.Comment);
             vParams.Add("@Login_ID", claimApprovalUpdateRequest.LoginID);
             vParams.Add("@Rpt_Level", claimApprovalUpdateRequest.RptLevel);
-            vParams.Add("@Claim_Details", claimApprovalUpdateRequest.ClaimDetails);
+            vParams.Add("@Claim_Details", claimDetails);
             vParams.Add("@Tran_Type", "I");
             vParams.Add("@Result", "");
 

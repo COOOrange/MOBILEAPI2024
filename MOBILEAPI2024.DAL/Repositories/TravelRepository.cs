@@ -143,34 +143,16 @@ namespace MOBILEAPI2024.DAL.Repositories
 
         public dynamic TravelProofValidation(int cmpId, int empId, int travelAppCode)
         {
-
             using var vconn = GetOpenConnection();
             var vParams = new DynamicParameters();
-            vParams.Add("@Cmp_ID", cmpId);
-            vParams.Add("@Emp_ID", empId);
+            string query;
+
+            query = "SELECT Travel_Proof_Type FROM T0080_Emp_Travel_Proof WHERE Cmp_ID=@CmpID AND Emp_ID=@EmpId AND TravelApp_Code=@TravelAppCode";
+            vParams.Add("@CmpID", cmpId);
+            vParams.Add("@EmpId", empId);
             vParams.Add("@TravelAppCode", travelAppCode);
-            var response = vconn.QuerySingle("SELECT Travel_Proof_Type FROM T0080_Emp_Travel_Proof WHERE Cmp_ID=@CmpID AND Emp_ID=@EmpId AND TravelApp_Code=@TravelAppCode", vParams, commandType: CommandType.TableDirect);
+            var response = vconn.Query<dynamic>(query, vParams); // Pass the parameters object
             return response;
-            //string sql = "SELECT Travel_Proof_Type FROM T0080_Emp_Travel_Proof WHERE Cmp_ID=@CmpID AND Emp_ID=@EmpId AND TravelApp_Code=@TravelAppCode";
-            //DataTable resultTable = new DataTable();
-
-            //using (SqlConnection connection = new SqlConnection(vconn.ConnectionString))
-            //{
-            //    using (SqlCommand command = new SqlCommand(sql, connection))
-            //    {
-            //        command.Parameters.AddWithValue("@CmpID", cmpId);
-            //        command.Parameters.AddWithValue("@EmpId", empId);
-            //        command.Parameters.AddWithValue("@TravelAppCode", travelAppCode);
-
-            //        connection.Open();
-            //        using (SqlDataReader reader = command.ExecuteReader())
-            //        {
-            //            resultTable.Load(reader);
-            //        }
-            //    }
-            //}
-
-            //return resultTable;
         }
 
         public dynamic Travel_Approval(int cmpId, int empId, string strType)

@@ -26,5 +26,6 @@ namespace MOBILEAPI2024.BLL.Services.IServices
         dynamic LeaveCancellationApplication(LeaveCancellationApplicationRequest leaveCancellationApplicationRequest);
         LeaveCancellationApplicationDetailsResponse LeaveCancellationApplicationDetails(LeaveCancellationApplicationDetailsRequest leaveCancellationApplicationDetailsRequest);
         dynamic LeaveCancellationApproval(LeaveCancellationApplicationRequest leaveCancellationApplicationRequest);
+        dynamic LeaveTravelTypeDdl(int grd_ID);
     }
 }

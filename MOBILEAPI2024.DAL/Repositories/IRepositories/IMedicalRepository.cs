@@ -8,6 +8,7 @@ namespace MOBILEAPI2024.DAL.Repositories.IRepositories
     public interface IMedicalRepository : IGenericRepository<ActiveInActiveUser>
     {
         dynamic BindMedicalDepDetails(int cmpID, int empId);
+        dynamic BindMedicalIncident(int cmpID);
         dynamic GetMedicalAppDetails(LeaveBalanceRequest leaveBalanceRequest);
         dynamic GetMedicalAppIdDet(int cmpId, int empID, int aPPId);
         dynamic MedicalInsert(MedicalInsert medicalInsert);

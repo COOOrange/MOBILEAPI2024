@@ -12,7 +12,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MOBILEAPI2024.BLL.Services
 {
@@ -20,7 +22,7 @@ namespace MOBILEAPI2024.BLL.Services
     {
         private readonly IClaimRepository _claimRepository;
         private readonly IMapper _mapper;
-        public ClaimService(IClaimRepository claimRepository,IMapper mapper)
+        public ClaimService(IClaimRepository claimRepository, IMapper mapper)
         {
             _claimRepository = claimRepository;
             _mapper = mapper;
@@ -162,20 +164,62 @@ namespace MOBILEAPI2024.BLL.Services
                 }
                 return claimApplication;
             }
-            
+
         }
 
         public dynamic ClaimApprovalUpdate(ClaimApprovalUpdateRequest claimApprovalUpdateRequest)
         {
-            List<ClaimDetails> ClaimDetails = new();
-            //var ClaimDetails = JsonConvert.DeserializeObject<List<ClaimDetails>>(claimApprovalUpdateRequest.ClaimDetails);
-            var claimApprovalUpdate = _claimRepository.ClaimApprovalRecordsUpdateInsert(claimApprovalUpdateRequest, ClaimDetails);
-            if(claimApprovalUpdateRequest.FinalApproval == 1)
+            // Create XML structure
+            XElement rootElement = new XElement("ClaimDetails");
+
+            foreach (var detail in claimApprovalUpdateRequest.ClaimDetails)
             {
-                var claimFinalApproval = _claimRepository.ClaimApprovalRecordsFinalUpdateInsert(claimApprovalUpdateRequest, ClaimDetails);
-                return claimFinalApproval;
+                // Create XML elements using field names
+                XElement detailElement = new XElement("Detail",
+                    new XElement("CURR_RATE", detail.CURR_RATE),
+                    new XElement("Approval_Date", detail.Approval_Date),
+                    new XElement("APPROVED_PETROL_KM", detail.APPROVED_PETROL_KM),
+                    new XElement("Max_Limit", detail.Max_Limit),
+                    new XElement("CLAIM_ATTACHMENT", detail.CLAIM_ATTACHMENT),
+                    new XElement("APPLICATION_AMOUNT", detail.APPLICATION_AMOUNT),
+                    new XElement("CLAIM_ID", detail.CLAIM_ID),
+                    new XElement("FOR_DATE", detail.FOR_DATE),
+                    new XElement("DESCRIPTION", detail.DESCRIPTION),
+                    new XElement("CMP_ID", detail.CMP_ID),
+                    new XElement("PETROL_KM", detail.PETROL_KM),
+                    new XElement("CLAIM_NAME", detail.CLAIM_NAME),
+                    new XElement("Rpt_Level", detail.Rpt_Level),
+                    new XElement("Claim_Status", detail.Claim_Status),
+                    new XElement("Emp_ID", detail.Emp_ID),
+                    new XElement("TOTALAMOUNT", detail.TOTALAMOUNT),
+                    new XElement("Claim_Apr_Amnt", detail.Claim_Apr_Amnt),
+                    new XElement("CLAIM_APP_DETAIL_ID", detail.CLAIM_APP_DETAIL_ID),
+                    new XElement("ClaimIDSum", detail.ClaimIDSum),
+                    new XElement("CLAIM_APP_ID", detail.CLAIM_APP_ID),
+                    new XElement("CLAIM_ALLOW_BEYOND_LIMIT", detail.CLAIM_ALLOW_BEYOND_LIMIT)
+                );
+
+                // Add detail element to root element
+                rootElement.Add(detailElement);
             }
-            return claimApprovalUpdate;
+
+            // Create XML document with the root element
+            XDocument xmlDocument = new XDocument(rootElement);
+
+
+            if (xmlDocument != null)
+            {
+
+                var claimApprovalUpdate = _claimRepository.ClaimApprovalRecordsUpdateInsert(claimApprovalUpdateRequest, xmlDocument);
+                if (claimApprovalUpdateRequest.FinalApproval == 1)
+                {
+                    var claimFinalApproval = _claimRepository.ClaimApprovalRecordsFinalUpdateInsert(claimApprovalUpdateRequest, xmlDocument);
+                    return claimFinalApproval;
+                }
+                return claimApprovalUpdate;
+            }
+            return "Invalid data passed.";
+
         }
 
         public dynamic ClaimLimit(ClaimLimitRequest claimLimitRequest)

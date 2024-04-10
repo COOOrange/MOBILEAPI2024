@@ -660,6 +660,70 @@ namespace MOBILEAPI2024.API.Controllers
             }
         }
 
+        //[HttpPost]
+        //[Route(APIUrls.MyTeamAttendanceInsert)]
+        //public IActionResult MyTeamAttendanceInsert(AttendanceRegularizeInsertRequest attendanceRegularizeInsertRequest)
+        //{
+        //    Response response = new Response();
+        //    try
+        //    {
+        //        var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
+        //        if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
+        //        {
+        //            var jToken = headerValue.Parameter;
+        //            var handler = new JwtSecurityTokenHandler();
+
+        //            var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
+        //            if (jsonToken != null)
+        //            {
+        //                var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
+        //                var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
+        //                if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
+        //                {
+        //                    attendanceRegularizeInsertRequest.CmpID = Convert.ToInt32(cmpId);
+        //                    attendanceRegularizeInsertRequest.EmpID = Convert.ToInt32(empId);
+
+
+        //                    var attendanceResponse = _attendanceService.AttendanceRegularizeInsert(attendanceRegularizeInsertRequest);
+        //                    if (attendanceResponse != null)
+        //                    {
+        //                        response.code = StatusCodes.Status200OK;
+        //                        response.status = true;
+        //                        response.message = CommonMessage.Success;
+        //                        response.data = attendanceResponse;
+        //                        return Ok(response);
+        //                    }
+        //                    response.code = StatusCodes.Status404NotFound;
+        //                    response.status = false;
+        //                    response.message = CommonMessage.NoDataFound;
+        //                    return StatusCode(StatusCodes.Status404NotFound, response);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                // Handle the case where the token cannot be read as a JWT token
+        //                response.code = StatusCodes.Status401Unauthorized;
+        //                response.status = false;
+        //                response.message = CommonMessage.TokenExpired;
+        //                return StatusCode(StatusCodes.Status401Unauthorized, response);
+        //            }
+        //        }
+        //        // Handle the case where the token cannot be read as a JWT token
+        //        response.code = StatusCodes.Status401Unauthorized;
+        //        response.status = false;
+        //        response.message = CommonMessage.TokenExpired;
+        //        return StatusCode(StatusCodes.Status401Unauthorized, response);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        response.code = StatusCodes.Status500InternalServerError;
+        //        response.status = false;
+        //        response.message = CommonMessage.SomethingWrong + " " + e.Message;
+        //        return StatusCode(StatusCodes.Status500InternalServerError, response);
+        //    }
+        //}
+
+
         [HttpPost]
         [Route(APIUrls.AttendanceRoute)]
         public IActionResult AttendanceRoute(string StrAttendance)

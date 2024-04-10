@@ -1,23 +1,15 @@
-﻿using Azure.Core;
-using Dapper;
-using Microsoft.Data.SqlClient;
-using Microsoft.SqlServer.Server;
+﻿using Dapper;
 using MOBILEAPI2024.DAL.Entities;
 using MOBILEAPI2024.DAL.Repositories.IRepositories;
-using MOBILEAPI2024.DTO.Common;
 using MOBILEAPI2024.DTO.RequestDTO.Leave;
 using MOBILEAPI2024.DTO.RequestDTO.User;
 using MOBILEAPI2024.DTO.ResponseDTO.User;
-using System;
-using System.Buffers.Text;
 using System.Collections;
 using System.Data;
-using System.Diagnostics;
 using System.Diagnostics.Metrics;
-using System.Net;
 using System.Security.Cryptography;
+using System.Xml.Linq;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MOBILEAPI2024.DAL.Repositories
 {
@@ -389,6 +381,50 @@ namespace MOBILEAPI2024.DAL.Repositories
             return geoLocationResponse;
         }
 
+        public dynamic GetBankList(int cmpID)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            string query;
+
+            query = "SELECT * FROM T0040_BANK_MASTER WHERE Cmp_ID = @CmpID ORDER BY Bank_Branch_Name ASC";
+
+            vParams.Add("@CmpID", cmpID);
+            var response = vconn.Query<dynamic>(query, vParams);
+            return response;
+        }
+
+        public dynamic GetCity(int cmpId, int stateID)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            string query;
+            if (stateID == 0)
+            {
+                query = "SELECT City_ID,City_Name FROM T0030_CITY_MASTER WHERe Cmp_ID = @CmpID ORDER BY City_Name ASC";
+            }
+            else
+            {
+                query = "SELECT City_ID,City_Name FROM T0030_CITY_MASTER WHERE State_ID =@StateID AND Cmp_ID = @CmpID ORDER BY City_Name ASC";
+            }
+            vParams.Add("@CmpID", cmpId);
+            vParams.Add("@StateID", stateID);
+            var response = vconn.Query<dynamic>(query, vParams); // Pass the parameters object
+            return response;
+        }
+
+        public dynamic GetCountry()
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            string query;
+
+            query = "SELECT Loc_ID,Loc_name FROM T0001_LOCATION_MASTER ORDER BY Loc_ID ASC";
+
+            var response = vconn.Query<dynamic>(query, vParams); // Pass the parameters object
+            return response;
+        }
+
         public dynamic GetDashboardApplicationsCount(int cmpId, int empId)
         {
             using var vconn = GetOpenConnection();
@@ -397,6 +433,36 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@Emp_Id", empId);
             var Response = vconn.Query("SP_Mobile_HRMS_WebService_GETCOUNT", vParams, commandType: CommandType.StoredProcedure);
             return Response;
+        }
+
+        public dynamic GetDeviceIdFromEmpID(int empID)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            var query = "SELECT DISTINCT A.DeviceID FROM T0095_Emp_IMEI_Details AS A Inner Join (SELECT Emp_ID, MAX(Tran_ID) AS maxId FROM T0095_Emp_IMEI_Details WHERE Is_Active=1 GROUP BY Emp_ID) AS B ON A.Emp_ID = B.Emp_ID And A.Tran_ID = B.maxId where A.Emp_ID in(@EmpID) and A.DeviceID is Not NUll and A.DeviceID <> ''";
+            vParams.Add("@EmpID", empID);
+            var response = vconn.Query<dynamic>(query, vParams); // Pass the parameters object
+            return response;
+        }
+
+        public dynamic GetEmpIDFromCmpID(int cmpID)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            var query = "SELECT STUFF((SELECT DISTINCT ',' + CAST(I_1.Emp_ID AS varchar) FROM  T0080_EMP_MASTER AS E LEFT OUTER JOIN (SELECT i.Emp_ID, i.Dept_ID, i.Cmp_ID FROM T0095_INCREMENT AS i INNER JOIN (SELECT MAX(I2.Increment_ID) AS Increment_ID, I2.Emp_ID FROM T0095_INCREMENT AS I2 INNER JOIN (SELECT MAX(Increment_Effective_Date) AS INCREMENT_EFFECTIVE_DATE, Emp_ID FROM T0095_INCREMENT AS I3 WHERE (Increment_Effective_Date <= GETDATE()) GROUP BY Emp_ID) AS I3_1 ON I2.Increment_Effective_Date = I3_1.INCREMENT_EFFECTIVE_DATE AND I2.Emp_ID = I3_1.Emp_ID GROUP BY I2.Emp_ID) AS I2_1 ON i.Emp_ID = I2_1.Emp_ID AND i.Increment_ID = I2_1.Increment_ID) AS I_1 ON E.Emp_ID = I_1.Emp_ID LEFT OUTER JOIN T0040_DEPARTMENT_MASTER AS DM ON DM.Dept_Id = ISNULL(I_1.Dept_ID, E.Dept_ID) where E.Emp_Left = 'N'  and ISNULL(I_1.Cmp_ID, ISNULL(E.Cmp_ID,0)) in (@CmpID) FOR XML PATH('')), 1 ,1, '') AS EmpList";
+            vParams.Add("@CmpID", cmpID);
+            var response = vconn.Query<dynamic>(query, vParams); // Pass the parameters object
+            return response;
+        }
+
+        public dynamic GetEmpIDFromDeptID(int deptID)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            var query = "SELECT STUFF((SELECT DISTINCT ',' + CAST(I_1.Emp_ID AS varchar) FROM  T0080_EMP_MASTER AS E LEFT OUTER JOIN (SELECT i.Emp_ID, i.Dept_ID FROM T0095_INCREMENT AS i INNER JOIN (SELECT MAX(I2.Increment_ID) AS Increment_ID, I2.Emp_ID FROM T0095_INCREMENT AS I2 INNER JOIN (SELECT MAX(Increment_Effective_Date) AS INCREMENT_EFFECTIVE_DATE, Emp_ID FROM T0095_INCREMENT AS I3 WHERE (Increment_Effective_Date <= GETDATE()) GROUP BY Emp_ID) AS I3_1 ON I2.Increment_Effective_Date = I3_1.INCREMENT_EFFECTIVE_DATE AND I2.Emp_ID = I3_1.Emp_ID GROUP BY I2.Emp_ID) AS I2_1 ON i.Emp_ID = I2_1.Emp_ID AND i.Increment_ID = I2_1.Increment_ID) AS I_1 ON E.Emp_ID = I_1.Emp_ID LEFT OUTER JOIN T0040_DEPARTMENT_MASTER AS DM ON DM.Dept_Id = ISNULL(I_1.Dept_ID, E.Dept_ID) where E.Emp_Left = 'N'  and ISNULL(I_1.Dept_ID, ISNULL(DM.Dept_Id,0)) in (@deptID) FOR XML PATH('')), 1 ,1, '') AS EmpList";
+            vParams.Add("@deptID", deptID);
+            var response = vconn.Query<dynamic>(query, vParams); // Pass the parameters object
+            return response;
         }
 
         public dynamic GetEmployeeOTDetails(int cmpId, int empId)
@@ -515,6 +581,18 @@ namespace MOBILEAPI2024.DAL.Repositories
             return Response;
         }
 
+        public dynamic GetReasonforResignation()
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            string query;
+
+            query = "select Res_Id,Reason_Name from T0040_Reason_Master with(nolock) where Type='Exit' and Isactive=1";
+
+            var response = vconn.Query<dynamic>(query, vParams); // Pass the parameters object
+            return response;
+        }
+
         public dynamic GetShiftDeatails(int cmpID, int empID, string forDate)
         {
             using var vconn = GetOpenConnection();
@@ -537,6 +615,25 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@Result", "");
             var Response = vconn.Query("SP_Mobile_HRMS_WebService_Leave", vParams, commandType: CommandType.StoredProcedure);
             return Response;
+        }
+
+        public dynamic GetState(int cmpId, int countryId)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            string query;
+            if (countryId == 0)
+            {
+                query = "SELECT State_ID,State_Name FROM T0020_STATE_MASTER WHERE Cmp_ID = @CmpID ORDER BY State_Name ASC";
+            }
+            else
+            {
+                query = "SELECT State_ID,State_Name FROM T0020_STATE_MASTER WHERE Loc_ID = @CountryID AND Cmp_ID = @CmpID ORDER BY State_Name ASC";
+            }
+            vParams.Add("@CmpID", cmpId);
+            vParams.Add("@CountryID", countryId);
+            var response = vconn.Query<dynamic>(query, vParams); // Pass the parameters object
+            return response;
         }
 
         public dynamic GetSurveyList(int cmpId, int empId)
@@ -569,6 +666,17 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@Result", "");
             var Response = vconn.Query("SP_Mobile_HRMS_WebService_Survey", vParams, commandType: CommandType.StoredProcedure);
             return Response;
+        }
+
+        public dynamic get_currency(int cmpId)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@CmpId", cmpId); // Make sure parameter name matches the one used in the query
+            var query = "SELECT Curr_Symbol, Curr_ID FROM T0040_CURRENCY_MASTER WHERE Cmp_ID = @CmpId";
+            var response = vconn.Query<T0040_CURRENCY_MASTER>(query, vParams); // Pass the parameters object
+            return response;
+
         }
 
         public dynamic KilometerRateMaster(KilometerRateMasterRequest kilometerRateMasterRequest)
@@ -612,11 +720,11 @@ namespace MOBILEAPI2024.DAL.Repositories
         {
             using var vconn = GetOpenConnection();
             var vParams = new DynamicParameters();
-            //vParams.Add("@Cmp_ID", CmpID, SqlDbType.Int)
-            //vParams.Add("@Emp_ID", EmpID, SqlDbType.Int)
-            //vParams.Add("@Store_ID", StoreID, SqlDbType.Int)
-            //vParams.Add("@Login_ID", LoginID, SqlDbType.Int)
-            //vParams.Add("@Mobile_Remark_ID", RemarkID, SqlDbType.Int)
+            //vParams.Add("@Cmp_ID", CmpID)
+            //vParams.Add("@Emp_ID", EmpID)
+            //vParams.Add("@Store_ID", StoreID)
+            //vParams.Add("@Login_ID", LoginID)
+            //vParams.Add("@Mobile_Remark_ID", RemarkID)
             //vParams.Add("@SaleStockDetails", SaleStockDetails, SqlDbType.NVarChar)
             //vParams.Add("@Type", strType, SqlDbType.VarChar)
             //vParams.Add("@For_Date", Convert.ToDateTime(ForDate).ToString("dd/MMM/yyyy"), SqlDbType.DateTime)
@@ -711,6 +819,44 @@ namespace MOBILEAPI2024.DAL.Repositories
             return Response;
         }
 
+        public Array SendNotification(string title, string body, dynamic dynamic, string v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public dynamic SurveyApplication(SurveyApplicationRequest surveyApplicationRequest)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Emp_ID", surveyApplicationRequest.EmpID);
+            vParams.Add("@Cmp_ID", surveyApplicationRequest.CmpID);
+            vParams.Add("@Survey_ID", surveyApplicationRequest.SurveyID);
+            vParams.Add("@Survey_Details", surveyApplicationRequest.SurveyDetails);
+            vParams.Add("@Login_ID", surveyApplicationRequest.LoginID);
+            vParams.Add("@IMEINo", surveyApplicationRequest.IMEINo);
+            vParams.Add("@Type", "I");
+            vParams.Add("@Result", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+            var Response = vconn.Query("SP_Mobile_HRMS_WebService_Survey", vParams, commandType: CommandType.StoredProcedure);
+            string result = vParams.Get<string>("@Result");
+            return result;
+        }
+
+        public dynamic TemplateApplication(TemplateApplicationRequest templateApplicationDetailsRequest, XDocument xmlDocument)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Emp_ID", templateApplicationDetailsRequest.EmpID);
+            vParams.Add("@Cmp_ID", templateApplicationDetailsRequest.CmpID);
+            vParams.Add("@T_ID", templateApplicationDetailsRequest.TID);
+            vParams.Add("@Template_Details", xmlDocument);
+            vParams.Add("@Login_ID", templateApplicationDetailsRequest.LoginID);
+            vParams.Add("@Type", "I");
+            vParams.Add("@Result", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+            var Response = vconn.Query("SP_Mobile_TemplateField_Insert", vParams, commandType: CommandType.StoredProcedure);
+            string result = vParams.Get<string>("@Result");
+            return result;
+        }
+
         public dynamic TemplateApplicationDetails(TemplateApplicationDetailsRequest templateApplicationDetailsRequest)
         {
             using var vconn = GetOpenConnection();
@@ -756,6 +902,7 @@ namespace MOBILEAPI2024.DAL.Repositories
             return Response;
         }
 
+
         public dynamic UnisonMaster(int cmpId, int empId, string master)
         {
             using var vconn = GetOpenConnection();
@@ -764,6 +911,35 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@MASTER", master);
             vParams.Add("@EMP_ID", empId);
             var Response = vconn.Query("SP_MOBILE_HRMS_WEBSERVICE_UNISONMASTER", vParams, commandType: CommandType.StoredProcedure);
+            return Response;
+        }
+
+        public dynamic UpdateBankDetails(UpdateBankDetailsRequest updateBankDetailsRequest)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Emp_ID", updateBankDetailsRequest.EmpID);
+            vParams.Add("@Cmp_ID", updateBankDetailsRequest.CmpID);
+            vParams.Add("@Vertical_ID", 0);
+            vParams.Add("@Emp_Code", "");
+            vParams.Add("@Address", "");
+            vParams.Add("@City", "");
+            vParams.Add("@State", "");
+            vParams.Add("@Pincode", "");
+            vParams.Add("@PhoneNo", "");
+            vParams.Add("@MobileNo", "");
+            vParams.Add("@Email", "");
+            vParams.Add("@ImageName", "");
+            vParams.Add("@Branch_ID", 0);
+            vParams.Add("@Department_ID", 0);
+            vParams.Add("@Type", "R");
+            vParams.Add("@Result", "");
+            vParams.Add("@Bank_Name", updateBankDetailsRequest.BankName);
+            vParams.Add("@Bank_Ac_No", updateBankDetailsRequest.BankAccountNo);
+            vParams.Add("@Bank_IFSC_Code", updateBankDetailsRequest.IfscCode);
+            vParams.Add("@Pan_No", updateBankDetailsRequest.PancardNo);
+            vParams.Add("@Bank_Branch_Name", updateBankDetailsRequest.BankBranchName);
+            var Response = vconn.Query("SP_Mobile_HRMS_WebService_EmpDetails", vParams, commandType: CommandType.StoredProcedure);
             return Response;
         }
 
@@ -781,6 +957,24 @@ namespace MOBILEAPI2024.DAL.Repositories
 
             vconn.Execute("SP_Mobile_HRMS_Attendance", vParams, commandType: CommandType.StoredProcedure);
 
+        }
+
+        public dynamic UploadDocument(UploadDocumentRequest updateBankDetailsRequest)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Emp_ID", updateBankDetailsRequest.EmpID);
+            vParams.Add("@Cmp_ID", updateBankDetailsRequest.CmpID);
+            vParams.Add("@Doc_ID", updateBankDetailsRequest.DocID);
+            vParams.Add("@Doc_Type", updateBankDetailsRequest.DocType);
+            vParams.Add("@Doc_Name", updateBankDetailsRequest.DocName);
+            vParams.Add("@Doc_Comment", updateBankDetailsRequest.DocComment);
+            vParams.Add("@Login_ID", updateBankDetailsRequest.LoginID);
+            vParams.Add("@Type", updateBankDetailsRequest.Type);
+            vParams.Add("@Result", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+            var Response = vconn.Query("SP_Mobile_HRMS_WebService_Emp_Document", vParams, commandType: CommandType.StoredProcedure);
+            string result = vParams.Get<string>("@Result");
+            return result;
         }
     }
 }

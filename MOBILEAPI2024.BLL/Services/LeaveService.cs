@@ -176,5 +176,14 @@ namespace MOBILEAPI2024.BLL.Services
             return leaveResponse;
         }
 
+        public dynamic LeaveTravelTypeDdl(int grd_ID)
+        {
+            var leaveResponse = _leaveRepository.LeaveTravelTypeDdl(grd_ID);
+            if (leaveResponse == null || (leaveResponse as ICollection)?.Count == 0)
+            {
+                return null;
+            }
+            return leaveResponse;
+        }
     }
 }

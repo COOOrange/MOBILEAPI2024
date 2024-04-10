@@ -35,9 +35,14 @@ namespace MOBILEAPI2024.BLL.Services
             return medicalResponse;
         }
 
-        public dynamic BindMedicalIncident(int v)
+        public dynamic BindMedicalIncident(int cmpID)
         {
-            throw new NotImplementedException();
+            var medicalResponse = _medicalRepository.BindMedicalIncident(cmpID);
+            if ((medicalResponse as ICollection)?.Count == 0 || medicalResponse == null)
+            {
+                return null;
+            }
+            return medicalResponse;
         }
 
         public dynamic GetMedicalAppDetails(LeaveBalanceRequest leaveBalanceRequest)

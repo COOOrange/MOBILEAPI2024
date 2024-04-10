@@ -486,5 +486,17 @@ namespace MOBILEAPI2024.DAL.Repositories
 
             return leaveCancellationApplicationDetailsResponse;
         }
+
+        public dynamic LeaveTravelTypeDdl(int grd_ID)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            string query;
+
+            query = "select Leave_ID,Leave_Name from V0040_LEAVE_DETAILS where (1=(case isnull(leave_Status,0) when 0 then(case when isnull(InActive_Effective_Date,getdate())>getdate() then 1 else 0 end ) else 1 end )) and Leave_Type='Company Purpose' and Grd_ID = @GrdID order by Leave_Name";
+            vParams.Add("@GrdID", grd_ID);
+            var response = vconn.Query<dynamic>(query, vParams); // Pass the parameters object
+            return response;
+        }
     }
 }
