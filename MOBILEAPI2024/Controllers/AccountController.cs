@@ -36,7 +36,7 @@ namespace MOBILEAPI2024.API.Controllers
                     if (loginDTO != null)
                     {
                         var authenticateUser = _accountService.AuthenticateUser(loginDTO);
-                        if (authenticateUser != null)
+                        if (authenticateUser != null && authenticateUser.LoginData != null && authenticateUser.Details.Count() > 0)
                         {
                             string token = _accountService.GenerateToken(authenticateUser.LoginData);
                             authenticateUser.Token = token;
@@ -90,6 +90,11 @@ namespace MOBILEAPI2024.API.Controllers
                         response.data = otp;
                         return Ok(response);
                     }
+                    response.code = StatusCodes.Status404NotFound;
+                    response.status = false;
+                    response.message = CommonMessage.InValidUser;
+                    response.data = UserName;
+                    return NotFound(response);
                 }
                 response.code = StatusCodes.Status400BadRequest;
                 response.status = false;
@@ -124,10 +129,14 @@ namespace MOBILEAPI2024.API.Controllers
                         response.message = CommonMessage.OTPVerified;
                         return Ok(response);
                     }
+                    response.code = StatusCodes.Status400BadRequest;
+                    response.status = false;
+                    response.message = CommonMessage.InValidUser;
+                    return NotFound(response);
                 }
                 response.code = StatusCodes.Status400BadRequest;
                 response.status = false;
-                response.message = CommonMessage.InValidUser;
+                response.message = CommonMessage.NoUserNamePassed;
                 return BadRequest(response);
 
             }
@@ -163,11 +172,16 @@ namespace MOBILEAPI2024.API.Controllers
                             return Ok(response);
                         }
                     }
+                    response.code = StatusCodes.Status404NotFound;
+                    response.status = false;
+                    response.message = CommonMessage.InValidUser;
+                    response.data = resetPasswordDTO;
+                    return NotFound(response);
                 }
-                
                 response.code = StatusCodes.Status400BadRequest;
                 response.status = false;
                 response.message = CommonMessage.InValidUser;
+                response.data = resetPasswordDTO;
                 return BadRequest(response);
 
             }
@@ -200,9 +214,8 @@ namespace MOBILEAPI2024.API.Controllers
                 }
                 response.code = StatusCodes.Status400BadRequest;
                 response.status = false;
-                response.message = CommonMessage.InValidUser;
+                response.message = CommonMessage.InValidToken;
                 return BadRequest(response);
-
             }
             catch (Exception ex)
             {
@@ -212,41 +225,6 @@ namespace MOBILEAPI2024.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }
-
-        [AllowAnonymous]
-        [HttpPost]
-        [Route(APIUrls.ServerConnection)]
-        public IActionResult ServerConnection(string strCode)
-        {
-            Response response = new Response();
-            try
-            {
-                if (strCode != null)
-                {
-                    string logout = _accountService.ServerConnection(strCode);
-                    if (logout != "Logout Failed")
-                    {
-                        response.code = StatusCodes.Status200OK;
-                        response.status = true;
-                        response.message = CommonMessage.Logout;
-                        return Ok(response);
-                    }
-                }
-                response.code = StatusCodes.Status400BadRequest;
-                response.status = false;
-                response.message = CommonMessage.InValidUser;
-                return BadRequest(response);
-
-            }
-            catch (Exception ex)
-            {
-                response.code = StatusCodes.Status500InternalServerError;
-                response.status = false;
-                response.message = CommonMessage.SomethingWrong + ex.Message;
-                return StatusCode(StatusCodes.Status500InternalServerError, response);
-            }
-        }
-
 
     }
 }
