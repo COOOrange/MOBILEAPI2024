@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using MOBILEAPI2024.BLL.Services;
@@ -254,6 +255,46 @@ namespace MOBILEAPI2024.API.Controllers
                 response.status = false;
                 response.message = CommonMessage.TokenExpired;
                 return StatusCode(StatusCodes.Status401Unauthorized, response);
+            }
+            catch (Exception e)
+            {
+                response.code = StatusCodes.Status500InternalServerError;
+                response.status = false;
+                response.message = CommonMessage.SomethingWrong + " " + e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route(APIUrls.AllEmployeesList)]
+        public IActionResult EmployeeListClient()
+        {
+            Response response = new Response();
+            try
+            {
+                var cmpId = "120";
+                var empId = "0";
+
+                EmployeeListRequest employeeListRequest = new();
+                employeeListRequest.EmpId = Convert.ToInt32(empId);
+                employeeListRequest.CmpId = Convert.ToInt32(cmpId);
+
+                var employeeResponse = _employeeService.EmployeeList(employeeListRequest);
+                if (employeeResponse != null)
+                {
+                    response.code = StatusCodes.Status200OK;
+                    response.status = true;
+                    response.message = CommonMessage.Success;
+                    response.data = employeeResponse;
+                    return Ok(response);
+                }
+                response.code = StatusCodes.Status404NotFound;
+                response.status = false;
+                response.message = CommonMessage.NoDataFound;
+                return StatusCode(StatusCodes.Status404NotFound, response);
+
+
             }
             catch (Exception e)
             {

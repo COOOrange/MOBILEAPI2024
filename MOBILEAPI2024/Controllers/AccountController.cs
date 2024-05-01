@@ -98,7 +98,7 @@ namespace MOBILEAPI2024.API.Controllers
                 }
                 response.code = StatusCodes.Status400BadRequest;
                 response.status = false;
-                response.message = CommonMessage.InValidUser;
+                response.message = CommonMessage.NoUserNamePassed;
                 return BadRequest(response);
 
             }

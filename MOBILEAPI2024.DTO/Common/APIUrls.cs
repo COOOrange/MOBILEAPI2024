@@ -116,6 +116,7 @@ namespace MOBILEAPI2024.DTO.Common
         public const string EmployeeDetailsForTally = "EmployeeDetailsForTally";
         public const string EmployeeDirectoryData = "EmployeeDirectoryData";
         public const string EmployeeList = "EmployeeList";
+        public const string AllEmployeesList = "AllEmployeesList";
         public const string ManagerApprovalDetails = "ManagerApprovalDetails";
         public const string MyTeamAttendance = "MyTeamAttendance";
         public const string MyTeamAttendanceInsert = "MyTeamAttendanceInsert";

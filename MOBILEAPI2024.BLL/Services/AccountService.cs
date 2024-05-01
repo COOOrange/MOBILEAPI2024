@@ -98,7 +98,7 @@ namespace MOBILEAPI2024.BLL.Services
         public ForgotPasswordInfo GetUserByUserName(string userName)
         {
             var user = _accountRepository.GetUserByUserName(userName);
-            if (user.Login_ID != 0 && user.Emp_ID != 0 && user.Cmp_ID != 0)
+            if (user != null)
             {
                 return user;
             }
