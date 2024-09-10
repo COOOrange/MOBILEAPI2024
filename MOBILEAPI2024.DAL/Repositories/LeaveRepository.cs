@@ -1,20 +1,10 @@
-﻿using Azure;
-using Dapper;
-using Microsoft.SqlServer.Server;
+﻿using Dapper;
 using MOBILEAPI2024.DAL.Entities;
 using MOBILEAPI2024.DAL.Repositories.IRepositories;
 using MOBILEAPI2024.DTO.RequestDTO.Leave;
 using MOBILEAPI2024.DTO.ResponseDTO.Leave;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Net.Mail;
-using System.Net.NetworkInformation;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
 
 namespace MOBILEAPI2024.DAL.Repositories
 {
@@ -24,26 +14,26 @@ namespace MOBILEAPI2024.DAL.Repositories
         {
         }
 
-        public string AddLeaveAplication(LeaveFilter leaveFilter, ApplyLeaveRequest applyLeaveRequest)
+        public dynamic AddLeaveAplication(LeaveFilter leaveFilter, ApplyLeaveRequest applyLeaveRequest)
         {
             using var vconn = GetOpenConnection();
             var vParams = new DynamicParameters();
-            vParams.Add("@Leave_Application_ID", Convert.ToInt32("0"));
+            vParams.Add("@Leave_Application_ID", applyLeaveRequest.LeavAppID);
             vParams.Add("@Emp_ID", leaveFilter.Emp_Id);
             vParams.Add("@Cmp_ID", leaveFilter.Cmp_Id);
-            vParams.Add("@Leave_ID", applyLeaveRequest.Leave_ID);
+            vParams.Add("@Leave_ID", applyLeaveRequest.LeaveID);
             vParams.Add("@From_Date", applyLeaveRequest.FromDate);
-            vParams.Add("@To_Date", applyLeaveRequest.ToDate);
+            vParams.Add("@To_Date", applyLeaveRequest.Todate);
             vParams.Add("@Period", applyLeaveRequest.Period);
-            vParams.Add("@Leave_Assign_As", applyLeaveRequest.Leave_Assign_As);
+            vParams.Add("@Leave_Assign_As", applyLeaveRequest.AssignAs);
             vParams.Add("@Comment", applyLeaveRequest.Comment);
-            vParams.Add("@Half_Leave_Date", "");
-            vParams.Add("@InTime", "");
-            vParams.Add("@OutTime", "");
+            vParams.Add("@Half_Leave_Date", applyLeaveRequest.HLeaveDate);
+            vParams.Add("@InTime",applyLeaveRequest.Intime);
+            vParams.Add("@OutTime", applyLeaveRequest.OutTime);
             vParams.Add("@Login_ID", leaveFilter.Login_ID);
-            vParams.Add("@strLeaveCompOff_Dates", "");
-            vParams.Add("@Attachment", "");
-            vParams.Add("@Type", "I");
+            vParams.Add("@strLeaveCompOff_Dates", applyLeaveRequest.CompoffLeaveDates);
+            vParams.Add("@Attachment", applyLeaveRequest.Attachement);
+            vParams.Add("@Type", applyLeaveRequest.StrType);
             vParams.Add("@Result", "");
 
             var data = vconn.QueryFirst("SP_Mobile_HRMS_WebAPI_Leave", vParams, commandType: CommandType.StoredProcedure);

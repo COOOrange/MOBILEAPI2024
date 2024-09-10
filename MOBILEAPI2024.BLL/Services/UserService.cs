@@ -15,6 +15,7 @@ using MOBILEAPI2024.DTO.RequestDTO.Ticket;
 using MOBILEAPI2024.DTO.RequestDTO.Travel;
 using MOBILEAPI2024.DTO.RequestDTO.User;
 using MOBILEAPI2024.DTO.ResponseDTO.User;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Org.BouncyCastle.Ocsp;
@@ -25,6 +26,7 @@ using System.Data;
 using System.Data.SqlTypes;
 using System.Diagnostics.Metrics;
 using System.Formats.Tar;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Reflection.Emit;
@@ -1008,5 +1010,160 @@ namespace MOBILEAPI2024.BLL.Services
                 return "Invalid data passed.";
             }
         }
+
+        
+        public dynamic GetPresentDayDuration(int empid, int cmpid)
+        {
+            var Response = _userRepository.GetPresentDayDuration(empid,cmpid);
+            if (Response == null || (Response as ICollection)?.Count == 0)
+            {
+                return null;
+            }
+            return Response;
+        }
+
+        public bool SaveGeoLocation(GeoLocation geoLocation)
+        {
+            DateTime currentDate = DateTime.Now;
+            int currentMonth = currentDate.Month;
+            string monthWithName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(currentMonth);
+            int currentYear = currentDate.Year;
+
+            if (geoLocation.EmpID != 0 && geoLocation.CmpID != 0)
+            {
+                string docPath = _appSettings.TextFilePath + "/EmptrackingDataStorage/";
+
+                if (!Directory.Exists(docPath))
+                {
+                    Directory.CreateDirectory(docPath);
+                }
+
+                string yearFolderPath = Path.Combine(docPath, currentYear.ToString());
+                string monthFolderPath = Path.Combine(yearFolderPath, monthWithName);
+                string folderPath = Path.Combine(monthFolderPath, geoLocation.EmpID.ToString());
+
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                string fileName = $"{geoLocation.EmpID}_{DateTime.Now:yyyy-MM-dd}.txt";
+                string filePath = Path.Combine(folderPath, fileName);
+
+                DateTime trackingDate = DateTime.ParseExact(geoLocation.TrackingDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                DateTime currentDate1 = DateTime.Today;
+                string formattedDate = currentDate1.ToString("dd/MM/yyyy");
+
+                if (trackingDate.ToString("dd/MM/yyyy") == formattedDate)
+                {
+                    string dataToWrite = $"{geoLocation.EmpID}${geoLocation.CmpID}${geoLocation.Latitude}${geoLocation.Longitude}${geoLocation.TrackingDate}${geoLocation.Address}${geoLocation.City}${geoLocation.Area}${geoLocation.Battery}${geoLocation.IMEI}${geoLocation.GPS}${geoLocation.ModelName}{Environment.NewLine}";
+
+                    if (!string.IsNullOrEmpty(dataToWrite))
+                    {
+                        File.AppendAllText(filePath, dataToWrite);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public List<GeoLocationRecord> GetGeoLocationTrackingRecords(int empId, int cmpId, DateTime dateValue)
+        {
+            var result = "";
+            try
+            {
+                // Format the folder and file names
+                string formattedDate = ConvertDateFormat(dateValue);
+                string folderName = $"{empId}_{formattedDate}";
+                int month = dateValue.Month;
+                string monthWithName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
+                int year = dateValue.Year;
+
+                // Get file path from configuration
+                string docPath = _appSettings.TextFilePath + "EmptrackingDataStorage\\";
+                string filePath = Path.Combine(docPath, year.ToString(), monthWithName, empId.ToString(), $"{folderName}.txt");
+
+                // Check if the file exists
+                if (!File.Exists(filePath))
+                {
+                    result = "Failed";
+                }
+
+                // Read the text file into a DataTable
+                var dtGeoLocation = ReadTextFileIntoList(filePath);
+
+                // Process data and generate the result
+                if (dtGeoLocation.Count() > 0)
+                {
+                    return dtGeoLocation;
+                    //var dtLastEntryOfConsecutiveAddresses = GetConsecutiveAddresses(dtGeoLocation);
+                    //result.Status = true;
+                    //result.Data = GetJsonString(dtLastEntryOfConsecutiveAddresses, "LA");
+                    //result.Message = "Successfully";
+                }
+                else
+                {
+                    result = "No Data Available";
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"GeoLocationTrackingRecords: {ex.Message}");
+            }
+            return null;
+
+        }
+
+        private List<GeoLocationRecord> ReadTextFileIntoList(string filePath)
+        {
+            var records = new List<GeoLocationRecord>();
+
+            // Read the lines of the text file
+            var lines = File.ReadAllLines(filePath);
+            foreach (var line in lines)
+            {
+                var values = line.Split('$'); // Split each line by '$'
+
+                // Create a new GeoLocationRecord
+                var record = new GeoLocationRecord
+                {
+                    EmpId = Convert.ToInt32(values[0]),
+                    CmpId = Convert.ToInt32(values[1]),
+                    Latitude = Convert.ToDouble(values[2]),
+                    Longitude = Convert.ToDouble(values[3]),
+                    TrackingDate = Convert.ToDateTime(values[4]),
+                    Address = values[5],
+                    City = values[6],
+                    Area = values[7]
+                };
+
+                // Add the record to the list
+                records.Add(record);
+            }
+
+            return records;
+        }
+
+
+        private DataTable GetConsecutiveAddresses(DataTable dtGeoLocation)
+        {
+            // Implement your logic to process consecutive addresses
+            return dtGeoLocation; // Placeholder
+        }
+
+        private string GetJsonString(DataTable dataTable, string tableName)
+        {
+            // Convert DataTable to JSON string
+            // You can use Newtonsoft.Json or System.Text.Json here
+            return JsonConvert.SerializeObject(dataTable);
+        }
+
+        private string ConvertDateFormat(DateTime date)
+        {
+            return date.ToString("yyyy-MM-dd");
+        }
+
     }
 }

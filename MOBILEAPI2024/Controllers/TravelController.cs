@@ -230,7 +230,7 @@ namespace MOBILEAPI2024.API.Controllers
                         if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
                         {
                             travelAppRequest.EmpID = Convert.ToInt32(empId);
-                            travelAppRequest.CmpID = Convert.ToInt32(empId);
+                            travelAppRequest.CmpID = Convert.ToInt32(cmpId);
 
                             var travelResponse = _travelService.TravelApp(travelAppRequest);
                             if (travelResponse != null)

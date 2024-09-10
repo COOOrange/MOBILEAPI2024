@@ -12,7 +12,7 @@ namespace MOBILEAPI2024.DAL.Repositories.IRepositories
 {
     public interface ILeaveRepository : IGenericRepository<ActiveInActiveUser>
     {
-        string AddLeaveAplication(LeaveFilter leaveFilter, ApplyLeaveRequest applyLeaveRequest);
+        dynamic AddLeaveAplication(LeaveFilter leaveFilter, ApplyLeaveRequest applyLeaveRequest);
         LeaveApplicationResponse CheckLeaveStatus(LeaveFilter leaveFilter, int leaveAppID);
         string CheckPeriod(LeaveFilter leaveFilter,CheckPeriod checkPeriod);
         dynamic GetCompOffLeave(GetCompOffLeaveRequest getCompOffLeaveRequest);

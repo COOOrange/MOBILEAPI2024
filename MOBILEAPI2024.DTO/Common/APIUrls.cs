@@ -156,6 +156,7 @@ namespace MOBILEAPI2024.DTO.Common
         public const string Dashboard = "Dashboard";
         public const string ClockIn = "clockin";
         public const string ClockOut = "clockout";
+        public const string GetPresentDayDuration = "GetPresentDayDuration";
         public const string GeoLocationTracking = "GeoLocationTracking";
         public const string GeoLocationTrackingList = "GeoLocationTrackingList";
 

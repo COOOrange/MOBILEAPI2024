@@ -1,13 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using MOBILEAPI2024.BLL.Services.IServices;
-using MOBILEAPI2024.DAL.Entities;
-using MOBILEAPI2024.DAL.Repositories.IRepositories;
 using MOBILEAPI2024.DTO.Common;
 using MOBILEAPI2024.DTO.RequestDTO.Account;
-using Org.BouncyCastle.Crypto;
 
 namespace MOBILEAPI2024.API.Controllers
 {
@@ -57,8 +52,6 @@ namespace MOBILEAPI2024.API.Controllers
                 response.status = false;
                 response.message = CommonMessage.UserNameAndPasswordMandatory;
                 return BadRequest(response);
-
-
             }
             catch (Exception ex)
             {

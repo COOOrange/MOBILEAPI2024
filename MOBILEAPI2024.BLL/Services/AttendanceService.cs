@@ -90,6 +90,8 @@ namespace MOBILEAPI2024.BLL.Services
         {
             var attendanceInsert = _mapper.Map<AttendanceInsertRequest, AttendanceInsert>(attendanceInsertRequest);
             attendanceInsert.Type = "I";
+            attendanceInsert.FromDate = Convert.ToDateTime(DateTime.Now).ToString();
+            attendanceInsert.Todate = Convert.ToDateTime(DateTime.Now).ToString();
             var atendanceResponse = _attendanceRepository.AttendanceInsert(attendanceInsert);
 
             if (atendanceResponse != null)

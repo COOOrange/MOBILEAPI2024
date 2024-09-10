@@ -14,5 +14,6 @@
         public string ImagePath { get; set; }
         public string DocPath { get; set; }
         public EmailServiceOptions EmailServiceOptions { get; set; }
+        public string TextFilePath { get; set; }
     }
 }

@@ -6,6 +6,8 @@ using MOBILEAPI2024.BLL.Services;
 using MOBILEAPI2024.BLL.Services.IServices;
 using MOBILEAPI2024.DTO.Common;
 using MOBILEAPI2024.DTO.RequestDTO.Leave;
+using MOBILEAPI2024.DTO.RequestDTO.User;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 
@@ -284,9 +286,9 @@ namespace MOBILEAPI2024.API.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route(APIUrls.GetLeaveApplicationRecords)]
-        public IActionResult GetLeaveApplicationRecords()
+        public IActionResult GetLeaveApplicationRecords(LeaveRecordsRequest leaveRecordsRequest)
         {
             Response response = new Response();
             try
@@ -304,13 +306,9 @@ namespace MOBILEAPI2024.API.Controllers
                         var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
                         if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
                         {
-                            DateTime currentDate = DateTime.Now;
-                            int currentYear = currentDate.Year;
-                            // Get the current month
-                            int currentMonth = currentDate.Month;
                             LeaveFilter leaveFilter = new LeaveFilter();
-                            leaveFilter.FromDate = new DateTime(currentYear, currentMonth, 1);
-                            leaveFilter.ToDate = leaveFilter.FromDate.AddMonths(1).AddDays(-1);
+                            leaveFilter.FromDate = DateTime.ParseExact(leaveRecordsRequest.FromDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                            leaveFilter.ToDate = DateTime.ParseExact(leaveRecordsRequest.ToDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                             leaveFilter.Emp_Id = Convert.ToInt32(empId);
                             leaveFilter.Cmp_Id = Convert.ToInt32(cmpId);
 
@@ -510,7 +508,7 @@ namespace MOBILEAPI2024.API.Controllers
                             leaveFilter.Cmp_Id = Convert.ToInt32(cmpId);
                             leaveFilter.Login_ID = Convert.ToInt32(loginId);
 
-                            string addleaveAplication = _leaveService.AddLeaveAplication(leaveFilter, applyLeaveRequest);
+                            dynamic addleaveAplication = _leaveService.AddLeaveAplication(leaveFilter, applyLeaveRequest);
 
                             if (addleaveAplication != null)
                             {

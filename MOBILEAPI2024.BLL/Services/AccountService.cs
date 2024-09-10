@@ -1,18 +1,12 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Tokens;
 using MOBILEAPI2024.BLL.Services.IServices;
 using MOBILEAPI2024.DAL.Repositories.IRepositories;
 using MOBILEAPI2024.DTO.Common;
 using MOBILEAPI2024.DTO.RequestDTO.Account;
 using MOBILEAPI2024.DTO.ResponseDTO.Account;
-using System;
-using System.Data;
-using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net.NetworkInformation;
 using System.Security.Claims;
 using System.Text;
 
@@ -45,7 +39,6 @@ namespace MOBILEAPI2024.BLL.Services
             vTemplate = vTemplate.Replace("{OTP}", otp);
             vTemplate = vTemplate.Replace("{Name}", user.Emp_Full_Name);
             _emailHelper.SendEmail(user.Emp_Full_Name, user.Work_Email, vSubject, vTemplate);
-
         }
 
         public LoginResponseDTO AuthenticateUser(LoginDTO loginDTO)
@@ -53,6 +46,9 @@ namespace MOBILEAPI2024.BLL.Services
             LoginResponseDTO loginResponseDTO = _accountRepository.LoginCheck(loginDTO);
             if (loginResponseDTO.LoginData != null)
             {
+                loginResponseDTO.LoginData.Image_Name = _appSettings.ImagePath + "App_File/EMPIMAGES/" + loginResponseDTO.LoginData.Image_Name; ;
+                loginResponseDTO.LoginData.Cmp_Logo = _appSettings.ImagePath + "App_File/CMPIMAGES/" + loginResponseDTO.LoginData.Cmp_Logo;
+
                 return loginResponseDTO;
             }
             return null;

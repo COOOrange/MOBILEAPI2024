@@ -67,6 +67,7 @@ namespace MOBILEAPI2024.DAL.Repositories
 
         public dynamic ManagerApprovalDetails(ManagerApprovalDetailsRequest managerApprovalDetailsRequest)
         {
+            ManagerApprovalData managerApprovalData = new();
             using var vconn = GetOpenConnection();
             var vParams = new DynamicParameters();
 
@@ -76,9 +77,22 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@Claim_App_ID", managerApprovalDetailsRequest.ClaimAppId);
             vParams.Add("@Leave_Application_ID", managerApprovalDetailsRequest.LeaveApplicationId);
             vParams.Add("@flag", managerApprovalDetailsRequest.Flag);
+
             var response = vconn.QueryMultiple("MOBILE_HRMS_SCHEME_DETAILS_ESS_GET", vParams, commandType: CommandType.StoredProcedure);
-            return response;
+
+            // Get the first manager approval detail or null if no result is returned
+            var managerApproval = response.Read<ManagerApprovalDetail>().FirstOrDefault();
+
+            // Read the list of application details
+            var applications = response.Read<ApplicationDetail>().ToList();
+
+            // Assign the results to the respective properties
+            managerApprovalData.Data = managerApproval;
+            managerApprovalData.Data1 = applications;
+
+            return managerApprovalData;
         }
+
 
         public List<AttendanceRegularizeDetailsResponse> AttendanceRegularizeDetails(AttendanceRegularizeDetails attendanceRegularizeDetails)
         {

@@ -6,6 +6,7 @@ using MOBILEAPI2024.DTO.Common;
 using MOBILEAPI2024.DTO.RequestDTO.Leave;
 using MOBILEAPI2024.DTO.RequestDTO.User;
 using MOBILEAPI2024.DTO.ResponseDTO.User;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 
@@ -107,7 +108,8 @@ namespace MOBILEAPI2024.API.Controllers
                         {
                             clockIn.Emp_Id = Convert.ToInt32(empId);
                             clockIn.Cmp_Id = Convert.ToInt32(cmpId);
-                            if ((clockIn.Emp_Id != 0) && (clockIn.Cmp_Id != 0) && clockIn.file.FileName != null)
+
+                            if ((clockIn.Emp_Id != 0) && (clockIn.Cmp_Id != 0))
                             {
                                 string strImage = DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + clockIn.Emp_Id + clockIn.file.FileName;
                                 string folderName = "/EmpImage/" + DateTime.Now.Year + "/" + DateTime.Now.Month + "/" + DateTime.Now.ToString("ddMMyyyy") + "/";
@@ -117,11 +119,9 @@ namespace MOBILEAPI2024.API.Controllers
                                 {
                                     Directory.CreateDirectory(path);
                                 }
+
                                 using (FileStream filestream = System.IO.File.Create(path + strImage))
                                 {
-                                    string dsFileName = "";
-
-                                    string strDocPath = path + strImage;
                                     clockIn.file.CopyTo(filestream);
                                     filestream.Flush();
                                 }
@@ -139,6 +139,7 @@ namespace MOBILEAPI2024.API.Controllers
                             response.message = CommonMessage.TokenExpired;
                             return StatusCode(StatusCodes.Status401Unauthorized, response);
                         }
+
                     }
                     else
                     {
@@ -217,6 +218,65 @@ namespace MOBILEAPI2024.API.Controllers
                             response.status = false;
                             response.message = CommonMessage.TokenExpired;
                             return StatusCode(StatusCodes.Status401Unauthorized, response);
+                        }
+                    }
+                    else
+                    {
+                        // Handle the case where the token cannot be read as a JWT token
+                        response.code = StatusCodes.Status401Unauthorized;
+                        response.status = false;
+                        response.message = CommonMessage.TokenExpired;
+                        return StatusCode(StatusCodes.Status401Unauthorized, response);
+                    }
+                }
+                // Handle the case where the token cannot be read as a JWT token
+                response.code = StatusCodes.Status401Unauthorized;
+                response.status = false;
+                response.message = CommonMessage.TokenExpired;
+                return StatusCode(StatusCodes.Status401Unauthorized, response);
+            }
+            catch (Exception e)
+            {
+                response.code = StatusCodes.Status500InternalServerError;
+                response.status = false;
+                response.message = CommonMessage.SomethingWrong + " " + e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+        [HttpGet]
+        [Route(APIUrls.GetPresentDayDuration)]
+        public IActionResult GetPresentDayDuration()
+        {
+            Response response = new Response();
+            try
+            {
+                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
+                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
+                {
+                    var jToken = headerValue.Parameter;
+                    var handler = new JwtSecurityTokenHandler();
+
+                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
+                    if (jsonToken != null)
+                    {
+                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
+                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
+                        if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
+                        {
+                            var getDuration = _userService.GetPresentDayDuration(Convert.ToInt32(empId),Convert.ToInt32(cmpId));
+                            if(getDuration != null)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                response.data = getDuration;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status404NotFound;
+                            response.status = false;
+                            response.message = CommonMessage.NoDataFound;
+                            return NotFound(response);
                         }
                     }
                     else
@@ -360,9 +420,20 @@ namespace MOBILEAPI2024.API.Controllers
 
         [HttpGet]
         [Route(APIUrls.GeoLocationTrackingList)]
-        public IActionResult GeoLocationTrackingList(DateTime Date)
+        public IActionResult GeoLocationTrackingList(string Date)
         {
             Response response = new Response();
+            DateTime dateValue;
+
+            // Try to parse the Date string to DateTime
+            if (!DateTime.TryParseExact(Date, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out dateValue))
+            {
+                response.code = StatusCodes.Status400BadRequest;
+                response.status = false;
+                response.message = "Invalid date format. Please use 'yyyy-MM-dd'.";
+                return BadRequest(response);
+            }
+
             try
             {
                 var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
@@ -378,7 +449,8 @@ namespace MOBILEAPI2024.API.Controllers
                         var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
                         if (!string.IsNullOrEmpty(cmpId))
                         {
-                            var geoLocationResponse = _userService.GeoLocationTrackingList(Convert.ToInt32(cmpId),Convert.ToInt32(empId),Date);
+                            //var geoLocationResponse = _userService.GeoLocationTrackingList(Convert.ToInt32(cmpId), Convert.ToInt32(empId), dateValue);
+                            var geoLocationResponse = _userService.GetGeoLocationTrackingRecords(Convert.ToInt32(empId), Convert.ToInt32(cmpId), dateValue);
                             if (geoLocationResponse != null)
                             {
                                 response.code = StatusCodes.Status200OK;
@@ -3747,6 +3819,66 @@ namespace MOBILEAPI2024.API.Controllers
                 response.message = CommonMessage.SomethingWrong + " " + e.Message;
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
+        }
+
+        [HttpPost("AddGeoLocation")]
+        public IActionResult AddGeoLocation([FromBody] GeoLocation request)
+        {
+            Response response = new Response();
+            try
+            {
+                var authorization = HttpContext.Request.Headers[HeaderNames.Authorization];
+                if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
+                {
+                    var jToken = headerValue.Parameter;
+                    var handler = new JwtSecurityTokenHandler();
+
+                    var jsonToken = handler.ReadToken(jToken) as JwtSecurityToken;
+                    if (jsonToken != null)
+                    {
+                        var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
+                        var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
+                        if (!string.IsNullOrEmpty(cmpId) && !string.IsNullOrEmpty(empId))
+                        {
+                            request.CmpID = Convert.ToInt32(cmpId);
+                            request.EmpID = Convert.ToInt32(empId);
+                            bool success = _userService.SaveGeoLocation(request);
+                            if (success)
+                            {
+                                response.code = StatusCodes.Status200OK;
+                                response.status = true;
+                                response.message = CommonMessage.Success;
+                                return Ok(response);
+                            }
+                            response.code = StatusCodes.Status400BadRequest;
+                            response.status = false;
+                            response.message = "Invalid Data Passed.";
+                            return StatusCode(StatusCodes.Status400BadRequest, response);
+                        }
+                    }
+                    else
+                    {
+                        // Handle the case where the token cannot be read as a JWT token
+                        response.code = StatusCodes.Status401Unauthorized;
+                        response.status = false;
+                        response.message = CommonMessage.TokenExpired;
+                        return StatusCode(StatusCodes.Status401Unauthorized, response);
+                    }
+                }
+                // Handle the case where the token cannot be read as a JWT token
+                response.code = StatusCodes.Status401Unauthorized;
+                response.status = false;
+                response.message = CommonMessage.TokenExpired;
+                return StatusCode(StatusCodes.Status401Unauthorized, response);
+            }
+            catch (Exception e)
+            {
+                response.code = StatusCodes.Status500InternalServerError;
+                response.status = false;
+                response.message = CommonMessage.SomethingWrong + " " + e.Message;
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+            
         }
     }
 }

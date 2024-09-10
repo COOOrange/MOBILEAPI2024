@@ -1,5 +1,7 @@
-﻿using MOBILEAPI2024.BLL.Services.IServices;
+﻿using Microsoft.Extensions.Options;
+using MOBILEAPI2024.BLL.Services.IServices;
 using MOBILEAPI2024.DAL.Repositories.IRepositories;
+using MOBILEAPI2024.DTO.Common;
 using MOBILEAPI2024.DTO.RequestDTO.Leave;
 using MOBILEAPI2024.DTO.ResponseDTO.Leave;
 using System.Collections;
@@ -9,14 +11,31 @@ namespace MOBILEAPI2024.BLL.Services
     public class LeaveService : ILeaveService
     {
         private readonly ILeaveRepository _leaveRepository;
-        public LeaveService(ILeaveRepository leaveRepository)
+        private readonly AppSettings _appSettings; 
+        public LeaveService(ILeaveRepository leaveRepository,IOptions<AppSettings> appSetting)
         {
             _leaveRepository = leaveRepository;
+            _appSettings = appSetting.Value;
         }
 
-        public string AddLeaveAplication(LeaveFilter leaveFilter, ApplyLeaveRequest applyLeaveRequest)
+        public dynamic AddLeaveAplication(LeaveFilter leaveFilter, ApplyLeaveRequest applyLeaveRequest)
         {
-            string leaveResponse = _leaveRepository.AddLeaveAplication(leaveFilter, applyLeaveRequest);
+
+            if (!string.IsNullOrEmpty(applyLeaveRequest.Attachement))
+            {
+                string strDocName = $"{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss") + "_Doc_" + applyLeaveRequest.DocName.Replace(" ", "_")}";
+                string strDocPath = $"{_appSettings.DocPath}/LeaveDocs/{strDocName}";
+
+                byte[] docBytes = Convert.FromBase64String(applyLeaveRequest.Attachement);
+                using (MemoryStream ms = new MemoryStream(docBytes))
+                {
+                    using (FileStream fs = new FileStream(strDocPath, FileMode.Create))
+                    {
+                        ms.WriteTo(fs);
+                    }
+                }
+            }
+            dynamic leaveResponse = _leaveRepository.AddLeaveAplication(leaveFilter, applyLeaveRequest);
             if(leaveResponse == null)
             {
                 return null;

@@ -39,12 +39,14 @@ namespace MOBILEAPI2024.BLL.Services.IServices
         dynamic GetCountry();
         dynamic GetDashboardApplicationsCount(int v1, int v2);
         dynamic GetEmployeeOTDetails(int v1, int v2);
+        List<GeoLocationRecord> GetGeoLocationTrackingRecords(int v1, int v2, DateTime dateValue);
         dynamic GetHolidayList(int v1, int v2, int year);
         dynamic GetLikeCommentList(GetLikeCommentListRequest getLikeCommentListRequest);
         dynamic GetNewJoiningUpdatedRecords(LeaveFilter getLikeCommentListRequest);
         dynamic GetNewsFeedDetail(int v1, int v2);
         dynamic GetNotification(GetNotificationRequest getNotificationRequest);
         dynamic GetPostRequestEmployee(int v1, int v2, string request_Type);
+        dynamic GetPresentDayDuration(int empid, int cmpid);
         dynamic GetReasonforResignation();
         dynamic GetShiftDeatails(int v1, int v2, string forDate);
         dynamic GetState(int v, int countryId);
@@ -62,6 +64,7 @@ namespace MOBILEAPI2024.BLL.Services.IServices
         dynamic PostFingerPrintDetails(int v1, int v2, string base64);
         dynamic PostRequest(PostRequest postRequest);
         dynamic SalaryDetails(LeaveBalanceRequest salaryDetails);
+        bool SaveGeoLocation(GeoLocation request);
         dynamic SendNotification(SendNotificationRequest sendNotificationRequest);
         dynamic SurveyApplication(SurveyApplicationRequest surveyApplicationRequest);
         dynamic TemplateApplication(TemplateApplicationRequest templateApplicationDetailsRequest);

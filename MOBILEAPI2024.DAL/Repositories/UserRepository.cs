@@ -353,17 +353,33 @@ namespace MOBILEAPI2024.DAL.Repositories
         {
             using var vconn = GetOpenConnection();
             var vParams = new DynamicParameters();
+
+            // Adding all parameters to the dynamic parameters object
             vParams.Add("@Emp_ID", geoLocationRequest.EmpID);
             vParams.Add("@Cmp_ID", geoLocationRequest.CmpID);
-            vParams.Add("@Date", "");
+            vParams.Add("@TrackingDate", DateTime.Now);  // Changed from "@Date"
             vParams.Add("@Latitude", geoLocationRequest.Latitude);
             vParams.Add("@Longitude", geoLocationRequest.Longitude);
-            vParams.Add("@Address_location", geoLocationRequest.AddressLocation);
+            vParams.Add("@Address_location", geoLocationRequest.AddressLocation ?? ""); // Nullable check
+            vParams.Add("@City",  "");  // New parameter with null check
+            vParams.Add("@Area",  "");  // New parameter with null check
+            vParams.Add("@Battery_Level",  "");  // New parameter with null check
+            vParams.Add("@IMEI_No", "");  // New parameter with null check
+            vParams.Add("@GPS_Accuracy", "");  // New parameter
+            vParams.Add("@Model_Name",  "");  // New parameter with null check
             vParams.Add("@Type", "I");
-            vParams.Add("@Result", "");
+            vParams.Add("@Result", dbType: DbType.String, direction: ParameterDirection.Output, size: 100);  // Updated Result handling
+
+            // Execute stored procedure
             var geoLocationResponse = vconn.Query("SP_GeoLocationTracing_API", vParams, commandType: CommandType.StoredProcedure);
-            return geoLocationResponse;
+
+            // Get the output parameter value
+            string result = vParams.Get<string>("@Result");
+
+            // Return the response
+            return new { Response = geoLocationResponse, Result = result };
         }
+
 
         public dynamic GeoLocationTrackingList(int cmpId, int empId, DateTime date)
         {
@@ -371,7 +387,7 @@ namespace MOBILEAPI2024.DAL.Repositories
             var vParams = new DynamicParameters();
             vParams.Add("@Emp_ID", empId);
             vParams.Add("@Cmp_ID", cmpId);
-            vParams.Add("@Date", date);
+            vParams.Add("@TrackingDate", date);
             vParams.Add("@Latitude", "");
             vParams.Add("@Longitude", "");
             vParams.Add("@Address_location", "");
@@ -578,6 +594,31 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@Type", "R");
             vParams.Add("@Result", "");
             var Response = vconn.Query("SP_Mobile_HRMS_WebService_PostRequest", vParams, commandType: CommandType.StoredProcedure);
+            return Response;
+        }
+
+        public dynamic GetPresentDayDuration(int empid, int cmpid)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+                                string query = @"SELECT 
+                    FORMAT(
+                            DATEADD(MINUTE, DATEDIFF(MINUTE, MIN(In_Time), MAX(Out_Time)), 0), 
+                            'HH:mm'
+                        ) AS Duration,
+                        For_Date,
+                        MIN(In_Time) AS First_In_Time,
+                        MAX(Out_Time) AS Last_Out_Time
+                        
+                    FROM T0150_EMP_INOUT_RECORD
+                    WHERE Emp_ID = @EmpId 
+                        AND Cmp_ID = @CmpId 
+                        AND For_Date = @Date
+                    GROUP BY Emp_ID, Cmp_ID, For_Date;";
+            vParams.Add("@CmpId", cmpid);
+            vParams.Add("@EmpId", empid);
+            vParams.Add("@Date", DateTime.Now.Date);
+            var Response = vconn.Query(query, vParams);
             return Response;
         }
 

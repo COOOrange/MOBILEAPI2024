@@ -12,8 +12,13 @@ namespace MOBILEAPI2024.DTO.RequestDTO.User
     {
         public int? Emp_Id { get; set; }
         public int? Cmp_Id { get; set; }
+        [Required]
+
         public DateTime? Date { get; set; }
+        [Required]
+
         public string? IOFlag { get; set; }
+
         public string? IMEIno { get; set; }
         [Required]
         public string? Address { get; set; }
