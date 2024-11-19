@@ -14,7 +14,7 @@ namespace MOBILEAPI2024.DAL.Repositories.IRepositories
     {
         dynamic AddLeaveAplication(LeaveFilter leaveFilter, ApplyLeaveRequest applyLeaveRequest);
         LeaveApplicationResponse CheckLeaveStatus(LeaveFilter leaveFilter, int leaveAppID);
-        MasterLeaveResponse AddLeaveAplicationMain(LeaveFilter leaveFilter, ApplyLeaveRequest applyLeaveRequest);
+        dynamic AddLeaveAplicationMain(LeaveFilter leaveFilter, ApplyLeaveRequest applyLeaveRequest);
 
         string CheckPeriod(LeaveFilter leaveFilter,CheckPeriod checkPeriod);
         dynamic GetCompOffLeave(GetCompOffLeaveRequest getCompOffLeaveRequest);

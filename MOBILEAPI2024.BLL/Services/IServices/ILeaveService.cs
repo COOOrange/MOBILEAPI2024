@@ -10,7 +10,7 @@ namespace MOBILEAPI2024.BLL.Services.IServices
 {
     public interface ILeaveService
     {
-        LeaveResponse AddLeaveAplication(LeaveFilter leaveFilter, ApplyLeaveRequest applyLeaveRequest,string deviceId);
+        dynamic AddLeaveAplication(LeaveFilter leaveFilter, ApplyLeaveRequest applyLeaveRequest,string deviceId);
         LeaveApplicationResponse CheckLeaveStatus(LeaveFilter leaveFilter, int leaveAppID);
         string CheckPeriod(LeaveFilter leaveFilter,CheckPeriod checkPeriod);
         dynamic GetCompOffLeave(GetCompOffLeaveRequest getCompOffLeaveRequest);

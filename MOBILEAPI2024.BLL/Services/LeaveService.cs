@@ -12,15 +12,15 @@ namespace MOBILEAPI2024.BLL.Services
     {
         private readonly ILeaveRepository _leaveRepository;
         private readonly AppSettings _appSettings;
-        private readonly AccountService _accountService;
-        public LeaveService(ILeaveRepository leaveRepository,IOptions<AppSettings> appSetting, AccountService accountService)
+        private readonly IAccountService _accountService;
+        public LeaveService(ILeaveRepository leaveRepository,IOptions<AppSettings> appSetting, IAccountService accountService)
         {
             _leaveRepository = leaveRepository;
             _appSettings = appSetting.Value;
             _accountService = accountService;
         }
 
-        public LeaveResponse AddLeaveAplication(LeaveFilter leaveFilter, ApplyLeaveRequest applyLeaveRequest, string deviceId)
+        public dynamic AddLeaveAplication(LeaveFilter leaveFilter, ApplyLeaveRequest applyLeaveRequest, string deviceId)
         {
             if (!string.IsNullOrEmpty(applyLeaveRequest.Attachement))
             {
@@ -37,19 +37,23 @@ namespace MOBILEAPI2024.BLL.Services
                 }
             }
 
-            MasterLeaveResponse leaveResponse = _leaveRepository.AddLeaveAplicationMain(leaveFilter, applyLeaveRequest);
-            if(leaveResponse.LeaveResponse == null || (leaveResponse.LeaveResponse as ICollection)?.Count == 0)
+            dynamic leaveResponse = _leaveRepository.AddLeaveAplicationMain(leaveFilter, applyLeaveRequest);
+            if(leaveResponse == null || (leaveResponse as ICollection)?.Count == 0)
             {
                 return null;
             }
-            string message = "Leave for " + leaveResponse.LeaveAPIResponse.EmpFullName + " [ " +
-                             leaveResponse.LeaveAPIResponse.LeaveName + " ] of " +
-                             leaveResponse.LeaveAPIResponse.LeavePeriod + " days from " +
-                             DateTime.Parse(leaveResponse.LeaveAPIResponse.FromDate).ToString("dd-MMM-yyyy") + " To " +
-                             DateTime.Parse(leaveResponse.LeaveAPIResponse.ToDate).ToString("dd-MMM-yyyy") + " is received";
+            //if (leaveResponse.leaveDetails != null || (leaveResponse.LeaveResponse as ICollection)?.Count == 0)
+            //{
+            //    return leaveResponse;
+            //}
+            //string message = "Leave for " + leaveResponse.LeaveAPIResponse.EmpFullName + " [ " +
+            //                 leaveResponse.LeaveAPIResponse.LeaveName + " ] of " +
+            //                 leaveResponse.LeaveAPIResponse.LeavePeriod + " days from " +
+            //                 DateTime.Parse(leaveResponse.LeaveAPIResponse.FromDate).ToString("dd-MMM-yyyy") + " To " +
+            //                 DateTime.Parse(leaveResponse.LeaveAPIResponse.ToDate).ToString("dd-MMM-yyyy") + " is received";
 
-            _accountService.SendPushNotificationAsync(deviceId, "Leave Application",message);
-            return leaveResponse.LeaveResponse;
+            //_accountService.SendPushNotificationAsync(deviceId, "Leave Application",message);
+            return leaveResponse;
         }
 
         public LeaveApplicationResponse CheckLeaveStatus(LeaveFilter leaveFilter, int leaveAppID)

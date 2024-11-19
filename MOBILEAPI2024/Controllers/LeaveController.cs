@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
-using MOBILEAPI2024.BLL.Services;
 using MOBILEAPI2024.BLL.Services.IServices;
 using MOBILEAPI2024.DTO.Common;
 using MOBILEAPI2024.DTO.RequestDTO.Leave;
-using MOBILEAPI2024.DTO.RequestDTO.User;
 using MOBILEAPI2024.DTO.ResponseDTO.Leave;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
@@ -511,21 +507,14 @@ namespace MOBILEAPI2024.API.Controllers
                             leaveFilter.Cmp_Id = Convert.ToInt32(cmpId);
                             leaveFilter.Login_ID = Convert.ToInt32(loginId);
 
-                            LeaveResponse addleaveAplication = _leaveService.AddLeaveAplication(leaveFilter, applyLeaveRequest, deviceId);
+                            dynamic addleaveAplication = _leaveService.AddLeaveAplication(leaveFilter, applyLeaveRequest, deviceId);
 
                             if (addleaveAplication != null)
                             {
-                                // Split the string by '#'
-                                string[] parts = addleaveAplication.Result.Split('#');
-
-                                // Extract the first message and last number
-                                string message = parts[0];
-                                string number = parts[2];
-
                                 response.code = StatusCodes.Status200OK;
                                 response.status = true;
-                                response.message = message;
-                                response.data = number;
+                                response.message = CommonMessage.Success;
+                                response.data = addleaveAplication;
                                 return Ok(response);
                             }
                             response.code = StatusCodes.Status404NotFound;

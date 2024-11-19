@@ -74,6 +74,16 @@
     { 
         public LeaveResponse LeaveResponse { get; set; }
         public LeaveAPIResponse LeaveAPIResponse { get; set; }
+        public LeaveDetails leaveDetails { get; set; }
     }
 
+    public class LeaveDetails
+    {
+        public DateTime From_date { get; set; }
+        public DateTime To_date { get; set; }
+        public decimal Period { get; set; }
+        public string Leave_dates { get; set; }
+        public string Weekoff_Date { get; set; }
+        public string Holiday_date { get; set; }
+    }
 }

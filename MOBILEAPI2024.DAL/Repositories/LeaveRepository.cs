@@ -40,7 +40,7 @@ namespace MOBILEAPI2024.DAL.Repositories
             return data.Result;
         }
 
-        public MasterLeaveResponse AddLeaveAplicationMain(LeaveFilter leaveFilter, ApplyLeaveRequest applyLeaveRequest)
+        public dynamic AddLeaveAplicationMain(LeaveFilter leaveFilter, ApplyLeaveRequest applyLeaveRequest)
         {
 
             MasterLeaveResponse masterLeaveResponse = new();
@@ -64,14 +64,25 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@Type", applyLeaveRequest.StrType);
             vParams.Add("@Result", "");
 
-            var data = vconn.QueryMultiple("SP_Mobile_HRMS_WebAPI_Leave", vParams, commandType: CommandType.StoredProcedure);
-            var leaveStatus = data.ReadSingle<LeaveResponse>();
-            var leaveStat = data.ReadSingle<LeaveResponse>();
-            var leaveRes = data.ReadSingle<LeaveAPIResponse>();
-            masterLeaveResponse.LeaveResponse = leaveStatus;
-            masterLeaveResponse.LeaveAPIResponse = leaveRes;
+            var data = vconn.Query("SP_Mobile_HRMS_WebAPI_Leave", vParams, commandType: CommandType.StoredProcedure);
 
-            return masterLeaveResponse;
+            //if (applyLeaveRequest.StrType == "v" || applyLeaveRequest.StrType == "V")
+            //{
+            //    var leaveDetails = data.ReadSingle<LeaveDetails>();
+            //    var leaveSta = data.ReadSingle<LeaveResponse>();
+            //    masterLeaveResponse.leaveDetails = leaveDetails;
+            //    masterLeaveResponse.LeaveResponse = leaveSta;
+            //}
+            //else
+            //{
+            //    var leaveStatus = data.ReadSingle<LeaveResponse>();
+            //    var leaveStat = data.ReadSingle<LeaveResponse>();
+            //    var leaveRes = data.ReadSingle<LeaveAPIResponse>();
+            //    masterLeaveResponse.LeaveResponse = leaveStatus;
+            //    masterLeaveResponse.LeaveAPIResponse = leaveRes;
+            //}
+
+            return data;
         }
 
 
@@ -482,7 +493,7 @@ namespace MOBILEAPI2024.DAL.Repositories
                 vParams.Add("@Result", "");
                 var response = vconn.Query("SP_Mobile_HRMS_WebService_Leave_Cancellation", vParams, commandType: CommandType.StoredProcedure);
                 responses.Add(response);
-            
+
             }
             return responses;
         }
