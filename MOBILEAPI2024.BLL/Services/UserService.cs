@@ -1165,5 +1165,19 @@ namespace MOBILEAPI2024.BLL.Services
             return date.ToString("yyyy-MM-dd");
         }
 
+        public dynamic GetReason(string cmpId, string reasonType)
+        {
+            string type = "R";
+            if(reasonType == null)
+            {
+                reasonType = "";
+            }
+            var Response = _userRepository.GetReason(cmpId, reasonType, type);
+            if (Response == null || (Response as ICollection)?.Count == 0)
+            {
+                return null;
+            }
+            return Response;
+        }
     }
 }

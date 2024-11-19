@@ -4,6 +4,7 @@ using MOBILEAPI2024.DAL.Repositories.IRepositories;
 using MOBILEAPI2024.DTO.RequestDTO.Grievance;
 using MOBILEAPI2024.DTO.RequestDTO.Leave;
 using MOBILEAPI2024.DTO.RequestDTO.Medical;
+using MOBILEAPI2024.DTO.ResponseDTO.Medical;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -43,7 +44,7 @@ namespace MOBILEAPI2024.DAL.Repositories
             return response;
         }
 
-        public dynamic GetMedicalAppDetails(LeaveBalanceRequest leaveBalanceRequest)
+        public MedicalAppDetailsResponse GetMedicalAppDetails(LeaveBalanceRequest leaveBalanceRequest)
         {
             using var vconn = GetOpenConnection();
             var vParams = new DynamicParameters();
@@ -51,8 +52,16 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@Cmp_ID", leaveBalanceRequest.CmpId);
             vParams.Add("@Month", leaveBalanceRequest.Month);
             vParams.Add("@Year", leaveBalanceRequest.Year);
-            var response = vconn.Query("SP_Mobile_HRMS_WebService_Get_Medical_Details", vParams, commandType: CommandType.StoredProcedure);
-            return response;
+
+            using var multi = vconn.QueryMultiple("SP_Mobile_HRMS_WebService_Get_Medical_Details", vParams, commandType: CommandType.StoredProcedure);
+            var medicalDetails = multi.Read<MedicalDetail>().ToList();
+            var contactInfo = multi.ReadFirstOrDefault<MedicalContactInfo>();
+
+            return new MedicalAppDetailsResponse
+            {
+                MedicalDetails = medicalDetails,
+                ContactInfo = contactInfo
+            };
         }
 
         public dynamic GetMedicalAppIdDet(int cmpId, int empID, int aPPId)
@@ -73,7 +82,7 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@App_Id", medicalInsert.AppId);
             vParams.Add("@App_For", medicalInsert.AppFor);
             vParams.Add("@Cmp_ID", medicalInsert.CmpID);
-            vParams.Add("@App_Date", medicalInsert.AppDate);
+            vParams.Add("@App_Date", Convert.ToDateTime(medicalInsert.AppDate));
             vParams.Add("@Emp_Name", medicalInsert.EmpName);
             vParams.Add("@Hospital_Name", medicalInsert.HospName);
             vParams.Add("@State_Id", medicalInsert.StateId);
@@ -81,7 +90,7 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@Incident_Id", medicalInsert.IncidentId);
             vParams.Add("@Incident_Place", medicalInsert.IncidentPlace);
             vParams.Add("@Hospital_Address", medicalInsert.HospAddr);
-            vParams.Add("@Date_Of_Incident", medicalInsert.DateOfInc);
+            vParams.Add("@Date_Of_Incident", Convert.ToDateTime(medicalInsert.DateOfInc));
             vParams.Add("@Time_of_Incident", medicalInsert.TimeofInc);
             vParams.Add("@Contact_no", medicalInsert.ContNo1);
             vParams.Add("@Contact_no2", medicalInsert.ContNo2);

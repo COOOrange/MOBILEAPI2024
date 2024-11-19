@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using MOBILEAPI2024.BLL.Services;
@@ -7,6 +8,7 @@ using MOBILEAPI2024.BLL.Services.IServices;
 using MOBILEAPI2024.DTO.Common;
 using MOBILEAPI2024.DTO.RequestDTO.Leave;
 using MOBILEAPI2024.DTO.RequestDTO.User;
+using MOBILEAPI2024.DTO.ResponseDTO.Leave;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
@@ -501,6 +503,7 @@ namespace MOBILEAPI2024.API.Controllers
                         var empId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Emp_ID")?.Value;
                         var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
                         var loginId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Login_ID")?.Value;
+                        var deviceId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "DeviceToken")?.Value;
                         if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId) && !string.IsNullOrEmpty(loginId))
                         {
                             LeaveFilter leaveFilter = new LeaveFilter();
@@ -508,14 +511,21 @@ namespace MOBILEAPI2024.API.Controllers
                             leaveFilter.Cmp_Id = Convert.ToInt32(cmpId);
                             leaveFilter.Login_ID = Convert.ToInt32(loginId);
 
-                            dynamic addleaveAplication = _leaveService.AddLeaveAplication(leaveFilter, applyLeaveRequest);
+                            LeaveResponse addleaveAplication = _leaveService.AddLeaveAplication(leaveFilter, applyLeaveRequest, deviceId);
 
                             if (addleaveAplication != null)
                             {
+                                // Split the string by '#'
+                                string[] parts = addleaveAplication.Result.Split('#');
+
+                                // Extract the first message and last number
+                                string message = parts[0];
+                                string number = parts[2];
+
                                 response.code = StatusCodes.Status200OK;
                                 response.status = true;
-                                response.message = CommonMessage.Success;
-                                response.data = addleaveAplication;
+                                response.message = message;
+                                response.data = number;
                                 return Ok(response);
                             }
                             response.code = StatusCodes.Status404NotFound;
@@ -1264,6 +1274,5 @@ namespace MOBILEAPI2024.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }
-
     }
 }

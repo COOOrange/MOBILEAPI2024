@@ -9,6 +9,10 @@ using MOBILEAPI2024.DTO.ResponseDTO.Account;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using FirebaseAdmin;
+using FirebaseAdmin.Messaging;
+using Microsoft.AspNetCore.Builder.Extensions;
+using Google.Apis.Auth.OAuth2;
 
 namespace MOBILEAPI2024.BLL.Services
 {
@@ -24,6 +28,14 @@ namespace MOBILEAPI2024.BLL.Services
             _appSettings = appSettings.Value;
             _emailHelper = emailHelper;
             _environment = environment;
+            if (FirebaseApp.DefaultInstance == null)
+            {
+                // Initialize Firebase only if it hasn't been initialized
+                FirebaseApp.Create(new AppOptions()
+                {
+                    Credential = GoogleCredential.FromFile(_appSettings.Firebase_Path)
+                });
+            }
         }
 
         public void AddOtp(ForgotPasswordInfo user, string otp)
@@ -66,7 +78,7 @@ namespace MOBILEAPI2024.BLL.Services
             return otp.ToString();
         }
 
-        public string GenerateToken(LoginData validatedUser)
+        public string GenerateToken(LoginData validatedUser, string deviceToken)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_appSettings.JWTTokenGenKey);
@@ -83,6 +95,7 @@ namespace MOBILEAPI2024.BLL.Services
                     new Claim("Emp_Full_Name", validatedUser.Emp_Full_Name.ToString()),
                     new Claim("Dept_Name", validatedUser.Dept_Name.ToString()),
                     new Claim("DesigName", validatedUser.Desig_Name.ToString()),
+                    new Claim("DeviceToken", deviceToken.ToString()),
                 }),
                 Expires = DateTime.UtcNow.AddDays(30),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -128,6 +141,31 @@ namespace MOBILEAPI2024.BLL.Services
             _accountRepository.ResetPassword(user, resetPasswordDTO);
 
             return "Success.";
+        }
+
+        public async Task SendPushNotificationAsync(string deviceID, string title, string message)
+        {
+            try
+            {
+                // Create the message to be sent
+                var messageToSend = new Message
+                {
+                    Token = deviceID, // Device token (registration token)
+                    Notification = new Notification
+                    {
+                        Title = title,   // Notification title
+                        Body = message   // Notification message
+                    }
+                };
+
+                // Send the message using Firebase Cloud Messaging
+                string response = await FirebaseMessaging.DefaultInstance.SendAsync(messageToSend);
+                Console.WriteLine("Successfully sent message: " + response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error sending notification: " + ex.Message);
+            }
         }
 
         public string UpdateToken(LoginResponseDTO authenticateUser, string Password)

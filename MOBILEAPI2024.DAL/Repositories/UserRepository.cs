@@ -1,4 +1,6 @@
-﻿using Dapper;
+﻿using Azure.Core;
+using Dapper;
+using Microsoft.SqlServer.Server;
 using MOBILEAPI2024.DAL.Entities;
 using MOBILEAPI2024.DAL.Repositories.IRepositories;
 using MOBILEAPI2024.DTO.RequestDTO.Leave;
@@ -7,6 +9,7 @@ using MOBILEAPI2024.DTO.ResponseDTO.User;
 using System.Collections;
 using System.Data;
 using System.Diagnostics.Metrics;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Xml.Linq;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -361,12 +364,12 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@Latitude", geoLocationRequest.Latitude);
             vParams.Add("@Longitude", geoLocationRequest.Longitude);
             vParams.Add("@Address_location", geoLocationRequest.AddressLocation ?? ""); // Nullable check
-            vParams.Add("@City",  "");  // New parameter with null check
-            vParams.Add("@Area",  "");  // New parameter with null check
-            vParams.Add("@Battery_Level",  "");  // New parameter with null check
+            vParams.Add("@City", "");  // New parameter with null check
+            vParams.Add("@Area", "");  // New parameter with null check
+            vParams.Add("@Battery_Level", "");  // New parameter with null check
             vParams.Add("@IMEI_No", "");  // New parameter with null check
             vParams.Add("@GPS_Accuracy", "");  // New parameter
-            vParams.Add("@Model_Name",  "");  // New parameter with null check
+            vParams.Add("@Model_Name", "");  // New parameter with null check
             vParams.Add("@Type", "I");
             vParams.Add("@Result", dbType: DbType.String, direction: ParameterDirection.Output, size: 100);  // Updated Result handling
 
@@ -415,14 +418,8 @@ namespace MOBILEAPI2024.DAL.Repositories
             using var vconn = GetOpenConnection();
             var vParams = new DynamicParameters();
             string query;
-            if (stateID == 0)
-            {
-                query = "SELECT City_ID,City_Name FROM T0030_CITY_MASTER WHERe Cmp_ID = @CmpID ORDER BY City_Name ASC";
-            }
-            else
-            {
-                query = "SELECT City_ID,City_Name FROM T0030_CITY_MASTER WHERE State_ID =@StateID AND Cmp_ID = @CmpID ORDER BY City_Name ASC";
-            }
+
+            query = "SELECT City_ID,City_Name FROM T0030_CITY_MASTER WHERE State_ID =@StateID AND Cmp_ID = @CmpID ORDER BY City_Name ASC";
             vParams.Add("@CmpID", cmpId);
             vParams.Add("@StateID", stateID);
             var response = vconn.Query<dynamic>(query, vParams); // Pass the parameters object
@@ -601,7 +598,7 @@ namespace MOBILEAPI2024.DAL.Repositories
         {
             using var vconn = GetOpenConnection();
             var vParams = new DynamicParameters();
-                                string query = @"SELECT 
+            string query = @"SELECT 
                     FORMAT(
                             DATEADD(MINUTE, DATEDIFF(MINUTE, MIN(In_Time), MAX(Out_Time)), 0), 
                             'HH:mm'
@@ -620,6 +617,27 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@Date", DateTime.Now.Date);
             var Response = vconn.Query(query, vParams);
             return Response;
+        }
+
+        public dynamic GetReason(string cmpId, string reasonType, string type)
+        {
+            string date = Convert.ToString(DateTime.Now);
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Cmp_ID", cmpId, DbType.Int32);
+            vParams.Add("@Emp_Login_ID", 0);
+            vParams.Add("@Request_ID", 0);
+            vParams.Add("@Request_Type", reasonType);
+            vParams.Add("@Request_Date", DateTime.Now);
+            vParams.Add("@Request_Detail", "", DbType.String);
+            vParams.Add("@Feedback_Detail", "", DbType.String);
+            vParams.Add("@Request_Status", 0);
+            vParams.Add("@Login_ID", 0, DbType.Int32);
+            vParams.Add("@Type", type, DbType.String);
+            vParams.Add("@Result", "", DbType.String, direction: ParameterDirection.Output);
+
+            var response = vconn.Query("SP_Mobile_HRMS_WebService_PostRequest", vParams, commandType: CommandType.StoredProcedure);
+            return response;
         }
 
         public dynamic GetReasonforResignation()
@@ -642,7 +660,7 @@ namespace MOBILEAPI2024.DAL.Repositories
             vParams.Add("@Emp_ID", empID);
             vParams.Add("@Cmp_ID", cmpID);
             vParams.Add("@Leave_ID", 0);
-            vParams.Add("@From_Date", Convert.ToDateTime(forDate).ToString("dd/MMM/yyyy"));
+            vParams.Add("@From_Date", DateTime.ParseExact(forDate, "dd-MM-yyyy", null));
             vParams.Add("@To_Date", DateTime.Now);
             vParams.Add("@Period", 0.0);
             vParams.Add("@Leave_Assign_As", "");
@@ -663,14 +681,8 @@ namespace MOBILEAPI2024.DAL.Repositories
             using var vconn = GetOpenConnection();
             var vParams = new DynamicParameters();
             string query;
-            if (countryId == 0)
-            {
-                query = "SELECT State_ID,State_Name FROM T0020_STATE_MASTER WHERE Cmp_ID = @CmpID ORDER BY State_Name ASC";
-            }
-            else
-            {
-                query = "SELECT State_ID,State_Name FROM T0020_STATE_MASTER WHERE Loc_ID = @CountryID AND Cmp_ID = @CmpID ORDER BY State_Name ASC";
-            }
+
+            query = "SELECT State_ID,State_Name FROM T0020_STATE_MASTER WHERE Loc_ID = @CountryID AND Cmp_ID = @CmpID ORDER BY State_Name ASC";
             vParams.Add("@CmpID", cmpId);
             vParams.Add("@CountryID", countryId);
             var response = vconn.Query<dynamic>(query, vParams); // Pass the parameters object

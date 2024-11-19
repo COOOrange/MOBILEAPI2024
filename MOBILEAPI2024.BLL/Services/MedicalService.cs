@@ -3,6 +3,7 @@ using MOBILEAPI2024.BLL.Services.IServices;
 using MOBILEAPI2024.DAL.Repositories.IRepositories;
 using MOBILEAPI2024.DTO.RequestDTO.Leave;
 using MOBILEAPI2024.DTO.RequestDTO.Medical;
+using MOBILEAPI2024.DTO.ResponseDTO.Medical;
 using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Org.BouncyCastle.Ocsp;
@@ -45,7 +46,7 @@ namespace MOBILEAPI2024.BLL.Services
             return medicalResponse;
         }
 
-        public dynamic GetMedicalAppDetails(LeaveBalanceRequest leaveBalanceRequest)
+        public MedicalAppDetailsResponse GetMedicalAppDetails(LeaveBalanceRequest leaveBalanceRequest)
         {
             var medicalResponse = _medicalRepository.GetMedicalAppDetails(leaveBalanceRequest);
             if ((medicalResponse as ICollection)?.Count == 0 || medicalResponse == null)

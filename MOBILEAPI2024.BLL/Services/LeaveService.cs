@@ -11,16 +11,17 @@ namespace MOBILEAPI2024.BLL.Services
     public class LeaveService : ILeaveService
     {
         private readonly ILeaveRepository _leaveRepository;
-        private readonly AppSettings _appSettings; 
-        public LeaveService(ILeaveRepository leaveRepository,IOptions<AppSettings> appSetting)
+        private readonly AppSettings _appSettings;
+        private readonly AccountService _accountService;
+        public LeaveService(ILeaveRepository leaveRepository,IOptions<AppSettings> appSetting, AccountService accountService)
         {
             _leaveRepository = leaveRepository;
             _appSettings = appSetting.Value;
+            _accountService = accountService;
         }
 
-        public dynamic AddLeaveAplication(LeaveFilter leaveFilter, ApplyLeaveRequest applyLeaveRequest)
+        public LeaveResponse AddLeaveAplication(LeaveFilter leaveFilter, ApplyLeaveRequest applyLeaveRequest, string deviceId)
         {
-
             if (!string.IsNullOrEmpty(applyLeaveRequest.Attachement))
             {
                 string strDocName = $"{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss") + "_Doc_" + applyLeaveRequest.DocName.Replace(" ", "_")}";
@@ -35,12 +36,20 @@ namespace MOBILEAPI2024.BLL.Services
                     }
                 }
             }
-            dynamic leaveResponse = _leaveRepository.AddLeaveAplication(leaveFilter, applyLeaveRequest);
-            if(leaveResponse == null)
+
+            MasterLeaveResponse leaveResponse = _leaveRepository.AddLeaveAplicationMain(leaveFilter, applyLeaveRequest);
+            if(leaveResponse.LeaveResponse == null || (leaveResponse.LeaveResponse as ICollection)?.Count == 0)
             {
                 return null;
             }
-            return leaveResponse;
+            string message = "Leave for " + leaveResponse.LeaveAPIResponse.EmpFullName + " [ " +
+                             leaveResponse.LeaveAPIResponse.LeaveName + " ] of " +
+                             leaveResponse.LeaveAPIResponse.LeavePeriod + " days from " +
+                             DateTime.Parse(leaveResponse.LeaveAPIResponse.FromDate).ToString("dd-MMM-yyyy") + " To " +
+                             DateTime.Parse(leaveResponse.LeaveAPIResponse.ToDate).ToString("dd-MMM-yyyy") + " is received";
+
+            _accountService.SendPushNotificationAsync(deviceId, "Leave Application",message);
+            return leaveResponse.LeaveResponse;
         }
 
         public LeaveApplicationResponse CheckLeaveStatus(LeaveFilter leaveFilter, int leaveAppID)

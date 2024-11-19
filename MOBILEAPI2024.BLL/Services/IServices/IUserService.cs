@@ -47,6 +47,7 @@ namespace MOBILEAPI2024.BLL.Services.IServices
         dynamic GetNotification(GetNotificationRequest getNotificationRequest);
         dynamic GetPostRequestEmployee(int v1, int v2, string request_Type);
         dynamic GetPresentDayDuration(int empid, int cmpid);
+        dynamic GetReason(string cmpId, string reasonType);
         dynamic GetReasonforResignation();
         dynamic GetShiftDeatails(int v1, int v2, string forDate);
         dynamic GetState(int v, int countryId);

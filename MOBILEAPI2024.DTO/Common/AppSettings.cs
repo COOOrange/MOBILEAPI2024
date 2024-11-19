@@ -6,6 +6,7 @@
         public string FCM_API_Path { get; set; }
         public string Server_API_Key { get; set; }
         public string Sender_API_ID { get; set; }
+        public string Firebase_Path { get; set; }
         public string APIUri { get; set; }
         public string Source { get; set; }
         public string ExitPath { get; set; }

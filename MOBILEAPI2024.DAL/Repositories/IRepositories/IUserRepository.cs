@@ -38,6 +38,7 @@ namespace MOBILEAPI2024.DAL.Repositories.IRepositories
         dynamic GetNotification(GetNotification getNotificatioon);
         dynamic GetPostRequestEmployee(int cmpID, int empId, string request_Type);
         dynamic GetPresentDayDuration(int empid, int cmpid);
+        dynamic GetReason(string cmpId, string reasonType,string type);
         dynamic GetReasonforResignation();
         dynamic GetShiftDeatails(int cmpID, int empID, string forDate);
         dynamic GetState(int cmpId, int countryId);

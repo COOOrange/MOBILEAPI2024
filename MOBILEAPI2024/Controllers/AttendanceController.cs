@@ -554,10 +554,8 @@ namespace MOBILEAPI2024.API.Controllers
                         var cmpId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "Cmp_ID")?.Value;
                         if (!string.IsNullOrEmpty(empId) && !string.IsNullOrEmpty(cmpId))
                         {
-                            attendanceRegularizeDetails.CmpId = Convert.ToInt32(cmpId);
                             attendanceRegularizeDetails.EmpId = Convert.ToInt32(empId);
-
-
+                            attendanceRegularizeDetails.CmpId = Convert.ToInt32(cmpId);
                             var attendanceResponse = _attendanceService.AttendanceRegularizeDetails(attendanceRegularizeDetails);
                             if (attendanceResponse != null)
                             {

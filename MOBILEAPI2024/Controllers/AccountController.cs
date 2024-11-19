@@ -33,13 +33,14 @@ namespace MOBILEAPI2024.API.Controllers
                         var authenticateUser = _accountService.AuthenticateUser(loginDTO);
                         if (authenticateUser != null && authenticateUser.LoginData != null && authenticateUser.Details.Count() > 0)
                         {
-                            string token = _accountService.GenerateToken(authenticateUser.LoginData);
+                            string token = _accountService.GenerateToken(authenticateUser.LoginData, loginDTO.DeviceID);
                             authenticateUser.Token = token;
                             string updatetoken = _accountService.UpdateToken(authenticateUser, loginDTO.Password);
                             response.code = StatusCodes.Status200OK;
                             response.status = true;
                             response.message = CommonMessage.LoginUser;
                             response.data = authenticateUser;
+                            _accountService.SendPushNotificationAsync(loginDTO.DeviceID, "Login", "Login Successfully Welcome !!");
                             return Ok(response);
                         }
                     }

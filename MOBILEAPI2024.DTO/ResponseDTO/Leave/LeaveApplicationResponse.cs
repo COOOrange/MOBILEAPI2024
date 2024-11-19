@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MOBILEAPI2024.DTO.ResponseDTO.Leave
+﻿namespace MOBILEAPI2024.DTO.ResponseDTO.Leave
 {
     public class LeaveApplicationResponse
     {
@@ -50,4 +44,36 @@ namespace MOBILEAPI2024.DTO.ResponseDTO.Leave
         public string Leave_CompOff_Dates { get; set; }
         public string Leave_Type { get; set; }
     }
+
+    public class LeaveResponse
+    {
+        public  string Result { get; set; }
+    }
+
+    public class LeaveAPIResponse
+    {
+    
+            public string ApplicationDate { get; set; }
+            public int ApplicationCode { get; set; }
+            public string EmpFullName { get; set; }
+            public string DesigName { get; set; }
+            public string DeptName { get; set; }
+            public string LeaveName { get; set; }
+            public string FromDate { get; set; } // Includes both date and day
+            public string ToDate { get; set; }   // Includes both date and day
+            public double LeavePeriod { get; set; }
+            public string LeaveAssignAs { get; set; }
+            public string LeaveReason { get; set; }
+            public int LeaveStatus { get; set; }
+            public long MobileNo { get; set; }
+            public int LeaveApplicationID { get; set; }
+    }
+
+
+    public class MasterLeaveResponse
+    { 
+        public LeaveResponse LeaveResponse { get; set; }
+        public LeaveAPIResponse LeaveAPIResponse { get; set; }
+    }
+
 }

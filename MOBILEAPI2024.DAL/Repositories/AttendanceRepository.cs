@@ -4,6 +4,8 @@ using MOBILEAPI2024.DAL.Entities;
 using MOBILEAPI2024.DAL.Repositories.IRepositories;
 using MOBILEAPI2024.DTO.RequestDTO.Attendance;
 using MOBILEAPI2024.DTO.RequestDTO.Employee;
+using MOBILEAPI2024.DTO.RequestDTO.Leave;
+using MOBILEAPI2024.DTO.ResponseDTO.Attendance;
 using MOBILEAPI2024.DTO.ResponseDTO.Employee;
 using System;
 using System.Collections.Generic;
@@ -75,34 +77,61 @@ namespace MOBILEAPI2024.DAL.Repositories
             return response;
         }
 
-        public dynamic AttendanceRegularizeDetails(AttendanceRegularizeDetails attendanceRegularizeDetails)
+        public AttendanceRecordRespomse AttendanceRegularizeDetails(AttendanceRegularizeDetails attendanceRegularizeDetails)
         {
             using var vconn = GetOpenConnection();
             var vParams = new DynamicParameters();
-            vParams.Add("@IO_Tran_Id", attendanceRegularizeDetails.IOTranId);
-            vParams.Add("@Emp_ID", attendanceRegularizeDetails.EmpID);
-            vParams.Add("@Cmp_ID", attendanceRegularizeDetails.CmpID);
-            vParams.Add("@Month", attendanceRegularizeDetails.Month);
-            vParams.Add("@Year", attendanceRegularizeDetails.Year);
-            vParams.Add("@For_Date", DateTime.Now.ToString("dd/MMM/yyyy"));
-            vParams.Add("@Reason", "");
-            vParams.Add("@Half_Full_Day", "");
-            vParams.Add("@Is_Cancel_Late_In", 0);
-            vParams.Add("@Is_Cancel_Early_Out", 0);
-            vParams.Add("@In_Date_Time", attendanceRegularizeDetails.Fromdate);
-            vParams.Add("@Out_Date_Time", attendanceRegularizeDetails.Todate);
-            vParams.Add("@Is_Approve", 0);
-            vParams.Add("@Other_Reason", "");
-            vParams.Add("@IMEINo", "");
-            vParams.Add("@S_Emp_ID", 0);
-            vParams.Add("@Rpt_Level", 0);
-            vParams.Add("@Final_Approve", 0);
-            vParams.Add("@Is_Fwd_Leave_Rej", 0);
-            vParams.Add("@Approval_Status", "");
-            vParams.Add("@Type", attendanceRegularizeDetails.Type);
-            vParams.Add("@Result", "");
-            var response = vconn.Query("SP_Mobile_HRMS_WebService_AttendanceRegularization", vParams, commandType: CommandType.StoredProcedure);
-            return response;
+            AttendanceRecordRespomse attendanceRecordRespomse = new();
+            vParams.Add("@IO_Tran_Id", attendanceRegularizeDetails.IOTranId, DbType.Int32);
+            vParams.Add("@Emp_ID", attendanceRegularizeDetails.EmpID, DbType.Int32);
+            vParams.Add("@Cmp_ID", attendanceRegularizeDetails.CmpID, DbType.Int32);
+            vParams.Add("@Month", attendanceRegularizeDetails.Month, DbType.Int32);
+            vParams.Add("@Year", attendanceRegularizeDetails.Year, DbType.Int32);
+            vParams.Add("@For_Date", DateTime.Now.ToString("dd/MMM/yyyy"), DbType.String);
+            vParams.Add("@Reason", "", DbType.String);
+            vParams.Add("@Half_Full_Day", "", DbType.String);
+            vParams.Add("@Is_Cancel_Late_In", 0, DbType.Int32);
+            vParams.Add("@Is_Cancel_Early_Out", 0, DbType.Int32);
+            vParams.Add("@In_Date_Time", attendanceRegularizeDetails.Fromdate, DbType.DateTime);
+            vParams.Add("@Out_Date_Time", attendanceRegularizeDetails.Todate, DbType.DateTime);
+            vParams.Add("@Is_Approve", 0, DbType.Int32);
+            vParams.Add("@Other_Reason", "", DbType.String);
+            vParams.Add("@IMEINo", "", DbType.String);
+            vParams.Add("@S_Emp_ID", 0, DbType.Int32);
+            vParams.Add("@Rpt_Level", 0, DbType.Int32);
+            vParams.Add("@Final_Approve", 0, DbType.Int32);
+            vParams.Add("@Is_Fwd_Leave_Rej", 0, DbType.Int32);
+            vParams.Add("@Approval_Status", "", DbType.String);
+            vParams.Add("@Type", attendanceRegularizeDetails.Type, DbType.String);
+
+            // Add output parameter
+            vParams.Add("@Result", dbType: DbType.String, direction: ParameterDirection.Output, size: 50);
+
+            // Execute the stored procedure
+            var response = vconn.QueryMultiple("SP_Mobile_HRMS_WebService_AttendanceRegularization", vParams, commandType: CommandType.StoredProcedure);
+
+            // Retrieve the output parameter value
+
+            // Retrieve and map each result set
+            var AttendanceRecords = response.Read<AttendanceRecord>().ToList();
+            var AttendanceDatas = response.Read<AttendanceData>().ToList();
+            var months = response.Read<MonthDateRange>().ToList();
+
+            // If the third result set is not used, you can skip reading it or handle it as needed
+            // For the fourth result set
+            var AttendanceSettings = response.Read<AttendanceSettings>().ToList();
+
+            // For the fifth result set
+            var SettingDatas = response.Read<SettingData>().ToList();
+            var result = vParams.Get<string>("@Result");
+
+            attendanceRecordRespomse.attendanceRecords = AttendanceRecords;
+            attendanceRecordRespomse.attendanceDatas = AttendanceDatas;
+            attendanceRecordRespomse.monthDateRanges = months;
+            attendanceRecordRespomse.attendanceSettings = AttendanceSettings;
+            attendanceRecordRespomse.settingDatas = SettingDatas;
+            attendanceRecordRespomse.Result = result;
+            return attendanceRecordRespomse;
         }
 
         public dynamic AttendanceRegularizeInsert(AttendanceRegularizeInsert attendanceRegularizeInsert)
@@ -151,5 +180,66 @@ namespace MOBILEAPI2024.DAL.Repositories
             return response;
         }
 
+        public int GetMaxapp(LeaveBalanceRequest attendanceRegularizeDetail)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Emp_ID", attendanceRegularizeDetail.EmpId);
+            vParams.Add("@Cmp_ID", attendanceRegularizeDetail.CmpId);
+            vParams.Add("@Month", attendanceRegularizeDetail.Month);
+            vParams.Add("@Year", attendanceRegularizeDetail.Year);
+            string query = @"select COUNT(MONTH(for_date)) FROM T0150_EMP_INOUT_RECORD WHERE Cmp_ID=@Cmp_ID AND Emp_ID=@Emp_ID and Month(For_date)=@Month and Year(for_date) =@Year and App_Date is not null and Reason<>''";
+
+            int data = vconn.QueryFirstOrDefault<int>(query, vParams);
+            return data;
+        }
+
+        public int GetMaxappEndDate(DateTime st_date, DateTime end_date, LeaveBalanceRequest attendanceRegularizeDetail)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@Emp_ID", attendanceRegularizeDetail.EmpId);
+            vParams.Add("@Cmp_ID", attendanceRegularizeDetail.CmpId);
+            vParams.Add("@StartDate", st_date);
+            vParams.Add("@EndDate", end_date);
+
+            string query = @"
+        SELECT COUNT(MONTH(for_date)) AS CNTMX 
+        FROM T0150_EMP_INOUT_RECORD 
+        WHERE Cmp_ID = @Cmp_ID 
+          AND Emp_ID = @Emp_ID 
+          AND For_date >= @StartDate 
+          AND For_date <= @EndDate 
+          AND App_Date IS NOT NULL 
+          AND Reason <> ''";
+
+            int data = vconn.QueryFirstOrDefault<int>(query, vParams);
+            return data;
+        }
+
+
+        public object GetsalaryEndDate(DateTime st_date)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@StartDate", st_date);
+            string query = @"select dateadd(d,-1,dateadd(m,1,'@StartDate')) as end_dt";
+
+            var data = vconn.Query(query, vParams);
+            return data;
+        }
+
+        public DataTable GetsalaryStartDate(DateTime st_date, LeaveBalanceRequest attendanceRegularizeDetail)
+        {
+            using var vconn = GetOpenConnection();
+            var vParams = new DynamicParameters();
+            vParams.Add("@StartDate", st_date);
+            vParams.Add("@Month", Convert.ToString(attendanceRegularizeDetail.Month));
+            vParams.Add("@Year", Convert.ToString(attendanceRegularizeDetail.Year));
+            string query = @"select cast(cast(day('@StartDate')as varchar(5)) + '-' +'@Month' + '-' +  '@Year' as smalldatetime) as mnth_st_dt";
+
+            var data = vconn.Query(query, vParams);
+            return (DataTable)data;
+        }
     }
 }
